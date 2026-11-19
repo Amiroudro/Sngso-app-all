@@ -114,7 +114,14 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
             Text("পরীক্ষার কৌশল: ‘গৃহীত’, ‘স্বাক্ষরিত’ ও ‘কার্যকর’ শব্দের পার্থক্য খেয়াল করুন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         Primary("আরও অনুশীলন") { nav.navigate("challenge") }
-        OutlinedButton(onClick = { nav.navigate("quiz-results") }, modifier = Modifier.fillMaxWidth()) { Text("সেশন শেষ করুন") }
+        OutlinedButton(
+            onClick = {
+                nav.currentBackStackEntry?.savedStateHandle?.set("correctCount", if (isCorrect) 1 else 0)
+                nav.currentBackStackEntry?.savedStateHandle?.set("questionCount", 1)
+                nav.navigate("quiz-results")
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) { Text("সেশন শেষ করুন") }
         OutlinedButton(onClick = { nav.navigate("revision") }, modifier = Modifier.fillMaxWidth()) { Text("রিভিশনে যোগ করুন") }
     }
 }
@@ -159,9 +166,34 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 }
 
 @Composable internal fun QuizResults(nav: NavHostController) {
+    val resultState = nav.previousBackStackEntry?.savedStateHandle
+    val correctCount = resultState?.get<Int>("correctCount")
+    val questionCount = resultState?.get<Int>("questionCount")
+    val hasResult = correctCount != null && questionCount != null && questionCount > 0
+    val percentage = if (hasResult) (correctCount!! * 100) / questionCount!! else 0
     Scroll {
-        Intro("অনুশীলন সম্পন্ন", "এই স্ক্রিনটি ফলাফল উপস্থাপনের কাঠামো।")
-        Panel { Text("ফলাফল এখনো তৈরি হয়নি", fontWeight = FontWeight.Bold, fontSize = 20.sp); Text("প্রশ্ন-উত্তর যাচাই, স্কোরিং ও সেশন সংরক্ষণ যুক্ত না হওয়া পর্যন্ত কোনো নম্বর বা পারফরম্যান্স দেখানো হবে না।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        Intro("অনুশীলন সম্পন্ন", "এই সেশনের উত্তর যাচাইয়ের ফলাফল।")
+        Panel {
+            if (hasResult) {
+                Text("আপনার স্কোর", fontWeight = FontWeight.Bold)
+                Text("$correctCount / $questionCount", fontSize = 34.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                Text("$percentage% সঠিক", fontWeight = FontWeight.SemiBold)
+                LinearProgressIndicator(
+                    progress = { percentage / 100f },
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.outlineVariant
+                )
+                Text(
+                    if (correctCount == questionCount) "দারুণ! নমুনা প্রশ্নটির উত্তর সঠিক হয়েছে।"
+                    else "ভুল উত্তরটি আবার দেখে নিন এবং ব্যাখ্যাটি মনে রাখুন।"
+                )
+                Text("এটি বর্তমানে একটি নমুনা প্রশ্নের ফলাফল; পূর্ণ প্রশ্নব্যাংক বা স্থায়ী ইতিহাস নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            } else {
+                Text("এই সেশনের ফল পাওয়া যায়নি", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                Text("প্রথমে অনুশীলনের প্রশ্নের উত্তর জমা দিন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
         Primary("আবার অনুশীলন করুন") { nav.navigate("quiz-setup") }
         OutlinedButton(onClick = { nav.navigate("revision") }, modifier = Modifier.fillMaxWidth()) { Text("রিভিশন ডেক খুলুন") }
     }
