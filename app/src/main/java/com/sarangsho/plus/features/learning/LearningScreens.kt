@@ -52,7 +52,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
                 if (bookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
                 contentDescription = null
             )
-            Text(if (bookmarked) "  এই সেশনে সংরক্ষিত" else "  সাময়িকভাবে সংরক্ষণ করুন")
+            Text(if (bookmarked) "  বুকমার্ক করা হয়েছে" else "  বুকমার্ক করুন")
         }
         Text(
             if (bookmarked) "শব্দটি এই ডিভাইসে সংরক্ষিত। অ্যাকাউন্ট-ভিত্তিক সিঙ্ক এখনো নেই।"
@@ -245,7 +245,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
             }
             Text(done.size.toString() + " / " + tasks.size + " সম্পন্ন", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        Text("ডেমো পরিকল্পনা: অগ্রগতি এই স্ক্রিনে থাকে, স্থায়ীভাবে সংরক্ষিত হয় না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        Text("কাজের অগ্রগতি এই ডিভাইসে সংরক্ষিত থাকে। প্রতিদিনের স্বয়ংক্রিয় রিসেট ও অ্যাকাউন্ট সিঙ্ক এখনো নেই।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
     }
 }
 
