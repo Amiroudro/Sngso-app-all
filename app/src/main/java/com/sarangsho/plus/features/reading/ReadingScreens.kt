@@ -20,6 +20,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
+import com.sarangsho.plus.data.LocalLearningStore
 import androidx.navigation.compose.rememberNavController
 import com.sarangsho.plus.ui.theme.SarangshoTheme
 import androidx.navigation.NavHostController
@@ -223,10 +225,45 @@ internal fun Summary(nav: NavHostController) {
 }
 
 @Composable internal fun Saved(nav: NavHostController) {
+    val context = LocalContext.current
+    val bookmarkedWords = remember {
+        mutableStateListOf<String>().apply {
+            addAll(LocalLearningStore.getBookmarkedWords(context).sorted())
+        }
+    }
     Scroll {
-        Intro("আপনার সংরক্ষিত বিষয়", "পরে পড়ার জন্য রাখা সংবাদ, শব্দ ও রিভিশন কার্ড।")
-        Panel { Icon(Icons.Default.Bookmarks, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(30.dp)); Text("এখনো কিছু সংরক্ষণ করা হয়নি", fontWeight = FontWeight.Bold, fontSize = 18.sp); Text("সংরক্ষণ সুবিধা ও স্থানীয় লাইব্রেরি এখনো সংযুক্ত হয়নি। চালু হলে সংবাদ, শব্দ ও প্রশ্ন এখানে পাওয়া যাবে।", color = MaterialTheme.colorScheme.onSurfaceVariant); Primary("সংবাদ দেখুন") { nav.navigate("feed") } }
+        Intro("আপনার সংরক্ষিত বিষয়", "আপনার বুকমার্ক করা শব্দ এই ডিভাইসেই সংরক্ষিত থাকে।")
+        if (bookmarkedWords.isEmpty()) {
+            Panel {
+                Icon(Icons.Default.Bookmarks, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(30.dp))
+                Text("এখনো কোনো শব্দ বুকমার্ক করা হয়নি", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text("Vocabulary Lab-এ গিয়ে কোনো শব্দ বুকমার্ক করলে সেটি এখানে দেখা যাবে। সংবাদ ও রিভিশন কার্ড সংরক্ষণ এখনো চালু হয়নি।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Primary("Vocabulary Lab খুলুন") { nav.navigate("vocabulary") }
+            }
+        } else {
+            Text("সংরক্ষিত শব্দ • ${bookmarkedWords.size}", fontWeight = FontWeight.Bold, fontSize = 17.sp)
+            bookmarkedWords.toList().forEach { word ->
+                Row(
+                    Modifier.fillMaxWidth().padding(vertical = 5.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        Modifier.weight(1f).clickable { nav.navigate("word-detail") }.padding(vertical = 9.dp)
+                    ) {
+                        Text(word, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+                        Text("Vocabulary Lab • এই ডিভাইসে সংরক্ষিত", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                    }
+                    TextButton(onClick = {
+                        LocalLearningStore.setWordBookmarked(context, word, false)
+                        bookmarkedWords.remove(word)
+                    }) { Text("সরান") }
+                }
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            }
+        }
+        RowLink("Vocabulary Lab", "আরও শব্দ শিখুন ও বুকমার্ক করুন", Icons.Default.Translate) { nav.navigate("vocabulary") }
         RowLink("সংরক্ষিত সংগ্রহ", "ফোল্ডার ও বিষয়ভিত্তিক তালিকা", Icons.Default.Folder) { nav.navigate("saved-collections") }
+        Text("বর্তমানে শুধু Vocabulary Lab-এর বুকমার্ক এই তালিকায় আসে। অ্যাকাউন্ট বা অন্য ডিভাইসে সিঙ্ক হয় না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
     }
 }
 
