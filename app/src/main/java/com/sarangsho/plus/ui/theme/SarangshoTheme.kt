@@ -20,6 +20,8 @@ object SarangshoPalette {
     val Green = Color(0xFF287A59)
     val Error = Color(0xFFB3261E)
 
+    val DarkPrimary = Color(0xFF8ECAC3)
+    val DarkGold = Color(0xFFE5BD77)
     val DarkPaper = Color(0xFF11191C)
     val DarkSurface = Color(0xFF1A2529)
     val DarkInk = Color(0xFFE9EFED)
@@ -35,10 +37,10 @@ fun SarangshoTheme(
 ) {
     val colors = if (darkTheme) {
         darkColorScheme(
-            primary = SarangshoPalette.Teal,
-            onPrimary = Color.White,
-            secondary = SarangshoPalette.Gold,
-            onSecondary = SarangshoPalette.Ink,
+            primary = SarangshoPalette.DarkPrimary,
+            onPrimary = SarangshoPalette.DarkPaper,
+            secondary = SarangshoPalette.DarkGold,
+            onSecondary = SarangshoPalette.DarkPaper,
             background = SarangshoPalette.DarkPaper,
             onBackground = SarangshoPalette.DarkInk,
             surface = SarangshoPalette.DarkSurface,
