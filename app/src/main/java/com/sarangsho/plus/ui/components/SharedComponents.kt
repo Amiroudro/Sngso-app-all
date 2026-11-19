@@ -49,22 +49,32 @@ internal fun Scroll(content: @Composable ColumnScope.() -> Unit) {
 }
 
 @Composable internal fun RowLink(title: String, detail: String, icon: androidx.compose.ui.graphics.vector.ImageVector, action: () -> Unit) {
-    Panel {
-        Row(Modifier.clickable(role = Role.Button, onClick = action), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Surface(color = SarangshoPalette.Soft, shape = RoundedCornerShape(10.dp)) { Icon(icon, null, tint = SarangshoPalette.Teal, modifier = Modifier.padding(10.dp).size(22.dp)) }
-            Column(Modifier.weight(1f)) { Text(title, fontWeight = FontWeight.SemiBold); Text(detail, color = SarangshoPalette.Muted, fontSize = 12.sp) }
-            Icon(Icons.Default.ChevronRight, null, tint = SarangshoPalette.Muted)
+    Column(Modifier.fillMaxWidth()) {
+        Row(
+            Modifier.fillMaxWidth().heightIn(min = 60.dp)
+                .clickable(role = Role.Button, onClick = action)
+                .padding(vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp)
+        ) {
+            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(22.dp))
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Text(title, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
+                Text(detail, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+            }
+            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
         }
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
     }
 }
-
 @Composable internal fun Story(title: String, category: String, detail: String, nav: NavHostController) {
-    Panel {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Kicker(category); Text("নমুনা", color = SarangshoPalette.Gold, fontSize = 10.sp) }
-        Text(title, fontSize = 18.sp, lineHeight = 27.sp, fontWeight = FontWeight.Bold)
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(detail, color = SarangshoPalette.Muted, fontSize = 11.sp, modifier = Modifier.weight(1f))
-            Text("পড়ুন →", color = SarangshoPalette.Teal, fontWeight = FontWeight.Bold, modifier = Modifier.clickable(role = Role.Button) { nav.navigate("article") })
+    Column(Modifier.fillMaxWidth().clickable(role = Role.Button) { nav.navigate("article") }.padding(vertical = 14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text(category, color = MaterialTheme.colorScheme.primary, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+            Text(detail, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
         }
+        Text(title, fontSize = 19.sp, lineHeight = 27.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+        Text("বিস্তারিত পড়ুন  ›", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
     }
+    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 }
