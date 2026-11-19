@@ -21,6 +21,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.sarangsho.plus.data.LocalLearningStore
 import androidx.navigation.compose.rememberNavController
 import com.sarangsho.plus.ui.theme.SarangshoTheme
@@ -226,10 +229,21 @@ internal fun Summary(nav: NavHostController) {
 
 @Composable internal fun Saved(nav: NavHostController) {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val bookmarkedWords = remember {
         mutableStateListOf<String>().apply {
             addAll(LocalLearningStore.getBookmarkedWords(context).sorted())
         }
+    }
+    DisposableEffect(lifecycleOwner, context) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                bookmarkedWords.clear()
+                bookmarkedWords.addAll(LocalLearningStore.getBookmarkedWords(context).sorted())
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
     Scroll {
         Intro("আপনার সংরক্ষিত বিষয়", "আপনার বুকমার্ক করা শব্দ এই ডিভাইসেই সংরক্ষিত থাকে।")
@@ -247,9 +261,7 @@ internal fun Summary(nav: NavHostController) {
                     Modifier.fillMaxWidth().padding(vertical = 5.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(
-                        Modifier.weight(1f).clickable { nav.navigate("word-detail") }.padding(vertical = 9.dp)
-                    ) {
+                    Column(Modifier.weight(1f).padding(vertical = 9.dp)) {
                         Text(word, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
                         Text("Vocabulary Lab • এই ডিভাইসে সংরক্ষিত", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
                     }
