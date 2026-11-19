@@ -48,7 +48,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
         }
         Surface(color = if (sepia) SarangshoPalette.Paper else MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(12.dp), border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline), modifier = Modifier.fillMaxWidth()) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("নমুনা পাঠ", fontSize = fontSize.sp, lineHeight = (fontSize * lineSpacing).sp, color = SarangshoPalette.Ink)
+                Text("নমুনা পাঠ", fontSize = fontSize.sp, lineHeight = (fontSize * lineSpacing).sp, color = if (sepia) SarangshoPalette.Ink else MaterialTheme.colorScheme.onSurface)
                 Text("বাংলা ও ইংরেজি একসঙ্গে পড়ার সময় অক্ষরের গঠন এবং লাইনের ফাঁক যেন পরিষ্কার থাকে।", fontSize = fontSize.sp, lineHeight = (fontSize * lineSpacing).sp, color = SarangshoPalette.Ink)
             }
         }
