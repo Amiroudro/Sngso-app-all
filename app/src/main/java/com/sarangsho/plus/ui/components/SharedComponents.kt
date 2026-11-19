@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -49,7 +50,7 @@ internal fun Scroll(content: @Composable ColumnScope.() -> Unit) {
 
 @Composable internal fun RowLink(title: String, detail: String, icon: androidx.compose.ui.graphics.vector.ImageVector, action: () -> Unit) {
     Panel {
-        Row(Modifier.clickable(onClick = action), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(Modifier.clickable(role = Role.Button, onClick = action), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Surface(color = SarangshoPalette.Soft, shape = RoundedCornerShape(10.dp)) { Icon(icon, null, tint = SarangshoPalette.Teal, modifier = Modifier.padding(10.dp).size(22.dp)) }
             Column(Modifier.weight(1f)) { Text(title, fontWeight = FontWeight.SemiBold); Text(detail, color = SarangshoPalette.Muted, fontSize = 12.sp) }
             Icon(Icons.Default.ChevronRight, null, tint = SarangshoPalette.Muted)
@@ -63,7 +64,7 @@ internal fun Scroll(content: @Composable ColumnScope.() -> Unit) {
         Text(title, fontSize = 18.sp, lineHeight = 27.sp, fontWeight = FontWeight.Bold)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(detail, color = SarangshoPalette.Muted, fontSize = 11.sp, modifier = Modifier.weight(1f))
-            Text("পড়ুন →", color = SarangshoPalette.Teal, fontWeight = FontWeight.Bold, modifier = Modifier.clickable { nav.navigate("article") })
+            Text("পড়ুন →", color = SarangshoPalette.Teal, fontWeight = FontWeight.Bold, modifier = Modifier.clickable(role = Role.Button) { nav.navigate("article") })
         }
     }
 }
