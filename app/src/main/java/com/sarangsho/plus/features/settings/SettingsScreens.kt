@@ -88,3 +88,57 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
         Text("মতামত পাঠানোর সার্ভিস এখনো সংযুক্ত নয়; এই খসড়া কোথাও পাঠানো হবে না।", color = SarangshoPalette.Muted, fontSize = 12.sp)
     }
 }
+
+
+@Composable internal fun Privacy() {
+    Scroll {
+        Intro("গোপনীয়তা ও ডেটা", "আপনার পড়ার তথ্য কীভাবে ব্যবহৃত হবে, তা পরিষ্কারভাবে দেখুন।")
+        Panel { Text("বর্তমান অবস্থা", fontWeight = FontWeight.Bold); Text("এই প্রোটোটাইপে কোনো অ্যাকাউন্ট, ক্লাউড প্রোফাইল বা আচরণগত বিশ্লেষণ সংযুক্ত নেই।", color = SarangshoPalette.Muted) }
+        Panel { Text("ডেটা নিয়ন্ত্রণ", fontWeight = FontWeight.SemiBold); Text("অ্যাকাউন্ট ও সিঙ্ক চালু হলে ডেটা রপ্তানি, মুছে ফেলা এবং অনুমতি নিয়ন্ত্রণের অপশন এখানে যুক্ত হবে।") }
+    }
+}
+
+@Composable internal fun LanguageSettings() {
+    var language by remember { mutableStateOf("বাংলা") }
+    Scroll {
+        Intro("অ্যাপের ভাষা", "প্রধান ব্যাখ্যার ভাষা বেছে নিন। ইংরেজি পরিভাষা প্রয়োজন অনুযায়ী পাশে থাকবে।")
+        listOf("বাংলা", "English", "বাংলা + English").forEach {
+            Row(Modifier.fillMaxWidth().clickable { language = it }.padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                RadioButton(selected = language == it, onClick = { language = it }); Text(it)
+            }
+        }
+        Text("নির্বাচন: " + language + " • এই পছন্দ এখনো স্থায়ীভাবে সংরক্ষিত নয়।", color = SarangshoPalette.Muted, fontSize = 12.sp)
+    }
+}
+
+@Composable internal fun SignUp(nav: NavHostController) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    Scroll {
+        Intro("নতুন অ্যাকাউন্ট", "আপনার পড়ার অগ্রগতি একাধিক ডিভাইসে রাখতে অ্যাকাউন্ট তৈরি করুন।")
+        OutlinedTextField(email, { email = it }, Modifier.fillMaxWidth(), label = { Text("ইমেইল") }, singleLine = true)
+        OutlinedTextField(password, { password = it }, Modifier.fillMaxWidth(), label = { Text("পাসওয়ার্ড") }, visualTransformation = PasswordVisualTransformation(), singleLine = true)
+        Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text("অ্যাকাউন্ট তৈরি শিগগিরই চালু হবে") }
+        Text("নিরাপদ authentication ও account storage এখনো সংযুক্ত নয়।", color = SarangshoPalette.Muted, fontSize = 12.sp)
+        Text("সাইন ইন পেজে ফিরুন", Modifier.clickable { nav.navigate("signin") }, color = SarangshoPalette.Teal)
+    }
+}
+
+@Composable internal fun PasswordReset() {
+    var email by remember { mutableStateOf("") }
+    Scroll {
+        Intro("পাসওয়ার্ড পুনরুদ্ধার", "অ্যাকাউন্ট যাচাই ও ইমেইল পাঠানোর ব্যবস্থা সংযুক্ত হলে এখানে চালু হবে।")
+        OutlinedTextField(email, { email = it }, Modifier.fillMaxWidth(), label = { Text("অ্যাকাউন্টের ইমেইল") }, singleLine = true)
+        Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text("পুনরুদ্ধার লিংক পাঠানো শিগগিরই চালু হবে") }
+    }
+}
+
+@Composable internal fun ReportStory() {
+    var details by remember { mutableStateOf("") }
+    Scroll {
+        Intro("তথ্য সংশোধনের অনুরোধ", "ভুল তারিখ, সংখ্যা, উদ্ধৃতি বা প্রসঙ্গ চোখে পড়লে নির্দিষ্ট করে জানান।")
+        OutlinedTextField(details, { details = it }, Modifier.fillMaxWidth().height(180.dp), label = { Text("কী ভুল হয়েছে?") }, placeholder = { Text("দাবি, সংশোধনের প্রস্তাব এবং প্রাসঙ্গিক উৎসের লিংক লিখুন।") })
+        Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text("অনুরোধ পাঠানো শিগগিরই চালু হবে") }
+        Text("রিপোর্টিং সার্ভিস সংযুক্ত না হওয়া পর্যন্ত এই খসড়া পাঠানো হবে না।", color = SarangshoPalette.Muted, fontSize = 12.sp)
+    }
+}
