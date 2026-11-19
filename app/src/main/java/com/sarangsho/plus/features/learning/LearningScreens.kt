@@ -160,8 +160,8 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("BCS", "Bank", "Mixed").forEach { FilterChip(selected = exam == it, onClick = { exam = it }, label = { Text(it) }) } }
         Text("সময়", fontWeight = FontWeight.SemiBold)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("৫ মিনিট", "১৫ মিনিট", "৩০ মিনিট").forEach { FilterChip(selected = duration == it, onClick = { duration = it }, label = { Text(it) }) } }
-        Panel { Text("আপনার নির্বাচন", fontWeight = FontWeight.Bold); Text(exam + " • " + duration); Text("প্রশ্নের সংখ্যা ও বিষয়বস্তু প্রকৃত প্রশ্নব্যাংক যুক্ত হলে নির্ধারিত হবে।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
-        Primary("অনুশীলন শুরু করুন") { nav.navigate("challenge") }
+        Panel { Text("আপনার নির্বাচন", fontWeight = FontWeight.Bold); Text(exam + " • " + duration); Text("এখনকার ডেমোতে পরীক্ষা ও সময়ের নির্বাচন অনুশীলনে প্রয়োগ হয় না। একটি নির্দিষ্ট নমুনা প্রশ্ন দেখানো হবে।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        Primary("নমুনা প্রশ্ন দেখুন") { nav.navigate("challenge") }
     }
 }
 
