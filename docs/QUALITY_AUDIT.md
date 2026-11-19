@@ -53,6 +53,7 @@
 - Primary navigation is limited to five destinations.
 - Unsupported actions are disabled with explanatory copy rather than appearing functional.
 - No live story count, source comparison, score, progress metric or download state is fabricated.
+
 ## Navigation source check (2026-11-19)
 
 A source-level scan of the current branch found:
