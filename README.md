@@ -8,7 +8,7 @@ This repository contains the Android client. The editorial engine lives separate
 
 Sarangsho Plus helps readers move from a verified news event to understanding, context, and exam practice.
 
-The current Compose prototype contains 37 navigation destinations across:
+The current Compose prototype contains 47 navigation destinations across:
 - First-run goals and topic interests
 - Home briefing, feed, archive, edition and article reading
 - Three-depth summaries, timelines, publication perspectives, sources
