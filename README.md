@@ -1,6 +1,6 @@
-# Sarangsho Plus — Android Client
+# Sarangsho Plus Android
 
-A Bengali-first editorial intelligence and exam-preparation app for Bangladesh.
+A Bangla-first editorial intelligence and exam-preparation app for Bangladesh.
 
 This repository contains the Android client. The editorial engine lives separately in [Amiroudro/new-sngso](https://github.com/Amiroudro/new-sngso). The client consumes versioned, validated edition artifacts; it does not scrape publishers or generate editorial claims itself.
 
@@ -8,60 +8,53 @@ This repository contains the Android client. The editorial engine lives separate
 
 Sarangsho Plus helps readers move from a verified news event to understanding, context, and exam practice.
 
-### Core destinations
+The current Compose prototype contains 37 navigation destinations across:
+- First-run goals and topic interests
+- Home briefing, feed, archive, edition and article reading
+- Three-depth summaries, timelines, publication perspectives, sources
+- Bangladesh and world affairs, topic detail, knowledge graph and data explorer
+- Vocabulary, practice setup, question session, answer feedback and result shell
+- Written practice, revision deck and study planning
+- Search, saved items, notifications and profile
+- Reading preferences, downloads, settings, help, about and feedback
 
-1. Home briefing
-2. News feed and topic filters
-3. Article reader
-4. Three-level summary (30 seconds / 2 minutes / detailed)
-5. Story timeline
-6. Newspaper perspectives (only when eligible source records exist)
-7. Bangladesh affairs
-8. World affairs explorer
-9. Knowledge graph
-10. Data and fact explorer
-11. Vocabulary lab
-12. BCS and Bank challenge
-13. Answer explanation
-14. Written practice
-15. Revision deck
-16. Search
-17. Saved items
-18. Notifications
-19. Learning analytics
-20. Profile and settings
-
-Each destination must also handle loading, empty, offline, stale-data, error, and content-unavailable states where relevant.
+This is an expanding screen inventory, not a required count. A route is added only when it represents a distinct user task or a necessary state. Related content should remain in a focused detail section when that is clearer than another page.
 
 ## Technical direction
 
 - Kotlin + Jetpack Compose
-- Material 3 components, with a custom editorial design system
-- Navigation Compose
-- Coroutines and Flow
-- Room for local saved items and learning progress
-- DataStore for preferences
-- Retrofit/OkHttp only when a versioned API is introduced
-- Offline-first reading of downloaded edition artifacts
-- No paid service required for the first client milestone
+- Material 3 and Navigation Compose
+- Kotlin 2.0.21, Android Gradle Plugin 8.7.3, Gradle 8.9, JDK 17
+- Semantic light/dark theme tokens in SarangshoTheme.kt
+- Unit and Compose instrumentation test dependencies
+- GitHub Actions build, unit-test and emulator smoke-test workflow
+
+Open the project in Android Studio, allow Gradle sync and run the app configuration on a device or emulator. The current repository does not yet include a committed Gradle Wrapper; CI uses Gradle 8.9 directly.
 
 ## Design principles
 
 - Bengali-first typography with explicit font fallback and tested line height.
 - A restrained ink / warm-paper / deep-teal palette; no generic gradient-heavy dashboard.
-- Strong editorial hierarchy: headlines, metadata, evidence, context, and learning actions must be visually distinct.
-- Reading surfaces should prioritize line length, contrast, spacing, and adjustable text size.
-- Charts must show units, periods, source, and whether values are preliminary or revised.
-- Never display invented progress, source comparisons, ratings, or learning analytics.
-- Every interactive control must have a real action and visible feedback.
-- Respect system font scaling, reduced motion, TalkBack semantics, and touch target sizes.
+- Strong editorial hierarchy: headlines, metadata, evidence, context and learning actions remain distinct.
+- Reading surfaces prioritize line length, contrast, spacing and adjustable text size.
+- Charts show units, periods, source and whether values are preliminary or revised.
+- Never display invented progress, source comparisons, ratings or learning analytics.
+- Every interactive control must work or be visibly disabled with a clear reason.
+- Respect system font scaling, reduced motion, TalkBack semantics and 48dp touch targets.
 
-## Repository status
+## Product and UX documentation
 
-The repository was empty when initialized. The first implementation milestone is the design system, navigation shell, and screen inventory. Build and device verification must be recorded separately; source code being committed is not proof that an Android build has passed.
+- [Product brief](PRODUCT.md)
+- [Design system](DESIGN.md)
+- [Screen architecture](docs/SCREEN_ARCHITECTURE.md)
+- [UX state contract](docs/UX_STATES.md)
 
-## Related project
+## Current limitations
+
+The UI is still a prototype. Authentication, persistence, engine/API integration, downloads, push notifications, real source comparisons, interactive knowledge graph data and learning analytics are not connected. Sample content is labelled as sample. Build status must be taken from GitHub Actions, not inferred from committed source.
+
+## Related projects and guidance
 
 - Editorial engine: [Amiroudro/new-sngso](https://github.com/Amiroudro/new-sngso)
-- UI/UX guidance: [UI UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)
-- Design critique and quality guidance: [Impeccable](https://github.com/pbakaus/impeccable)
+- [UI UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)
+- [Impeccable](https://github.com/pbakaus/impeccable)
