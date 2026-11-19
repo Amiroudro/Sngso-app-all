@@ -50,7 +50,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
         Panel {
             Text("বাংলাদেশের সংবিধান কবে গণপরিষদে গৃহীত হয়?", fontSize = 19.sp, fontWeight = FontWeight.Bold, lineHeight = 28.sp)
             listOf("৪ নভেম্বর ১৯৭২", "১৬ ডিসেম্বর ১৯৭২", "২৬ মার্চ ১৯৭১", "১০ জানুয়ারি ১৯৭২").forEachIndexed { i, option ->
-                Surface(color = if (selected == i) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(10.dp), border = BorderStroke(1.dp, if (selected == i) MaterialTheme.colorScheme.primary else SarangshoPalette.Line), modifier = Modifier.fillMaxWidth().clickable { selected = i }) {
+                Surface(color = if (selected == i) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(10.dp), border = BorderStroke(1.dp, if (selected == i) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant), modifier = Modifier.fillMaxWidth().clickable { selected = i }) {
                     Row(Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) { RadioButton(selected == i, { selected = i }); Text("Option " + (i + 1) + "  " + option) }
                 }
             }
@@ -89,7 +89,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
     var flipped by rememberSaveable { mutableStateOf(false) }
     Scroll {
         Intro("রিভিশন ডেক", "সক্রিয় স্মরণ দিয়ে শেখা বিষয় মনে রাখুন।")
-        LinearProgressIndicator(progress = { 0.35f }, modifier = Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.primary, trackColor = SarangshoPalette.Line)
+        LinearProgressIndicator(progress = { 0.35f }, modifier = Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.primary, trackColor = MaterialTheme.colorScheme.outlineVariant)
         Text("কার্ড ৭ / ২০ • নমুনা সেশন", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
         Panel {
             Text(if (flipped) "উত্তর" else "প্রশ্ন", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
