@@ -319,3 +319,33 @@ internal fun Summary(nav: NavHostController) {
         Text("স্বাধীনভাবে যাচাই না করা পর্যন্ত কোনো সংবাদ, সংখ্যা বা উৎসকে লাইভ বলে উপস্থাপন করা হবে না।", color = SarangshoPalette.Muted)
     }
 }
+
+
+@Composable internal fun ReadingHistory() {
+    Scroll {
+        Intro("পড়ার ইতিহাস", "সম্প্রতি খোলা পাঠে ফিরে যান।")
+        Panel { Text("এখনো কোনো পড়ার ইতিহাস নেই", fontWeight = FontWeight.Bold); Text("পড়া শুরু করলে আপনার সাম্প্রতিক পাঠ এখানে দেখা যাবে। এই প্রোটোটাইপে ইতিহাস সংরক্ষণ চালু হয়নি।", color = SarangshoPalette.Muted) }
+    }
+}
+
+@Composable internal fun SavedCollections() {
+    Scroll {
+        Intro("সংরক্ষিত সংগ্রহ", "সংবাদ, শব্দ ও প্রশ্ন নিজের মতো গুছিয়ে রাখুন।")
+        Panel { Text("কোনো সংগ্রহ তৈরি হয়নি", fontWeight = FontWeight.Bold); Text("সংগ্রহ ও ফোল্ডার তৈরি করার সুবিধা স্থানীয় ডেটাবেস যুক্ত হলে চালু হবে।", color = SarangshoPalette.Muted) }
+    }
+}
+
+@Composable internal fun SourceDetail() {
+    Scroll {
+        Intro("উৎসের পরিচিতি", "প্রকাশক ও মূল নথির নির্ভরযোগ্যতা যাচাইয়ের তথ্য।")
+        Panel { Text("উৎসের রেকর্ড অপেক্ষমাণ", fontWeight = FontWeight.Bold); Text("প্রকাশকের নাম, মূল URL, প্রকাশকাল, প্রবেশযোগ্যতা, ব্যবহারের অনুমতি এবং সংশ্লিষ্ট দাবির তালিকা প্রকৃত উৎস-রেকর্ড থেকে আসবে।", color = SarangshoPalette.Muted) }
+    }
+}
+
+@Composable internal fun IndicatorDetail() {
+    Scroll {
+        Intro("সূচকের বিস্তারিত", "সংখ্যা বোঝার আগে সংজ্ঞা, একক ও সময়কাল যাচাই করুন।")
+        Panel { Text("ডেটা সংযুক্ত নয়", fontWeight = FontWeight.Bold); Text("সূচকের মান, সময়সীমা, একক, পদ্ধতি, সংশোধনের ইতিহাস এবং মূল প্রকাশনা যুক্ত হলে এখানে দেখানো হবে।", color = SarangshoPalette.Muted) }
+        Text("কোনো চার্ট বা মান দেখানো হচ্ছে না, কারণ যাচাইকৃত ডেটা এখনো সংযুক্ত নয়।", color = SarangshoPalette.Muted)
+    }
+}
