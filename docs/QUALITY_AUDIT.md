@@ -10,18 +10,19 @@
 - Semantic light and dark color schemes are centralized.
 - Search and category filters work against explicitly labelled local sample stories.
 - Compose instrumentation tests cover the onboarding path and basic local learning-store add/read/remove behavior. These tests have been authored but have not yet run successfully in CI.
+- The routine pull-request workflow is configured to compile and package the instrumentation test APK using `:app:assembleDebugAndroidTest`. This checks that test sources compile; it does not execute the instrumentation tests.
+- Emulator instrumentation is gated to the PR's ready-for-review event after the routine build job succeeds, with manual dispatch retained for use after the workflow reaches the default branch.
 - Vocabulary Lab has a searchable five-entry sample word list with per-word bookmark controls; bookmarks and the fixed study-plan checklist are stored locally with Android SharedPreferences. The Saved screen lists/removes bookmarked words and refreshes when returning to either screen. This is device-only and does not sync.
 - Vocabulary definitions and examples are prototype learning content; dictionary/source references and a maintained exam vocabulary feed are not connected.
 - Authentication, saved articles, downloads, feedback submission and user analytics are not represented as working services.
 - Empty and unavailable states explain when their data/service is not connected.
 - Sample stories and sample vocabulary are labelled as such.
-- Routine pull-request CI runs unit tests and debug APK assembly. Emulator instrumentation is gated to the PR's ready-for-review event after the build job succeeds, with manual dispatch retained for use after the workflow reaches the default branch.
 
 ## Release blockers
 
 | Priority | Finding | Required evidence to close |
 |---|---|---|
-| P0 | Android build and unit tests have not completed successfully yet | Green unit-test and debug-assembly workflow |
+| P0 | Android build and unit tests have not completed successfully yet | Green unit-test, instrumentation-test compilation and debug-assembly workflow |
 | P0 | No successful emulator instrumentation or real-device visual verification | Emulator workflow passes; screenshots from a small phone, large phone and tablet |
 | P1 | Gradle Wrapper files are now committed and CI uses them, but the wrapper has not yet completed a fresh build in this environment | Verify wrapper download, Gradle 8.9 startup, unit tests and APK assembly |
 | P1 | Editorial engine contract is not connected | Contract tests against approved edition fixtures |
@@ -36,8 +37,8 @@
 
 ## Next engineering sequence
 
-1. Get the routine Android unit/build workflow green and fix compiler/test failures before adding more UI.
-2. Mark the PR ready for review only when its normal build gate can run; the emulator job then runs only if that build succeeds.
+1. Get the routine Android unit/build and instrumentation-test compilation workflow green; fix compiler/test-source failures before adding more UI.
+2. Run the emulator instrumentation workflow only after the routine build succeeds.
 3. Replace string routes with typed destinations and add deep-link contracts.
 4. Introduce screen-level ViewModels and immutable UI state.
 5. Connect approved edition fixtures, then the real engine API.
