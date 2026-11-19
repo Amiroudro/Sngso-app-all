@@ -55,9 +55,9 @@ private fun SarangshoApp() {
     val entry by nav.currentBackStackEntryAsState()
     val route = entry?.destination?.route ?: "welcome"
     val title = pages.first { it.route == route }.title
-    MaterialTheme(colorScheme = lightColorScheme(primary = Teal, secondary = Gold, background = Paper, surface = Color.White, onSurface = Ink, onBackground = Ink, outline = Line)) {
+    SarangshoTheme {
         Scaffold(
-            containerColor = Paper,
+            containerColor = SarangshoPalette.Paper,
             topBar = {
                 if (route != "welcome") CenterAlignedTopAppBar(
                     title = { Text(title, fontSize = 17.sp, fontWeight = FontWeight.SemiBold) },
@@ -67,7 +67,7 @@ private fun SarangshoApp() {
                         }
                     },
                     actions = { IconButton(onClick = { nav.navigate("profile") }) { Icon(Icons.Default.AccountCircle, "Profile") } },
-                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Paper)
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = SarangshoPalette.Paper)
                 )
             },
             bottomBar = {
@@ -120,54 +120,54 @@ private fun Scroll(content: @Composable ColumnScope.() -> Unit) {
 }
 @Composable private fun Intro(title: String, body: String) {
     Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
-        Text(title, fontSize = 23.sp, fontWeight = FontWeight.Bold, color = Ink)
-        Text(body, fontSize = 14.sp, color = Muted, lineHeight = 22.sp)
+        Text(title, fontSize = 23.sp, fontWeight = FontWeight.Bold, color = SarangshoPalette.Ink)
+        Text(body, fontSize = 14.sp, color = SarangshoPalette.Muted, lineHeight = 22.sp)
     }
 }
-@Composable private fun Kicker(text: String) { Text(text.uppercase(), fontSize = 10.sp, color = Teal, fontWeight = FontWeight.Bold, letterSpacing = 1.sp) }
+@Composable private fun Kicker(text: String) { Text(text.uppercase(), fontSize = 10.sp, color = SarangshoPalette.Teal, fontWeight = FontWeight.Bold, letterSpacing = 1.sp) }
 @Composable private fun Panel(content: @Composable ColumnScope.() -> Unit) {
-    Surface(color = Color.White, shape = RoundedCornerShape(15.dp), border = BorderStroke(1.dp, Line), modifier = Modifier.fillMaxWidth()) {
+    Surface(color = Color.White, shape = RoundedCornerShape(15.dp), border = BorderStroke(1.dp, SarangshoPalette.Line), modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp), content = content)
     }
 }
 @Composable private fun Primary(text: String, action: () -> Unit) {
-    Button(action, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(10.dp), colors = ButtonDefaults.buttonColors(containerColor = Teal), contentPadding = PaddingValues(14.dp)) { Text(text, fontWeight = FontWeight.SemiBold) }
+    Button(action, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(10.dp), colors = ButtonDefaults.buttonColors(containerColor = SarangshoPalette.Teal), contentPadding = PaddingValues(14.dp)) { Text(text, fontWeight = FontWeight.SemiBold) }
 }
 @Composable private fun RowLink(title: String, detail: String, icon: androidx.compose.ui.graphics.vector.ImageVector, action: () -> Unit) {
     Panel {
         Row(Modifier.clickable(onClick = action), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Surface(color = Soft, shape = RoundedCornerShape(10.dp)) { Icon(icon, null, tint = Teal, modifier = Modifier.padding(10.dp).size(22.dp)) }
-            Column(Modifier.weight(1f)) { Text(title, fontWeight = FontWeight.SemiBold); Text(detail, color = Muted, fontSize = 12.sp) }
-            Icon(Icons.Default.ChevronRight, null, tint = Muted)
+            Surface(color = SarangshoPalette.Soft, shape = RoundedCornerShape(10.dp)) { Icon(icon, null, tint = SarangshoPalette.Teal, modifier = Modifier.padding(10.dp).size(22.dp)) }
+            Column(Modifier.weight(1f)) { Text(title, fontWeight = FontWeight.SemiBold); Text(detail, color = SarangshoPalette.Muted, fontSize = 12.sp) }
+            Icon(Icons.Default.ChevronRight, null, tint = SarangshoPalette.Muted)
         }
     }
 }
 @Composable private fun Story(title: String, category: String, detail: String, nav: NavHostController) {
     Panel {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Kicker(category); Text("নমুনা", color = Gold, fontSize = 10.sp) }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Kicker(category); Text("নমুনা", color = SarangshoPalette.Gold, fontSize = 10.sp) }
         Text(title, fontSize = 18.sp, lineHeight = 27.sp, fontWeight = FontWeight.Bold)
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(detail, color = Muted, fontSize = 11.sp, modifier = Modifier.weight(1f))
-            Text("পড়ুন →", color = Teal, fontWeight = FontWeight.Bold, modifier = Modifier.clickable { nav.navigate("article") })
+            Text(detail, color = SarangshoPalette.Muted, fontSize = 11.sp, modifier = Modifier.weight(1f))
+            Text("পড়ুন →", color = SarangshoPalette.Teal, fontWeight = FontWeight.Bold, modifier = Modifier.clickable { nav.navigate("article") })
         }
     }
 }
 
 @Composable private fun Welcome(nav: NavHostController) {
-    Column(Modifier.fillMaxSize().background(Paper).padding(25.dp), verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(Modifier.fillMaxSize().background(SarangshoPalette.Paper).padding(25.dp), verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(Modifier.height(8.dp))
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(18.dp)) {
-            Surface(color = Deep, shape = RoundedCornerShape(26.dp), modifier = Modifier.size(104.dp)) {
+            Surface(color = SarangshoPalette.Deep, shape = RoundedCornerShape(26.dp), modifier = Modifier.size(104.dp)) {
                 Box(contentAlignment = Alignment.Center) { Icon(Icons.Default.MenuBook, null, tint = Color.White, modifier = Modifier.size(52.dp)) }
             }
-            Text("Sarangsho+", fontSize = 32.sp, color = Deep, fontWeight = FontWeight.Bold)
+            Text("Sarangsho+", fontSize = 32.sp, color = SarangshoPalette.Deep, fontWeight = FontWeight.Bold)
             Text("সঠিক তথ্য। গভীর উপলব্ধি। প্রস্তুতিতে এগিয়ে যান।", fontWeight = FontWeight.SemiBold, fontSize = 17.sp)
-            Text("বাংলাদেশ ও বিশ্বের গুরুত্বপূর্ণ ঘটনা বুঝুন, প্রেক্ষাপট জানুন এবং BCS ও Bank পরীক্ষার জন্য শিখুন।", color = Muted, lineHeight = 25.sp)
+            Text("বাংলাদেশ ও বিশ্বের গুরুত্বপূর্ণ ঘটনা বুঝুন, প্রেক্ষাপট জানুন এবং BCS ও Bank পরীক্ষার জন্য শিখুন।", color = SarangshoPalette.Muted, lineHeight = 25.sp)
         }
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Primary("শুরু করুন") { nav.navigate("home") }
             OutlinedButton(onClick = { nav.navigate("signin") }, modifier = Modifier.fillMaxWidth()) { Text("সাইন ইন") }
-            Text("নমুনা সংস্করণ • অ্যাকাউন্ট ছাড়াও দেখা যাবে", color = Muted, fontSize = 11.sp)
+            Text("নমুনা সংস্করণ • অ্যাকাউন্ট ছাড়াও দেখা যাবে", color = SarangshoPalette.Muted, fontSize = 11.sp)
         }
     }
 }
@@ -178,7 +178,7 @@ private fun Scroll(content: @Composable ColumnScope.() -> Unit) {
         OutlinedTextField(email, { email = it }, Modifier.fillMaxWidth(), label = { Text("ইমেইল বা ফোন নম্বর") }, singleLine = true)
         OutlinedTextField(password, { password = it }, Modifier.fillMaxWidth(), label = { Text("পাসওয়ার্ড") }, visualTransformation = PasswordVisualTransformation(), singleLine = true)
         Primary("সাইন ইন") { nav.navigate("home") }
-        Text("ডেমো UI: প্রকৃত authentication এখনো সংযুক্ত নয়।", color = Muted, fontSize = 12.sp)
+        Text("ডেমো UI: প্রকৃত authentication এখনো সংযুক্ত নয়।", color = SarangshoPalette.Muted, fontSize = 12.sp)
         OutlinedButton(onClick = { nav.navigate("home") }, modifier = Modifier.fillMaxWidth()) { Text("অ্যাকাউন্ট ছাড়া চালিয়ে যান") }
     }
 }
@@ -186,9 +186,9 @@ private fun Scroll(content: @Composable ColumnScope.() -> Unit) {
     Scroll {
         Kicker("দৈনিক ব্রিফিং • নমুনা সংস্করণ")
         Panel {
-            Text("আজকের প্রস্তুতি", color = Teal, fontWeight = FontWeight.Bold)
+            Text("আজকের প্রস্তুতি", color = SarangshoPalette.Teal, fontWeight = FontWeight.Bold)
             Text("প্রতিদিন অল্প করে পড়ুন, নিয়মিত ফিরে দেখুন।", fontSize = 19.sp, fontWeight = FontWeight.Bold)
-            Text("৩টি বিষয় • ১৫ মিনিট", color = Muted)
+            Text("৩টি বিষয় • ১৫ মিনিট", color = SarangshoPalette.Muted)
             Primary("আজকের অনুশীলন শুরু করুন") { nav.navigate("challenge") }
         }
         Text("আজকের প্রধান বিষয়", fontSize = 19.sp, fontWeight = FontWeight.Bold)
@@ -199,7 +199,7 @@ private fun Scroll(content: @Composable ColumnScope.() -> Unit) {
         RowLink("ঘটনার টাইমলাইন", "তারিখ ও প্রেক্ষাপট আলাদা করে দেখুন", Icons.Default.Timeline) { nav.navigate("timeline") }
         RowLink("পত্রিকার দৃষ্টিভঙ্গি", "উপলভ্য ও অনুমোদিত উৎস তুলনা", Icons.Default.CompareArrows) { nav.navigate("perspectives") }
         RowLink("Vocabulary Lab", "শব্দ শিখুন, মনে রাখুন", Icons.Default.Translate) { nav.navigate("vocabulary") }
-        Text("খবর ও অগ্রগতির সব তথ্য এই পর্যায়ে UI নমুনা; লাইভ ইঞ্জিন ডেটা নয়।", color = Muted, fontSize = 11.sp)
+        Text("খবর ও অগ্রগতির সব তথ্য এই পর্যায়ে UI নমুনা; লাইভ ইঞ্জিন ডেটা নয়।", color = SarangshoPalette.Muted, fontSize = 11.sp)
     }
 }
 @Composable private fun Feed(nav: NavHostController) {
@@ -219,7 +219,7 @@ private fun Scroll(content: @Composable ColumnScope.() -> Unit) {
     Scroll {
         Kicker("আন্তর্জাতিক আইন • নমুনা নিবন্ধ")
         Text("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন", fontSize = 25.sp, fontWeight = FontWeight.Bold, lineHeight = 34.sp)
-        Text("প্রকাশকাল ও হালনাগাদ সময়: উৎস-ডেটা সংযুক্ত হলে এখানে দেখানো হবে", color = Muted, fontSize = 12.sp)
+        Text("প্রকাশকাল ও হালনাগাদ সময়: উৎস-ডেটা সংযুক্ত হলে এখানে দেখানো হবে", color = SarangshoPalette.Muted, fontSize = 12.sp)
         Panel { Text("যাচাইয়ের অবস্থা", fontWeight = FontWeight.Bold); Text("প্রকৃত সংস্করণে প্রতিটি গুরুত্বপূর্ণ দাবির পাশে উৎস, তারিখ এবং যাচাইয়ের অবস্থা থাকবে।"); AssistChip(onClick = {}, label = { Text("প্রাথমিক উৎস") }) }
         RowLink("তিন-স্তরের সারাংশ", "দ্রুত ধারণা থেকে বিস্তারিত ব্যাখ্যা", Icons.Default.Subject) { nav.navigate("summary") }
         RowLink("ঘটনার টাইমলাইন", "তারিখ অনুযায়ী ঘটনাপ্রবাহ", Icons.Default.Timeline) { nav.navigate("timeline") }
@@ -236,7 +236,7 @@ private fun Summary(nav: NavHostController) {
     Scroll {
         Intro("একই ঘটনা, তিনভাবে বুঝুন", "আপনার হাতে যত সময় আছে, সেই অনুযায়ী পড়ুন।")
         SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) { labels.forEachIndexed { i, label -> SegmentedButton(level == i, { level = i }, SegmentedButtonDefaults.itemShape(i, labels.size)) { Text(label, fontSize = 11.sp) } } }
-        Panel { Kicker(labels[level]); Text(texts[level], fontSize = 16.sp, lineHeight = 28.sp); Text("নমুনা লেখা • যাচাইকৃত সংবাদ সারাংশ নয়", color = Muted, fontSize = 11.sp) }
+        Panel { Kicker(labels[level]); Text(texts[level], fontSize = 16.sp, lineHeight = 28.sp); Text("নমুনা লেখা • যাচাইকৃত সংবাদ সারাংশ নয়", color = SarangshoPalette.Muted, fontSize = 11.sp) }
         RowLink("টাইমলাইন", "ঘটনার পূর্বাপর", Icons.Default.Timeline) { nav.navigate("timeline") }
     }
 }
@@ -246,16 +246,16 @@ private fun Summary(nav: NavHostController) {
         Intro("ঘটনার ধারাবাহিকতা", "ঘটনার তারিখ, প্রকাশের তারিখ এবং পরবর্তী আপডেট আলাদা করে দেখানো হবে।")
         Panel { Text("টাইমলাইন নীতি", fontWeight = FontWeight.Bold); Text("শুধু যাচাইকৃত তারিখ ও ঘটনার সম্পর্ক দেখানো হবে। অনুমানকে নিশ্চিত ঘটনা হিসেবে দেখানো হবে না।") }
         events.forEachIndexed { i, event -> Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Surface(color = Teal, shape = RoundedCornerShape(50.dp)) { Text((i + 1).toString(), Modifier.padding(8.dp), color = Color.White) }
-            Column { Text(event, fontWeight = FontWeight.Bold); Text("যাচাইকৃত ঘটনার বিবরণ ও তারিখ প্রয়োজন", color = Muted, fontSize = 12.sp) }
+            Surface(color = SarangshoPalette.Teal, shape = RoundedCornerShape(50.dp)) { Text((i + 1).toString(), Modifier.padding(8.dp), color = Color.White) }
+            Column { Text(event, fontWeight = FontWeight.Bold); Text("যাচাইকৃত ঘটনার বিবরণ ও তারিখ প্রয়োজন", color = SarangshoPalette.Muted, fontSize = 12.sp) }
         } }
     }
 }
 @Composable private fun Perspectives() {
     Scroll {
         Intro("একাধিক প্রকাশনার দৃষ্টিভঙ্গি", "প্রতিবেদনের ভাষা, গুরুত্ব, তথ্য ও অনুপস্থিত প্রসঙ্গ তুলনা করুন।")
-        Panel { Icon(Icons.Default.Info, null, tint = Gold); Text("এই নমুনা সংস্করণে কোনো সংবাদপত্রের নিবন্ধ সংগ্রহ বা তুলনা করা হয়নি।", fontWeight = FontWeight.SemiBold); Text("উৎসের অনুমতি, প্রবেশযোগ্যতা এবং মেটাডেটা যাচাই না হওয়া পর্যন্ত তুলনা ‘চালানো হয়নি’ হিসেবে থাকবে।", color = Muted) }
-        listOf("শিরোনাম ও ফ্রেমিং", "যাচাইযোগ্য তথ্য", "উদ্ধৃত বক্তব্য", "অনুপস্থিত বা অনিশ্চিত বিষয়").forEach { Panel { Text(it, fontWeight = FontWeight.SemiBold); Text("উৎস-নির্ভর তথ্য যুক্ত হলে এই অংশ পূরণ হবে।", color = Muted, fontSize = 13.sp) } }
+        Panel { Icon(Icons.Default.Info, null, tint = SarangshoPalette.Gold); Text("এই নমুনা সংস্করণে কোনো সংবাদপত্রের নিবন্ধ সংগ্রহ বা তুলনা করা হয়নি।", fontWeight = FontWeight.SemiBold); Text("উৎসের অনুমতি, প্রবেশযোগ্যতা এবং মেটাডেটা যাচাই না হওয়া পর্যন্ত তুলনা ‘চালানো হয়নি’ হিসেবে থাকবে।", color = SarangshoPalette.Muted) }
+        listOf("শিরোনাম ও ফ্রেমিং", "যাচাইযোগ্য তথ্য", "উদ্ধৃত বক্তব্য", "অনুপস্থিত বা অনিশ্চিত বিষয়").forEach { Panel { Text(it, fontWeight = FontWeight.SemiBold); Text("উৎস-নির্ভর তথ্য যুক্ত হলে এই অংশ পূরণ হবে।", color = SarangshoPalette.Muted, fontSize = 13.sp) } }
     }
 }
 @Composable private fun Topics(nav: NavHostController, world: Boolean) {
@@ -271,23 +271,23 @@ private fun Summary(nav: NavHostController) {
         Panel {
             Box(Modifier.fillMaxWidth().height(190.dp), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Surface(color = Deep, shape = RoundedCornerShape(18.dp)) { Text("মূল বিষয়", Modifier.padding(14.dp), color = Color.White, fontWeight = FontWeight.Bold) }
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("প্রতিষ্ঠান", "আইন", "রাষ্ট্র").forEach { Surface(color = Soft, shape = RoundedCornerShape(10.dp)) { Text(it, Modifier.padding(10.dp), fontSize = 12.sp) } } }
+                    Surface(color = SarangshoPalette.Deep, shape = RoundedCornerShape(18.dp)) { Text("মূল বিষয়", Modifier.padding(14.dp), color = Color.White, fontWeight = FontWeight.Bold) }
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("প্রতিষ্ঠান", "আইন", "রাষ্ট্র").forEach { Surface(color = SarangshoPalette.Soft, shape = RoundedCornerShape(10.dp)) { Text(it, Modifier.padding(10.dp), fontSize = 12.sp) } } }
                     Surface(color = Color(0xFFF5E8D4), shape = RoundedCornerShape(18.dp)) { Text("প্রভাব ও প্রেক্ষাপট", Modifier.padding(12.dp)) }
                 }
             }
-            Text("চিত্রটি ইন্টারঅ্যাকটিভ গ্রাফের নমুনা; সম্পর্কের ডেটা এখনো যুক্ত হয়নি।", color = Muted, fontSize = 11.sp)
+            Text("চিত্রটি ইন্টারঅ্যাকটিভ গ্রাফের নমুনা; সম্পর্কের ডেটা এখনো যুক্ত হয়নি।", color = SarangshoPalette.Muted, fontSize = 11.sp)
         }
-        Text("সম্পর্ক: কারণ • আইনি এখতিয়ার • সদস্যপদ • প্রভাব • সময়গত সম্পর্ক", color = Muted)
+        Text("সম্পর্ক: কারণ • আইনি এখতিয়ার • সদস্যপদ • প্রভাব • সময়গত সম্পর্ক", color = SarangshoPalette.Muted)
     }
 }
 @Composable private fun DataExplorer() {
     Scroll {
         Intro("তথ্য ও পরিসংখ্যান", "সংখ্যার সঙ্গে একক, সময়কাল, সংজ্ঞা ও মূল উৎস দেখুন।")
-        Panel { Kicker("ইন্ডিকেটর কার্ড • নমুনা"); Text("মূল্যস্ফীতি", fontSize = 20.sp, fontWeight = FontWeight.Bold); Text("সর্বশেষ মান: লাইভ ডেটা সংযুক্ত নয়", color = Muted); HorizontalDivider(color = Line); Text("সময়কাল: উল্লেখ করতে হবে"); Text("একক: শতাংশ"); Text("উৎস: সংশ্লিষ্ট সরকারি পরিসংখ্যান সংস্থা") }
+        Panel { Kicker("ইন্ডিকেটর কার্ড • নমুনা"); Text("মূল্যস্ফীতি", fontSize = 20.sp, fontWeight = FontWeight.Bold); Text("সর্বশেষ মান: লাইভ ডেটা সংযুক্ত নয়", color = SarangshoPalette.Muted); HorizontalDivider(color = SarangshoPalette.Line); Text("সময়কাল: উল্লেখ করতে হবে"); Text("একক: শতাংশ"); Text("উৎস: সংশ্লিষ্ট সরকারি পরিসংখ্যান সংস্থা") }
         Panel {
             Text("তথ্য পড়ার নিয়ম", fontWeight = FontWeight.Bold)
-            listOf("স্টক ও প্রবাহ আলাদা করুন", "নামমাত্র ও প্রকৃত মান গুলিয়ে ফেলবেন না", "পূর্বাভাস ও পর্যবেক্ষণ আলাদা রাখুন", "প্রাথমিক ও সংশোধিত উপাত্ত চিহ্নিত করুন").forEach { Row(verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Default.Check, null, tint = Green); Spacer(Modifier.width(8.dp)); Text(it) } }
+            listOf("স্টক ও প্রবাহ আলাদা করুন", "নামমাত্র ও প্রকৃত মান গুলিয়ে ফেলবেন না", "পূর্বাভাস ও পর্যবেক্ষণ আলাদা রাখুন", "প্রাথমিক ও সংশোধিত উপাত্ত চিহ্নিত করুন").forEach { Row(verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Default.Check, null, tint = SarangshoPalette.Green); Spacer(Modifier.width(8.dp)); Text(it) } }
         }
     }
 }
@@ -296,13 +296,13 @@ private fun Summary(nav: NavHostController) {
     Scroll {
         Intro("আজকের শব্দ", "শব্দের অর্থ, ব্যবহার ও পরীক্ষায় প্রয়োগ শিখুন।")
         Panel {
-            Kicker("NOUN"); Text("Resilience", fontSize = 30.sp, fontWeight = FontWeight.Bold, color = Deep); Text("/rɪˈzɪliəns/ • উচ্চারণ", color = Muted)
+            Kicker("NOUN"); Text("Resilience", fontSize = 30.sp, fontWeight = FontWeight.Bold, color = SarangshoPalette.Deep); Text("/rɪˈzɪliəns/ • উচ্চারণ", color = SarangshoPalette.Muted)
             if (reveal) {
                 Text("বাংলা অর্থ: প্রতিকূলতা কাটিয়ে ওঠার সক্ষমতা", fontWeight = FontWeight.SemiBold)
                 Text("Definition: The ability to recover quickly from difficulty.")
-                Text("Synonym: toughness • Antonym: fragility", color = Muted, fontSize = 12.sp)
+                Text("Synonym: toughness • Antonym: fragility", color = SarangshoPalette.Muted, fontSize = 12.sp)
                 Text("Example: Communities need resilience after a natural disaster.")
-            } else Text("অর্থ ও উদাহরণ দেখতে নিচের বোতাম চাপুন।", color = Muted)
+            } else Text("অর্থ ও উদাহরণ দেখতে নিচের বোতাম চাপুন।", color = SarangshoPalette.Muted)
             Primary(if (reveal) "আবার লুকান" else "অর্থ দেখুন") { reveal = !reveal }
         }
         OutlinedButton(onClick = {}, modifier = Modifier.fillMaxWidth()) { Icon(Icons.Default.BookmarkBorder, null); Text("  শব্দটি সংরক্ষণ করুন") }
@@ -316,22 +316,22 @@ private fun Summary(nav: NavHostController) {
         Panel {
             Text("বাংলাদেশের সংবিধান কবে গণপরিষদে গৃহীত হয়?", fontSize = 19.sp, fontWeight = FontWeight.Bold, lineHeight = 28.sp)
             listOf("৪ নভেম্বর ১৯৭২", "১৬ ডিসেম্বর ১৯৭২", "২৬ মার্চ ১৯৭১", "১০ জানুয়ারি ১৯৭২").forEachIndexed { i, option ->
-                Surface(color = if (selected == i) Color(0xFFE4F0ED) else Color.White, shape = RoundedCornerShape(10.dp), border = BorderStroke(1.dp, if (selected == i) Teal else Line), modifier = Modifier.fillMaxWidth().clickable { selected = i }) {
+                Surface(color = if (selected == i) Color(0xFFE4F0ED) else Color.White, shape = RoundedCornerShape(10.dp), border = BorderStroke(1.dp, if (selected == i) SarangshoPalette.Teal else SarangshoPalette.Line), modifier = Modifier.fillMaxWidth().clickable { selected = i }) {
                     Row(Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) { RadioButton(selected == i, { selected = i }); Text("Option " + (i + 1) + "  " + option) }
                 }
             }
             Primary("উত্তর জমা দিন") { if (selected >= 0) nav.navigate("answer") }
-            Text("নমুনা প্রশ্ন; প্রকৃত পরীক্ষার প্রশ্ন বা পূর্বাভাস নয়।", color = Muted, fontSize = 11.sp)
+            Text("নমুনা প্রশ্ন; প্রকৃত পরীক্ষার প্রশ্ন বা পূর্বাভাস নয়।", color = SarangshoPalette.Muted, fontSize = 11.sp)
         }
     }
 }
 @Composable private fun Answer(nav: NavHostController) {
     Scroll {
         Panel {
-            Row(verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Default.CheckCircle, null, tint = Green); Spacer(Modifier.width(8.dp)); Text("উত্তর ব্যাখ্যা", fontSize = 20.sp, fontWeight = FontWeight.Bold) }
+            Row(verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Default.CheckCircle, null, tint = SarangshoPalette.Green); Spacer(Modifier.width(8.dp)); Text("উত্তর ব্যাখ্যা", fontSize = 20.sp, fontWeight = FontWeight.Bold) }
             Text("সঠিক উত্তর: ৪ নভেম্বর ১৯৭২", fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Text("গণপরিষদে বাংলাদেশের সংবিধান ১৯৭২ সালের ৪ নভেম্বর গৃহীত হয় এবং ১৬ ডিসেম্বর ১৯৭২ কার্যকর হয়। গৃহীত হওয়ার তারিখ ও কার্যকর হওয়ার তারিখ আলাদা।")
-            Text("পরীক্ষার কৌশল: ‘গৃহীত’, ‘স্বাক্ষরিত’ ও ‘কার্যকর’ শব্দের পার্থক্য খেয়াল করুন।", color = Muted)
+            Text("পরীক্ষার কৌশল: ‘গৃহীত’, ‘স্বাক্ষরিত’ ও ‘কার্যকর’ শব্দের পার্থক্য খেয়াল করুন।", color = SarangshoPalette.Muted)
         }
         Primary("পরের প্রশ্ন") { nav.navigate("challenge") }
         OutlinedButton(onClick = { nav.navigate("revision") }, modifier = Modifier.fillMaxWidth()) { Text("রিভিশনে যোগ করুন") }
@@ -343,7 +343,7 @@ private fun Summary(nav: NavHostController) {
         Intro("লিখিত অনুশীলন", "নিজের ভাষায় উত্তর লিখুন। খসড়া সংরক্ষণ এখনো সংযুক্ত নয়।")
         Panel { Kicker("বিশ্লেষণী প্রশ্ন"); Text("জলবায়ু পরিবর্তন বাংলাদেশের উন্নয়ন পরিকল্পনায় কী ধরনের চ্যালেঞ্জ তৈরি করে? উদাহরণসহ আলোচনা করুন।", fontWeight = FontWeight.SemiBold, fontSize = 18.sp, lineHeight = 28.sp) }
         OutlinedTextField(draft, { draft = it }, Modifier.fillMaxWidth().height(220.dp), label = { Text("আপনার উত্তর লিখুন") }, placeholder = { Text("ভূমিকা, মূল আলোচনা, উদাহরণ ও উপসংহার...") })
-        Text(draft.length.toString() + " অক্ষর", color = Muted, fontSize = 11.sp)
+        Text(draft.length.toString() + " অক্ষর", color = SarangshoPalette.Muted, fontSize = 11.sp)
         Primary("খসড়া সংরক্ষণ করুন") {}
     }
 }
@@ -351,12 +351,12 @@ private fun Summary(nav: NavHostController) {
     var flipped by remember { mutableStateOf(false) }
     Scroll {
         Intro("রিভিশন ডেক", "সক্রিয় স্মরণ দিয়ে শেখা বিষয় মনে রাখুন।")
-        LinearProgressIndicator(progress = { 0.35f }, modifier = Modifier.fillMaxWidth(), color = Teal, trackColor = Line)
-        Text("কার্ড ৭ / ২০ • নমুনা সেশন", color = Muted, fontSize = 12.sp)
+        LinearProgressIndicator(progress = { 0.35f }, modifier = Modifier.fillMaxWidth(), color = SarangshoPalette.Teal, trackColor = SarangshoPalette.Line)
+        Text("কার্ড ৭ / ২০ • নমুনা সেশন", color = SarangshoPalette.Muted, fontSize = 12.sp)
         Panel {
-            Text(if (flipped) "উত্তর" else "প্রশ্ন", color = Teal, fontWeight = FontWeight.Bold)
+            Text(if (flipped) "উত্তর" else "প্রশ্ন", color = SarangshoPalette.Teal, fontWeight = FontWeight.Bold)
             Text(if (flipped) "জাতিসংঘ প্রতিষ্ঠিত হয় ১৯৪৫ সালের ২৪ অক্টোবর।" else "জাতিসংঘ কবে প্রতিষ্ঠিত হয়?", fontSize = 21.sp, fontWeight = FontWeight.Bold, lineHeight = 31.sp)
-            Text(if (flipped) "২৪ অক্টোবর, United Nations Day." else "উত্তর দেখতে কার্ডে চাপ দিন।", color = Muted)
+            Text(if (flipped) "২৪ অক্টোবর, United Nations Day." else "উত্তর দেখতে কার্ডে চাপ দিন।", color = SarangshoPalette.Muted)
             OutlinedButton(onClick = { flipped = !flipped }, modifier = Modifier.fillMaxWidth()) { Text(if (flipped) "প্রশ্ন দেখুন" else "উত্তর দেখুন") }
         }
     }
@@ -368,23 +368,23 @@ private fun Summary(nav: NavHostController) {
         OutlinedTextField(query, { query = it; searched = false }, Modifier.fillMaxWidth(), placeholder = { Text("যেমন: মূল্যস্ফীতি, ICJ, resilience") }, leadingIcon = { Icon(Icons.Default.Search, null) }, singleLine = true)
         Primary("খুঁজুন") { searched = query.isNotBlank() }
         if (searched) { Text("অনুসন্ধানের নমুনা ফলাফল", fontWeight = FontWeight.Bold); RowLink("বিষয়ভিত্তিক নোট", "প্রকৃত সূচি যুক্ত হলে ফলাফল আসবে", Icons.Default.Article) { nav.navigate("feed") } }
-        else { Text("জনপ্রিয় অনুসন্ধান", fontWeight = FontWeight.Bold); listOf("বাংলাদেশ ব্যাংক", "সংবিধান", "জাতিসংঘ", "জলবায়ু অর্থায়ন").forEach { Text(it, Modifier.fillMaxWidth().clickable { query = it }.padding(vertical = 8.dp), color = Teal) } }
-        Text("প্রতিটি ফলাফলে প্রকাশক, মূল লিংক, প্রকাশের সময় ও প্রবেশযোগ্যতার অবস্থা দেখানো হবে।", color = Muted)
+        else { Text("জনপ্রিয় অনুসন্ধান", fontWeight = FontWeight.Bold); listOf("বাংলাদেশ ব্যাংক", "সংবিধান", "জাতিসংঘ", "জলবায়ু অর্থায়ন").forEach { Text(it, Modifier.fillMaxWidth().clickable { query = it }.padding(vertical = 8.dp), color = SarangshoPalette.Teal) } }
+        Text("প্রতিটি ফলাফলে প্রকাশক, মূল লিংক, প্রকাশের সময় ও প্রবেশযোগ্যতার অবস্থা দেখানো হবে।", color = SarangshoPalette.Muted)
     }
 }
 @Composable private fun Saved(nav: NavHostController) {
     Scroll {
         Intro("আপনার সংরক্ষিত বিষয়", "পরে পড়ার জন্য রাখা সংবাদ, শব্দ ও রিভিশন কার্ড।")
-        Panel { Icon(Icons.Default.Bookmarks, null, tint = Teal, modifier = Modifier.size(30.dp)); Text("এখনো কিছু সংরক্ষণ করা হয়নি", fontWeight = FontWeight.Bold, fontSize = 18.sp); Text("সংবাদ বা শব্দের পাশে বুকমার্ক আইকনে চাপ দিলে এখানে পাওয়া যাবে।", color = Muted); Primary("সংবাদ দেখুন") { nav.navigate("feed") } }
+        Panel { Icon(Icons.Default.Bookmarks, null, tint = SarangshoPalette.Teal, modifier = Modifier.size(30.dp)); Text("এখনো কিছু সংরক্ষণ করা হয়নি", fontWeight = FontWeight.Bold, fontSize = 18.sp); Text("সংবাদ বা শব্দের পাশে বুকমার্ক আইকনে চাপ দিলে এখানে পাওয়া যাবে।", color = SarangshoPalette.Muted); Primary("সংবাদ দেখুন") { nav.navigate("feed") } }
     }
 }
 @Composable private fun Profile(nav: NavHostController) {
     Scroll {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-            Surface(color = Soft, shape = RoundedCornerShape(50.dp)) { Icon(Icons.Default.Person, null, tint = Teal, modifier = Modifier.padding(16.dp).size(34.dp)) }
-            Column { Text("পাঠক প্রোফাইল", fontSize = 20.sp, fontWeight = FontWeight.Bold); Text("স্থানীয় ডেমো • সাইন ইন করা হয়নি", color = Muted, fontSize = 12.sp) }
+            Surface(color = SarangshoPalette.Soft, shape = RoundedCornerShape(50.dp)) { Icon(Icons.Default.Person, null, tint = SarangshoPalette.Teal, modifier = Modifier.padding(16.dp).size(34.dp)) }
+            Column { Text("পাঠক প্রোফাইল", fontSize = 20.sp, fontWeight = FontWeight.Bold); Text("স্থানীয় ডেমো • সাইন ইন করা হয়নি", color = SarangshoPalette.Muted, fontSize = 12.sp) }
         }
-        Panel { Text("শেখার অগ্রগতি", fontWeight = FontWeight.Bold); Text("প্রকৃত ব্যবহার-ডেটা যুক্ত না হওয়া পর্যন্ত কোনো স্কোর বা ধারাবাহিকতার সংখ্যা দেখানো হবে না।", color = Muted) }
+        Panel { Text("শেখার অগ্রগতি", fontWeight = FontWeight.Bold); Text("প্রকৃত ব্যবহার-ডেটা যুক্ত না হওয়া পর্যন্ত কোনো স্কোর বা ধারাবাহিকতার সংখ্যা দেখানো হবে না।", color = SarangshoPalette.Muted) }
         RowLink("আমার শব্দভান্ডার", "সংরক্ষিত শব্দ ও পুনরাবৃত্তি", Icons.Default.Translate) { nav.navigate("vocabulary") }
         RowLink("রিভিশন ডেক", "মনে রাখার অনুশীলন", Icons.Default.Style) { nav.navigate("revision") }
         RowLink("লিখিত অনুশীলন", "আপনার উত্তর ও খসড়া", Icons.Default.EditNote) { nav.navigate("writing") }
