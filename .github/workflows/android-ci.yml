@@ -25,18 +25,15 @@ jobs:
           # sdkmanager no longer provides. Install only current SDK packages.
           packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
           accept-android-sdk-licenses: true
-      - uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.9'
       - name: Verify toolchain
         run: |
-          gradle --version
+          ./gradlew --version
           java -version
           sdkmanager --list_installed
       - name: Run unit tests
-        run: gradle --no-daemon --stacktrace :app:testDebugUnitTest
+        run: ./gradlew --no-daemon --stacktrace :app:testDebugUnitTest
       - name: Assemble debug APK
-        run: gradle --no-daemon --stacktrace :app:assembleDebug
+        run: ./gradlew --no-daemon --stacktrace :app:assembleDebug
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
@@ -60,9 +57,6 @@ jobs:
           # is never requested by the setup action's default configuration.
           packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
           accept-android-sdk-licenses: true
-      - uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.9'
       - name: Run Compose smoke test on emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -74,4 +68,4 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           emulator-boot-timeout: 900
           disable-animations: true
-          script: gradle --no-daemon --stacktrace :app:connectedDebugAndroidTest
+          script: ./gradlew --no-daemon --stacktrace :app:connectedDebugAndroidTest
