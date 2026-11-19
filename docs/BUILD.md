@@ -35,6 +35,12 @@ To run Compose instrumentation tests, start an Android 35 emulator first, then r
 
 The debug APK is written to `app/build/outputs/apk/debug/app-debug.apk`.
 
+## GitHub Actions usage
+
+- Pull requests and pushes run unit tests and debug APK assembly.
+- Emulator instrumentation is manual because booting an emulator consumes substantially more Actions time. It runs only when the workflow is started with `workflow_dispatch`.
+- This keeps the routine verification path focused on compile, unit tests and APK assembly while conserving the included Actions allowance.
+
 ## Reproducibility and integrity
 
 - Gradle distribution: 8.9 binary ZIP
@@ -46,4 +52,4 @@ The wrapper verifies the downloaded Gradle distribution against the pinned SHA-2
 
 ## Current verification status
 
-The wrapper files and CI commands are committed. This does not mean the latest source has passed a build. The recent GitHub Actions jobs failed before a runner was assigned, so Gradle did not start and no compiler or test result was produced. Treat the build as unverified until the build and test commands complete successfully.
+The wrapper files and CI commands are committed. This does not mean the latest source has passed a build. Recent GitHub Actions jobs failed before a runner was assigned, so Gradle did not start and no compiler or test result was produced. Treat the build as unverified until the build and test commands complete successfully.
