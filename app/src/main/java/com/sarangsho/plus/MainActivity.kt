@@ -42,7 +42,11 @@ private val pages = listOf(
     Page("notifications", "নোটিফিকেশন"), Page("settings", "সেটিংস"),
     Page("reading-settings", "পড়ার পছন্দ"), Page("downloads", "অফলাইন লাইব্রেরি"),
     Page("help", "সহায়তা"), Page("about", "Sarangsho Plus সম্পর্কে"),
-    Page("feedback", "মতামত জানান")
+    Page("feedback", "মতামত জানান"), Page("privacy", "গোপনীয়তা"), Page("language", "ভাষা"),
+    Page("practice-history", "অনুশীলনের ইতিহাস"), Page("reading-history", "পড়ার ইতিহাস"),
+    Page("saved-collections", "সংরক্ষিত সংগ্রহ"), Page("source-detail", "উৎসের পরিচিতি"),
+    Page("indicator-detail", "সূচকের বিস্তারিত"), Page("signup", "নতুন অ্যাকাউন্ট"),
+    Page("password-reset", "পাসওয়ার্ড পুনরুদ্ধার"), Page("report-story", "তথ্য সংশোধনের অনুরোধ")
 )
 private val tabs = listOf("home", "feed", "challenge", "saved", "profile")
 private val labels = listOf("হোম", "অনুসন্ধান", "প্র্যাকটিস", "সংরক্ষিত", "প্রোফাইল")
@@ -137,5 +141,15 @@ private fun Screen(route: String, nav: NavHostController) {
         "help" -> Help()
         "about" -> About()
         "feedback" -> Feedback()
+        "privacy" -> Privacy()
+        "language" -> LanguageSettings()
+        "practice-history" -> PracticeHistory()
+        "reading-history" -> ReadingHistory()
+        "saved-collections" -> SavedCollections()
+        "source-detail" -> SourceDetail()
+        "indicator-detail" -> IndicatorDetail()
+        "signup" -> SignUp(nav)
+        "password-reset" -> PasswordReset()
+        "report-story" -> ReportStory()
     }
 }
