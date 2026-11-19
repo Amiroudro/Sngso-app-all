@@ -40,8 +40,8 @@ The debug APK is written to `app/build/outputs/apk/debug/app-debug.apk`.
 - Pull-request updates run unit tests and debug APK assembly.
 - The workflow does not run a second time for branch pushes while a pull request is open.
 - A concurrency group cancels an older in-progress verification for the same pull request when a newer commit arrives.
-- Emulator instrumentation is manual because booting an emulator consumes substantially more Actions time.
-- A manual workflow dispatch runs only the emulator instrumentation job. It skips the routine unit/build job, avoiding a second build in the same run.
+- Emulator instrumentation is deliberately gated. On an unmerged draft PR, it runs only when the PR is marked ready for review, and only after the routine unit/build job succeeds.
+- The `workflow_dispatch` trigger is retained for deliberate manual reruns after the workflow exists on the default branch. GitHub requires manually dispatched workflows to exist on that branch.
 - APK artifacts are retained for one day to limit storage usage. Download a needed APK promptly after a successful run.
 
 ## Reproducibility and integrity
