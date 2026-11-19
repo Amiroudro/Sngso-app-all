@@ -60,25 +60,31 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 
 @Composable internal fun Home(nav: NavHostController) {
     Scroll {
-        Kicker("দৈনিক ব্রিফিং • নমুনা সংস্করণ")
-        Panel {
-            Text("আজকের প্রস্তুতি", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
-            Text("প্রতিদিন অল্প করে পড়ুন, নিয়মিত ফিরে দেখুন।", fontSize = 19.sp, fontWeight = FontWeight.Bold)
-            Text("৩টি বিষয় • ১৫ মিনিট", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Primary("আজকের অনুশীলন শুরু করুন") { nav.navigate("challenge") }
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+            Text("Sarangsho+", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+            Text("DAILY BRIEFING", fontSize = 10.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, letterSpacing = 1.2.sp)
         }
-        Text("আজকের প্রধান বিষয়", fontSize = 19.sp, fontWeight = FontWeight.Bold)
-        Story("আন্তর্জাতিক আদালতের বিচারিক প্রক্রিয়া ও রোহিঙ্গা সংকট", "আন্তর্জাতিক আইন", "৮ মিনিট • যাচাইযোগ্য উৎস প্রয়োজন", nav)
-        Story("উপকূলীয় দুর্যোগ প্রস্তুতি ও সরকারি সতর্কতা", "বাংলাদেশ", "৪ মিনিট • সরকারি তথ্য", nav)
-        Text("শিখুন ও অনুশীলন করুন", fontSize = 19.sp, fontWeight = FontWeight.Bold)
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        Intro("আজকের ব্রিফিং", "সংবাদ বুঝুন, প্রেক্ষাপট জানুন, তারপর শেখা বিষয় অনুশীলন করুন।")
+        Primary("আজকের অনুশীলন শুরু করুন") { nav.navigate("quiz-setup") }
+
+        Text("প্রধান প্রতিবেদন", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+        Story("আন্তর্জাতিক আদালতের বিচারিক প্রক্রিয়া ও রোহিঙ্গা সংকট", "আন্তর্জাতিক আইন", "নমুনা পাঠ", nav)
+        Story("উপকূলীয় দুর্যোগ প্রস্তুতি ও সরকারি সতর্কতা", "বাংলাদেশ", "নমুনা পাঠ", nav)
+
+        Text("শিখুন ও অনুশীলন করুন", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
         RowLink("তিন-স্তরের সারাংশ", "৩০ সেকেন্ড, ২ মিনিট অথবা বিস্তারিত", Icons.Default.Subject) { nav.navigate("summary") }
         RowLink("ঘটনার টাইমলাইন", "তারিখ ও প্রেক্ষাপট আলাদা করে দেখুন", Icons.Default.Timeline) { nav.navigate("timeline") }
         RowLink("পত্রিকার দৃষ্টিভঙ্গি", "উপলভ্য ও অনুমোদিত উৎস তুলনা", Icons.Default.CompareArrows) { nav.navigate("perspectives") }
         RowLink("Vocabulary Lab", "শব্দ শিখুন, মনে রাখুন", Icons.Default.Translate) { nav.navigate("vocabulary") }
-        Text("খবর ও অগ্রগতির সব তথ্য এই পর্যায়ে UI নমুনা; লাইভ ইঞ্জিন ডেটা নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+
+        Text("আরও দেখুন", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+        RowLink("আজকের সংস্করণ", "তারিখভিত্তিক সব প্রকাশনা", Icons.Default.CalendarMonth) { nav.navigate("archive") }
+        RowLink("পড়ার পরিকল্পনা", "নিজের সময় অনুযায়ী প্রস্তুতি", Icons.Default.CalendarToday) { nav.navigate("study-plan") }
+        RowLink("নোটিফিকেশন", "সংস্করণ ও রিভিশনের আপডেট", Icons.Default.Notifications) { nav.navigate("notifications") }
+        Text("সব শিরোনাম এই স্ক্রিনে UI নমুনা; লাইভ ইঞ্জিন ডেটা নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
     }
 }
-
 @Composable internal fun Feed(nav: NavHostController) {
     var filter by rememberSaveable { mutableStateOf("সব") }
     var query by rememberSaveable { mutableStateOf("") }
