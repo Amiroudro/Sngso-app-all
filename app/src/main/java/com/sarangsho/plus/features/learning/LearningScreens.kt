@@ -46,7 +46,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 @Composable internal fun Challenge(nav: NavHostController) {
     var selected by rememberSaveable { mutableIntStateOf(-1) }
     Scroll {
-        Kicker("BCS & BANK • নমুনা প্রশ্ন"); Intro("বাংলাদেশের সংবিধান", "প্রশ্ন ১ / ১২ • একটি উত্তর নির্বাচন করুন।")
+        Kicker("BCS & BANK • নমুনা প্রশ্ন"); Intro("বাংলাদেশের সংবিধান", "প্রশ্ন ১ / ১ • নমুনা প্রশ্ন।")
         Panel {
             Text("বাংলাদেশের সংবিধান কবে গণপরিষদে গৃহীত হয়?", fontSize = 19.sp, fontWeight = FontWeight.Bold, lineHeight = 28.sp)
             listOf("৪ নভেম্বর ১৯৭২", "১৬ ডিসেম্বর ১৯৭২", "২৬ মার্চ ১৯৭১", "১০ জানুয়ারি ১৯৭২").forEachIndexed { i, option ->
