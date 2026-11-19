@@ -16,6 +16,7 @@ On macOS or Linux:
 ```sh
 ./gradlew --version
 ./gradlew --no-daemon :app:testDebugUnitTest
+./gradlew --no-daemon :app:assembleDebugAndroidTest
 ./gradlew --no-daemon :app:assembleDebug
 ```
 
@@ -24,20 +25,21 @@ On Windows:
 ```bat
 gradlew.bat --version
 gradlew.bat --no-daemon :app:testDebugUnitTest
+gradlew.bat --no-daemon :app:assembleDebugAndroidTest
 gradlew.bat --no-daemon :app:assembleDebug
 ```
 
-To run Compose instrumentation tests, start an Android 35 emulator first, then run:
+The `assembleDebugAndroidTest` task compiles and packages the instrumentation test APK. It does not execute the tests. To execute them, start an Android 35 emulator first, then run:
 
 ```sh
 ./gradlew --no-daemon :app:connectedDebugAndroidTest
 ```
 
-The debug APK is written to `app/build/outputs/apk/debug/app-debug.apk`.
+The debug app APK is written to `app/build/outputs/apk/debug/app-debug.apk`.
 
 ## GitHub Actions usage
 
-- Pull-request updates run unit tests and debug APK assembly.
+- Pull-request updates run unit tests, compile/package the instrumentation test APK, and assemble the debug app APK.
 - The workflow does not run a second time for branch pushes while a pull request is open.
 - A concurrency group cancels an older in-progress verification for the same pull request when a newer commit arrives.
 - Emulator instrumentation is deliberately gated. On an unmerged draft PR, it runs only when the PR is marked ready for review, and only after the routine unit/build job succeeds.
@@ -55,4 +57,4 @@ The wrapper verifies the downloaded Gradle distribution against the pinned SHA-2
 
 ## Current verification status
 
-The wrapper files and CI commands are committed. This does not mean the latest source has passed a build. Recent GitHub Actions jobs failed before a runner was assigned, so Gradle did not start and no compiler or test result was produced. The latest workflow changes reduce duplicate runs and artifact retention, but have not themselves been exercised by a successful build. Treat the build as unverified until the build and test commands complete successfully.
+The wrapper files and CI commands are committed. This does not mean the latest source has passed a build. Recent GitHub Actions jobs failed before a runner was assigned, so Gradle did not start and no compiler or test result was produced. The workflow now includes a separate instrumentation-test APK compilation task, but that change has not yet been exercised by a successful build. Treat the build as unverified until the build and test commands complete successfully.
