@@ -13,6 +13,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
+import com.sarangsho.plus.ui.theme.SarangshoPalette
+import com.sarangsho.plus.ui.theme.SarangshoTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,15 +26,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 
-private val Paper = Color(0xFFF7F5EF)
-private val Ink = Color(0xFF172B32)
-private val Muted = Color(0xFF637279)
-private val Teal = Color(0xFF0D5960)
-private val Deep = Color(0xFF123B43)
-private val Gold = Color(0xFFC58A36)
-private val Line = Color(0xFFE5E2D9)
-private val Soft = Color(0xFFF0EEE7)
-private val Green = Color(0xFF287A59)
 
 private data class Page(val route: String, val title: String)
 private val pages = listOf(
