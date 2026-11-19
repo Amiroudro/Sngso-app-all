@@ -45,7 +45,8 @@ jobs:
           if-no-files-found: error
 
   compose-instrumentation:
-    runs-on: ubuntu-latest
+    # Use the stable 24.04 runner image for hardware-accelerated Android emulation.
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -69,6 +70,8 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_2
-          emulator-options: -no-window -no-audio -no-boot-anim
+          # Keep the action's recommended software-rendering and snapshot settings.
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          emulator-boot-timeout: 900
           disable-animations: true
           script: gradle --no-daemon --stacktrace :app:connectedDebugAndroidTest
