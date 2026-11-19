@@ -65,7 +65,7 @@ private fun SarangshoApp() {
     val nav = rememberNavController()
     val entry by nav.currentBackStackEntryAsState()
     val route = entry?.destination?.route ?: "welcome"
-    val title = pages.first { it.route == route }.title
+    val title = pages.firstOrNull { it.route == route }?.title ?: "Sarangsho Plus"
     SarangshoTheme {
         Scaffold(
             containerColor = MaterialTheme.colorScheme.background,
