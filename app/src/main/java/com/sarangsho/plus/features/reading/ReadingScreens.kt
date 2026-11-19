@@ -50,7 +50,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
         Intro("আপনার পড়াশোনা সঙ্গে রাখুন", "অ্যাকাউন্টে প্রবেশ করুন অথবা আপাতত স্থানীয়ভাবে চালিয়ে যান।")
         OutlinedTextField(email, { email = it }, Modifier.fillMaxWidth(), label = { Text("ইমেইল বা ফোন নম্বর") }, singleLine = true)
         OutlinedTextField(password, { password = it }, Modifier.fillMaxWidth(), label = { Text("পাসওয়ার্ড") }, visualTransformation = PasswordVisualTransformation(), singleLine = true)
-        Primary("সাইন ইন") { nav.navigate("home") }
+        Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text("সাইন ইন শিগগিরই চালু হবে") }
         Text("ডেমো UI: প্রকৃত authentication এখনো সংযুক্ত নয়।", color = SarangshoPalette.Muted, fontSize = 12.sp)
         OutlinedButton(onClick = { nav.navigate("home") }, modifier = Modifier.fillMaxWidth()) { Text("অ্যাকাউন্ট ছাড়া চালিয়ে যান") }
         Text("নতুন অ্যাকাউন্ট তৈরি করুন", Modifier.clickable { nav.navigate("signup") }, color = SarangshoPalette.Teal)
