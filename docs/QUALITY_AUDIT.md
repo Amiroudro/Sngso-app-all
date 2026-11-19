@@ -9,7 +9,7 @@
 - Shared screen components are separated from reading, learning and settings feature files.
 - Semantic light and dark color schemes are centralized.
 - Search and category filters work against explicitly labelled local sample stories.
-- The onboarding path has a Compose instrumentation test.
+- Compose instrumentation tests cover the onboarding path and basic local learning-store add/read/remove behavior. These tests have been authored but have not yet run successfully in CI.
 - Vocabulary Lab has a searchable five-entry sample word list with per-word bookmark controls; bookmarks and the fixed study-plan checklist are stored locally with Android SharedPreferences. The Saved screen lists/removes bookmarked words and refreshes when returning to either screen. This is device-only and does not sync.
 - Vocabulary definitions and examples are prototype learning content; dictionary/source references and a maintained exam vocabulary feed are not connected.
 - Authentication, saved articles, downloads, feedback submission and user analytics are not represented as working services.
