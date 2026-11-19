@@ -18,7 +18,13 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
+      # GitHub-hosted Ubuntu images already provide Android command-line tools.
+      # Do not use android-actions/setup-android here: its implicit "tools"
+      # package install fails because that legacy SDK package no longer exists.
+      - name: Install required Android SDK packages
+        run: |
+          yes | sdkmanager --licenses
+          sdkmanager --install "platform-tools" "platforms;android-35" "build-tools;35.0.0"
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
@@ -26,6 +32,7 @@ jobs:
         run: |
           gradle --version
           java -version
+          sdkmanager --list_installed
       - name: Run unit tests
         run: gradle --no-daemon --stacktrace :app:testDebugUnitTest
       - name: Assemble debug APK
@@ -45,7 +52,12 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
+      # Use the runner's installed SDK tools; the emulator action installs the
+      # requested emulator image and emulator package for this job.
+      - name: Install required Android SDK packages
+        run: |
+          yes | sdkmanager --licenses
+          sdkmanager --install "platform-tools" "platforms;android-35" "build-tools;35.0.0"
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
