@@ -4,7 +4,7 @@ on:
   pull_request:
   workflow_dispatch:
   push:
-    branches: [main, feat/compose-ui-foundation]
+    branches: [main, feat/compose-ui-foundation, fix/android-build-verification]
 
 permissions:
   contents: read
@@ -22,10 +22,20 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+      - name: Verify Gradle and Java
+        run: |
+          gradle --version
+          java -version
       - name: Run unit tests
-        run: gradle --no-daemon :app:testDebugUnitTest
+        run: gradle --no-daemon --stacktrace :app:testDebugUnitTest
       - name: Assemble debug APK
-        run: gradle --no-daemon :app:assembleDebug
+        run: gradle --no-daemon --stacktrace :app:assembleDebug
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: sarangsho-plus-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
 
   compose-instrumentation:
     runs-on: ubuntu-latest
@@ -48,4 +58,4 @@ jobs:
           profile: pixel_2
           emulator-options: -no-window -no-audio -no-boot-anim
           disable-animations: true
-          script: gradle --no-daemon :app:connectedDebugAndroidTest
+          script: gradle --no-daemon --stacktrace :app:connectedDebugAndroidTest
