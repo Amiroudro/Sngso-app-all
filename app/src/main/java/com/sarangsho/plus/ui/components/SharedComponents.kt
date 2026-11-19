@@ -31,21 +31,21 @@ internal fun Scroll(content: @Composable ColumnScope.() -> Unit) {
 
 @Composable internal fun Intro(title: String, body: String) {
     Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
-        Text(title, fontSize = 23.sp, fontWeight = FontWeight.Bold, color = SarangshoPalette.Ink)
-        Text(body, fontSize = 14.sp, color = SarangshoPalette.Muted, lineHeight = 22.sp)
+        Text(title, fontSize = 23.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+        Text(body, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 22.sp)
     }
 }
 
-@Composable internal fun Kicker(text: String) { Text(text.uppercase(), fontSize = 10.sp, color = SarangshoPalette.Teal, fontWeight = FontWeight.Bold, letterSpacing = 1.sp) }
+@Composable internal fun Kicker(text: String) { Text(text.uppercase(), fontSize = 10.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, letterSpacing = 1.sp) }
 
 @Composable internal fun Panel(content: @Composable ColumnScope.() -> Unit) {
-    Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(15.dp), border = BorderStroke(1.dp, SarangshoPalette.Line), modifier = Modifier.fillMaxWidth()) {
+    Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(15.dp), border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline), modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp), content = content)
     }
 }
 
 @Composable internal fun Primary(text: String, action: () -> Unit) {
-    Button(action, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(10.dp), colors = ButtonDefaults.buttonColors(containerColor = SarangshoPalette.Teal), contentPadding = PaddingValues(14.dp)) { Text(text, fontWeight = FontWeight.SemiBold) }
+    Button(action, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(10.dp), colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary), contentPadding = PaddingValues(14.dp)) { Text(text, fontWeight = FontWeight.SemiBold) }
 }
 
 @Composable internal fun RowLink(title: String, detail: String, icon: androidx.compose.ui.graphics.vector.ImageVector, action: () -> Unit) {
