@@ -44,10 +44,15 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
             Slider(value = fontSize, onValueChange = { fontSize = it }, valueRange = 16f..26f)
             Text("লাইন স্পেসিং: " + "%.1f".format(lineSpacing), fontWeight = FontWeight.SemiBold)
             Slider(value = lineSpacing, onValueChange = { lineSpacing = it }, valueRange = 1.2f..2.0f)
-            Row(verticalAlignment = Alignment.CenterVertically) { Text("উষ্ণ কাগজের ব্যাকগ্রাউন্ড", Modifier.weight(1f)); Switch(checked = sepia, onCheckedChange = { sepia = it }) }
+            Row(verticalAlignment = Alignment.CenterVertically) { Text("উষ্ণ কাগজের নমুনা", Modifier.weight(1f)); Switch(checked = sepia, onCheckedChange = { sepia = it }) }
         }
-        Panel { Text("নমুনা পাঠ", fontSize = fontSize.sp, lineHeight = (fontSize * lineSpacing).sp); Text("বাংলা ও ইংরেজি একসঙ্গে পড়ার সময় অক্ষরের গঠন এবং লাইনের ফাঁক যেন পরিষ্কার থাকে।", fontSize = fontSize.sp, lineHeight = (fontSize * lineSpacing).sp) }
-        Text("এই পছন্দগুলো এখনো স্থায়ীভাবে সংরক্ষিত হয় না।", color = SarangshoPalette.Muted, fontSize = 12.sp)
+        Surface(color = if (sepia) SarangshoPalette.Paper else MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(12.dp), border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline), modifier = Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("নমুনা পাঠ", fontSize = fontSize.sp, lineHeight = (fontSize * lineSpacing).sp, color = SarangshoPalette.Ink)
+                Text("বাংলা ও ইংরেজি একসঙ্গে পড়ার সময় অক্ষরের গঠন এবং লাইনের ফাঁক যেন পরিষ্কার থাকে।", fontSize = fontSize.sp, lineHeight = (fontSize * lineSpacing).sp, color = SarangshoPalette.Ink)
+            }
+        }
+        Text("এই নিয়ন্ত্রণগুলো শুধু নমুনা পাঠে প্রযোজ্য; স্থায়ীভাবে সংরক্ষিত হয় না।", color = SarangshoPalette.Muted, fontSize = 12.sp)
     }
 }
 
