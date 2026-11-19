@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,7 +23,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 
 
 @Composable internal fun Vocabulary(nav: NavHostController) {
-    var reveal by remember { mutableStateOf(false) }
+    var reveal by rememberSaveable { mutableStateOf(false) }
     Scroll {
         Intro("আজকের শব্দ", "শব্দের অর্থ, ব্যবহার ও পরীক্ষায় প্রয়োগ শিখুন।")
         Panel {
@@ -43,7 +44,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 }
 
 @Composable internal fun Challenge(nav: NavHostController) {
-    var selected by remember { mutableIntStateOf(-1) }
+    var selected by rememberSaveable { mutableIntStateOf(-1) }
     Scroll {
         Kicker("BCS & BANK • নমুনা প্রশ্ন"); Intro("বাংলাদেশের সংবিধান", "প্রশ্ন ১ / ১২ • একটি উত্তর নির্বাচন করুন।")
         Panel {
@@ -74,7 +75,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 }
 
 @Composable internal fun Writing() {
-    var draft by remember { mutableStateOf("") }
+    var draft by rememberSaveable { mutableStateOf("") }
     Scroll {
         Intro("লিখিত অনুশীলন", "নিজের ভাষায় উত্তর লিখুন। খসড়া সংরক্ষণ এখনো সংযুক্ত নয়।")
         Panel { Kicker("বিশ্লেষণী প্রশ্ন"); Text("জলবায়ু পরিবর্তন বাংলাদেশের উন্নয়ন পরিকল্পনায় কী ধরনের চ্যালেঞ্জ তৈরি করে? উদাহরণসহ আলোচনা করুন।", fontWeight = FontWeight.SemiBold, fontSize = 18.sp, lineHeight = 28.sp) }
@@ -85,7 +86,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 }
 
 @Composable internal fun Revision() {
-    var flipped by remember { mutableStateOf(false) }
+    var flipped by rememberSaveable { mutableStateOf(false) }
     Scroll {
         Intro("রিভিশন ডেক", "সক্রিয় স্মরণ দিয়ে শেখা বিষয় মনে রাখুন।")
         LinearProgressIndicator(progress = { 0.35f }, modifier = Modifier.fillMaxWidth(), color = SarangshoPalette.Teal, trackColor = SarangshoPalette.Line)
@@ -100,7 +101,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 }
 
 @Composable internal fun QuizSetup(nav: NavHostController) {
-    var exam by remember { mutableStateOf("BCS") }; var duration by remember { mutableStateOf("১৫ মিনিট") }
+    var exam by rememberSaveable { mutableStateOf("BCS") }; var duration by rememberSaveable { mutableStateOf("১৫ মিনিট") }
     Scroll {
         Intro("অনুশীলন সাজান", "আপনার প্রস্তুতির ধরন অনুযায়ী প্রশ্ন বেছে নিন।")
         Text("পরীক্ষা", fontWeight = FontWeight.SemiBold)
