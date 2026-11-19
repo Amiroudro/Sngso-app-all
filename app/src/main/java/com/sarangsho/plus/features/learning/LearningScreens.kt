@@ -27,7 +27,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
     Scroll {
         Intro("আজকের শব্দ", "শব্দের অর্থ, ব্যবহার ও পরীক্ষায় প্রয়োগ শিখুন।")
         Panel {
-            Kicker("NOUN"); Text("Resilience", fontSize = 30.sp, fontWeight = FontWeight.Bold, color = SarangshoPalette.Deep); Text("/rɪˈzɪliəns/ • উচ্চারণ", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Kicker("NOUN"); Text("Resilience", fontSize = 30.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface); Text("/rɪˈzɪliəns/ • উচ্চারণ", color = MaterialTheme.colorScheme.onSurfaceVariant)
             if (reveal) {
                 Text("বাংলা অর্থ: প্রতিকূলতা কাটিয়ে ওঠার সক্ষমতা", fontWeight = FontWeight.SemiBold)
                 Text("Definition: The ability to recover quickly from difficulty.")
