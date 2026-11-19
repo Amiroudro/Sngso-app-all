@@ -74,15 +74,15 @@ private fun SarangshoApp() {
                     title = { Text(title, fontSize = 17.sp, fontWeight = FontWeight.SemiBold) },
                     navigationIcon = {
                         IconButton(onClick = { if (route in tabs) nav.navigate("search") else nav.popBackStack() }) {
-                            Icon(if (route in tabs) Icons.Default.Search else Icons.AutoMirrored.Filled.ArrowBack, "Back or search")
+                            Icon(if (route in tabs) Icons.Default.Search else Icons.AutoMirrored.Filled.ArrowBack, if (route in tabs) "অনুসন্ধান" else "পেছনে")
                         }
                     },
-                    actions = { IconButton(onClick = { nav.navigate("profile") }) { Icon(Icons.Default.AccountCircle, "Profile") } },
-                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = SarangshoPalette.Paper)
+                    actions = { IconButton(onClick = { nav.navigate("profile") }) { Icon(Icons.Default.AccountCircle, "প্রোফাইল") } },
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = MaterialTheme.colorScheme.background)
                 )
             },
             bottomBar = {
-                if (route in tabs) NavigationBar(containerColor = Color.White) {
+                if (route in tabs) NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
                     tabs.forEachIndexed { index, target ->
                         NavigationBarItem(selected = route == target, onClick = { nav.navigate(target) {
                                 popUpTo(nav.graph.findStartDestination().id) { saveState = true }
