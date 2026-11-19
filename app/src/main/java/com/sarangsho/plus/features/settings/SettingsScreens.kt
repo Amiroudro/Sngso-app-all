@@ -52,14 +52,14 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
                 Text("বাংলা ও ইংরেজি একসঙ্গে পড়ার সময় অক্ষরের গঠন এবং লাইনের ফাঁক যেন পরিষ্কার থাকে।", fontSize = fontSize.sp, lineHeight = (fontSize * lineSpacing).sp, color = SarangshoPalette.Ink)
             }
         }
-        Text("এই নিয়ন্ত্রণগুলো শুধু নমুনা পাঠে প্রযোজ্য; স্থায়ীভাবে সংরক্ষিত হয় না।", color = SarangshoPalette.Muted, fontSize = 12.sp)
+        Text("এই নিয়ন্ত্রণগুলো শুধু নমুনা পাঠে প্রযোজ্য; স্থায়ীভাবে সংরক্ষিত হয় না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
     }
 }
 
 @Composable internal fun Downloads() {
     Scroll {
         Intro("অফলাইন লাইব্রেরি", "ডাউনলোড করা সংস্করণ নেটওয়ার্ক ছাড়াও পড়ুন।")
-        Panel { Icon(Icons.Default.CloudOff, null, tint = SarangshoPalette.Teal, modifier = Modifier.size(30.dp)); Text("কোনো সংস্করণ ডাউনলোড করা নেই", fontWeight = FontWeight.Bold, fontSize = 18.sp); Text("ডাউনলোড সুবিধা যুক্ত হলে সংরক্ষিত সংস্করণ, ফাইলের আকার, শেষ সিঙ্ক ও স্টোরেজ ব্যবহার এখানে দেখানো হবে।", color = SarangshoPalette.Muted) }
+        Panel { Icon(Icons.Default.CloudOff, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(30.dp)); Text("কোনো সংস্করণ ডাউনলোড করা নেই", fontWeight = FontWeight.Bold, fontSize = 18.sp); Text("ডাউনলোড সুবিধা যুক্ত হলে সংরক্ষিত সংস্করণ, ফাইলের আকার, শেষ সিঙ্ক ও স্টোরেজ ব্যবহার এখানে দেখানো হবে।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
     }
 }
 
@@ -78,7 +78,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
                     Text(question, Modifier.weight(1f), fontWeight = FontWeight.SemiBold)
                     Icon(if (question in expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore, null)
                 }
-                if (question in expanded) Text(answer, color = SarangshoPalette.Muted, lineHeight = 22.sp)
+                if (question in expanded) Text(answer, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 22.sp)
             }
         }
     }
@@ -91,7 +91,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { listOf("সাধারণ মতামত", "সমস্যা", "ভুল তথ্য").forEach { FilterChip(selected = category == it, onClick = { category = it }, label = { Text(it) }) } }
         OutlinedTextField(message, { message = it }, Modifier.fillMaxWidth().height(180.dp), label = { Text("বিস্তারিত লিখুন") }, placeholder = { Text("কী ঘটেছে, কোন স্ক্রিনে, কী আশা করেছিলেন...") })
         Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text("পাঠানো শিগগিরই চালু হবে") }
-        Text("মতামত পাঠানোর সার্ভিস এখনো সংযুক্ত নয়; এই খসড়া কোথাও পাঠানো হবে না।", color = SarangshoPalette.Muted, fontSize = 12.sp)
+        Text("মতামত পাঠানোর সার্ভিস এখনো সংযুক্ত নয়; এই খসড়া কোথাও পাঠানো হবে না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
     }
 }
 
@@ -99,7 +99,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 @Composable internal fun Privacy() {
     Scroll {
         Intro("গোপনীয়তা ও ডেটা", "আপনার পড়ার তথ্য কীভাবে ব্যবহৃত হবে, তা পরিষ্কারভাবে দেখুন।")
-        Panel { Text("বর্তমান অবস্থা", fontWeight = FontWeight.Bold); Text("এই প্রোটোটাইপে কোনো অ্যাকাউন্ট, ক্লাউড প্রোফাইল বা আচরণগত বিশ্লেষণ সংযুক্ত নেই।", color = SarangshoPalette.Muted) }
+        Panel { Text("বর্তমান অবস্থা", fontWeight = FontWeight.Bold); Text("এই প্রোটোটাইপে কোনো অ্যাকাউন্ট, ক্লাউড প্রোফাইল বা আচরণগত বিশ্লেষণ সংযুক্ত নেই।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
         Panel { Text("ডেটা নিয়ন্ত্রণ", fontWeight = FontWeight.SemiBold); Text("অ্যাকাউন্ট ও সিঙ্ক চালু হলে ডেটা রপ্তানি, মুছে ফেলা এবং অনুমতি নিয়ন্ত্রণের অপশন এখানে যুক্ত হবে।") }
     }
 }
@@ -113,7 +113,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
                 RadioButton(selected = language == it, onClick = { language = it }); Text(it)
             }
         }
-        Text("নির্বাচন: " + language + " • এই পছন্দ এখনো স্থায়ীভাবে সংরক্ষিত নয়।", color = SarangshoPalette.Muted, fontSize = 12.sp)
+        Text("নির্বাচন: " + language + " • এই পছন্দ এখনো স্থায়ীভাবে সংরক্ষিত নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
     }
 }
 
@@ -125,8 +125,8 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
         OutlinedTextField(email, { email = it }, Modifier.fillMaxWidth(), label = { Text("ইমেইল") }, singleLine = true)
         OutlinedTextField(password, { password = it }, Modifier.fillMaxWidth(), label = { Text("পাসওয়ার্ড") }, visualTransformation = PasswordVisualTransformation(), singleLine = true)
         Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text("অ্যাকাউন্ট তৈরি শিগগিরই চালু হবে") }
-        Text("নিরাপদ authentication ও account storage এখনো সংযুক্ত নয়।", color = SarangshoPalette.Muted, fontSize = 12.sp)
-        Text("সাইন ইন পেজে ফিরুন", Modifier.clickable { nav.navigate("signin") }, color = SarangshoPalette.Teal)
+        Text("নিরাপদ authentication ও account storage এখনো সংযুক্ত নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        Text("সাইন ইন পেজে ফিরুন", Modifier.clickable { nav.navigate("signin") }, color = MaterialTheme.colorScheme.primary)
     }
 }
 
@@ -145,6 +145,6 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
         Intro("তথ্য সংশোধনের অনুরোধ", "ভুল তারিখ, সংখ্যা, উদ্ধৃতি বা প্রসঙ্গ চোখে পড়লে নির্দিষ্ট করে জানান।")
         OutlinedTextField(details, { details = it }, Modifier.fillMaxWidth().height(180.dp), label = { Text("কী ভুল হয়েছে?") }, placeholder = { Text("দাবি, সংশোধনের প্রস্তাব এবং প্রাসঙ্গিক উৎসের লিংক লিখুন।") })
         Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text("অনুরোধ পাঠানো শিগগিরই চালু হবে") }
-        Text("রিপোর্টিং সার্ভিস সংযুক্ত না হওয়া পর্যন্ত এই খসড়া পাঠানো হবে না।", color = SarangshoPalette.Muted, fontSize = 12.sp)
+        Text("রিপোর্টিং সার্ভিস সংযুক্ত না হওয়া পর্যন্ত এই খসড়া পাঠানো হবে না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
     }
 }
