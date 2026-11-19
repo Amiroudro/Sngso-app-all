@@ -3,15 +3,19 @@ name: Android UI CI
 on:
   pull_request:
   workflow_dispatch:
-  push:
-    branches: [main, feat/compose-ui-foundation, fix/android-build-verification]
+
+# Keep only the newest verification run for a PR. This prevents multiple
+# queued builds from consuming the same limited Actions allowance.
+concurrency:
+  group: android-ui-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
   unit-and-build:
-    # Routine PR/push gate. Manual dispatch is reserved for the emulator job.
+    # Routine PR gate. Manual dispatch is reserved for the emulator job.
     if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
@@ -42,9 +46,10 @@ jobs:
           name: sarangsho-plus-debug-apk
           path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
+          retention-days: 1
 
-  # Emulator boot is comparatively expensive. Keep it manual so ordinary PR
-  # verification uses the included Actions minutes for compile/tests first.
+  # Emulator boot is comparatively expensive. Run it manually after the
+  # routine build gate passes, not on every pull-request update.
   compose-instrumentation:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
@@ -57,8 +62,6 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
         with:
-          # Keep this package list explicit so the obsolete "tools" package
-          # is never requested by the setup action's default configuration.
           packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
           accept-android-sdk-licenses: true
       - name: Run Compose smoke test on emulator
@@ -68,7 +71,6 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_2
-          # Keep the action's recommended software-rendering and snapshot settings.
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           emulator-boot-timeout: 900
           disable-animations: true
