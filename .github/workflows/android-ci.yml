@@ -39,6 +39,8 @@ jobs:
           sdkmanager --list_installed
       - name: Run unit tests
         run: ./gradlew --no-daemon --stacktrace :app:testDebugUnitTest
+      - name: Compile and assemble instrumentation test APK
+        run: ./gradlew --no-daemon --stacktrace :app:assembleDebugAndroidTest
       - name: Assemble debug APK
         run: ./gradlew --no-daemon --stacktrace :app:assembleDebug
       - name: Upload debug APK
