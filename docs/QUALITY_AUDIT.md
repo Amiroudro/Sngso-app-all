@@ -15,13 +15,14 @@
 - Authentication, saved articles, downloads, feedback submission and user analytics are not represented as working services.
 - Empty and unavailable states explain when their data/service is not connected.
 - Sample stories and sample vocabulary are labelled as such.
+- Routine pull-request CI runs unit tests and debug APK assembly; emulator instrumentation is reserved for manual workflow dispatch to conserve Actions minutes.
 
 ## Release blockers
 
 | Priority | Finding | Required evidence to close |
 |---|---|---|
-| P0 | Android build and tests have not completed successfully yet | Green unit/build and emulator workflow |
-| P0 | No real-device visual verification | Screenshots from a small phone, large phone and tablet |
+| P0 | Android build and unit tests have not completed successfully yet | Green unit-test and debug-assembly workflow |
+| P0 | No successful emulator instrumentation or real-device visual verification | Manual emulator workflow passes; screenshots from a small phone, large phone and tablet |
 | P1 | Gradle Wrapper files are now committed and CI uses them, but the wrapper has not yet completed a fresh build in this environment | Verify wrapper download, Gradle 8.9 startup, unit tests and APK assembly |
 | P1 | Editorial engine contract is not connected | Contract tests against approved edition fixtures |
 | P1 | Vocabulary bookmarks and the fixed study checklist have basic device-local persistence; saved articles, settings, dated plans and practice history are not persisted | Room/DataStore implementation, repository tests and migration tests |
@@ -35,8 +36,8 @@
 
 ## Next engineering sequence
 
-1. Get the Android workflow green and fix compiler/test failures before adding more UI.
-2. Validate the committed Gradle Wrapper and keep CI pinned to its checksum-verified Gradle 8.9 distribution.
+1. Get the routine Android unit/build workflow green and fix compiler/test failures before adding more UI.
+2. Run the emulator instrumentation workflow manually after the unit/build gate passes.
 3. Replace string routes with typed destinations and add deep-link contracts.
 4. Introduce screen-level ViewModels and immutable UI state.
 5. Connect approved edition fixtures, then the real engine API.
