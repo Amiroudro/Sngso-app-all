@@ -53,3 +53,13 @@
 - Primary navigation is limited to five destinations.
 - Unsupported actions are disabled with explanatory copy rather than appearing functional.
 - No live story count, source comparison, score, progress metric or download state is fabricated.
+## Navigation source check (2026-11-19)
+
+A source-level scan of the current branch found:
+
+- 47 unique route declarations and 47 matching screen-dispatch branches.
+- 65 literal `navigate("…")` calls across the activity and feature files.
+- No literal navigation target points to an undeclared route.
+- `word-detail` and `language` currently have no literal incoming navigation call. They are reachable only if a future/dynamic entry point is added, or they may be obsolete; confirm intended entry points before release.
+
+This checks string consistency only. It does not prove that every screen renders, that every interaction works, or that navigation survives process recreation. A compiled build and device-level tests are still required.
