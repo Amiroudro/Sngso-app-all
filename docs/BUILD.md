@@ -38,8 +38,9 @@ The debug APK is written to `app/build/outputs/apk/debug/app-debug.apk`.
 ## GitHub Actions usage
 
 - Pull requests and pushes run unit tests and debug APK assembly.
-- Emulator instrumentation is manual because booting an emulator consumes substantially more Actions time. It runs only when the workflow is started with `workflow_dispatch`.
-- This keeps the routine verification path focused on compile, unit tests and APK assembly while conserving the included Actions allowance.
+- Emulator instrumentation is manual because booting an emulator consumes substantially more Actions time.
+- A manual workflow dispatch runs only the emulator instrumentation job. It skips the routine unit/build job, avoiding a second build in the same run.
+- This keeps routine verification focused on compile, unit tests and APK assembly while conserving the included Actions allowance.
 
 ## Reproducibility and integrity
 
