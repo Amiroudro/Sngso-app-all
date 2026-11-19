@@ -18,6 +18,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.sarangsho.plus.ui.theme.SarangshoTheme
 import androidx.navigation.NavHostController
 import com.sarangsho.plus.ui.theme.SarangshoPalette
 
@@ -358,4 +361,20 @@ internal fun Summary(nav: NavHostController) {
         Panel { Text("ডেটা সংযুক্ত নয়", fontWeight = FontWeight.Bold); Text("সূচকের মান, সময়সীমা, একক, পদ্ধতি, সংশোধনের ইতিহাস এবং মূল প্রকাশনা যুক্ত হলে এখানে দেখানো হবে।", color = SarangshoPalette.Muted) }
         Text("কোনো চার্ট বা মান দেখানো হচ্ছে না, কারণ যাচাইকৃত ডেটা এখনো সংযুক্ত নয়।", color = SarangshoPalette.Muted)
     }
+}
+
+ 
+@Preview(name = "Home / Light", showBackground = true, widthDp = 393, heightDp = 852)
+@Composable private fun HomeLightPreview() {
+    SarangshoTheme(darkTheme = false) { Home(rememberNavController()) }
+}
+
+@Preview(name = "Home / Dark", showBackground = true, widthDp = 393, heightDp = 852)
+@Composable private fun HomeDarkPreview() {
+    SarangshoTheme(darkTheme = true) { Home(rememberNavController()) }
+}
+
+@Preview(name = "Article / Light", showBackground = true, widthDp = 393, heightDp = 852)
+@Composable private fun ArticleLightPreview() {
+    SarangshoTheme(darkTheme = false) { Article(rememberNavController()) }
 }
