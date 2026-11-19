@@ -218,7 +218,7 @@ internal fun Summary(nav: NavHostController) {
 @Composable internal fun Saved(nav: NavHostController) {
     Scroll {
         Intro("আপনার সংরক্ষিত বিষয়", "পরে পড়ার জন্য রাখা সংবাদ, শব্দ ও রিভিশন কার্ড।")
-        Panel { Icon(Icons.Default.Bookmarks, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(30.dp)); Text("এখনো কিছু সংরক্ষণ করা হয়নি", fontWeight = FontWeight.Bold, fontSize = 18.sp); Text("সংবাদ বা শব্দের পাশে বুকমার্ক আইকনে চাপ দিলে এখানে পাওয়া যাবে।", color = MaterialTheme.colorScheme.onSurfaceVariant); Primary("সংবাদ দেখুন") { nav.navigate("feed") } }
+        Panel { Icon(Icons.Default.Bookmarks, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(30.dp)); Text("এখনো কিছু সংরক্ষণ করা হয়নি", fontWeight = FontWeight.Bold, fontSize = 18.sp); Text("সংরক্ষণ সুবিধা ও স্থানীয় লাইব্রেরি এখনো সংযুক্ত হয়নি। চালু হলে সংবাদ, শব্দ ও প্রশ্ন এখানে পাওয়া যাবে।", color = MaterialTheme.colorScheme.onSurfaceVariant); Primary("সংবাদ দেখুন") { nav.navigate("feed") } }
         RowLink("সংরক্ষিত সংগ্রহ", "ফোল্ডার ও বিষয়ভিত্তিক তালিকা", Icons.Default.Folder) { nav.navigate("saved-collections") }
     }
 }
