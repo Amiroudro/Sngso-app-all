@@ -1,4 +1,5 @@
 package com.sarangsho.plus.features.learning
+import com.sarangsho.plus.data.LocalLearningStore
 import com.sarangsho.plus.ui.components.*
 
 import androidx.compose.foundation.BorderStroke
@@ -14,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -24,8 +26,9 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 
 
 @Composable internal fun Vocabulary(nav: NavHostController) {
+    val context = LocalContext.current
     var reveal by rememberSaveable { mutableStateOf(false) }
-    var bookmarked by rememberSaveable { mutableStateOf(false) }
+    var bookmarked by remember { mutableStateOf(LocalLearningStore.isWordBookmarked(context, "Resilience")) }
     Scroll {
         Intro("আজকের শব্দ", "শব্দের অর্থ, ব্যবহার ও পরীক্ষায় প্রয়োগ শিখুন।")
         Panel {
@@ -39,7 +42,10 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
             Primary(if (reveal) "আবার লুকান" else "অর্থ দেখুন") { reveal = !reveal }
         }
         OutlinedButton(
-            onClick = { bookmarked = !bookmarked },
+            onClick = {
+                bookmarked = !bookmarked
+                LocalLearningStore.setWordBookmarked(context, "Resilience", bookmarked)
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Icon(
@@ -49,8 +55,8 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
             Text(if (bookmarked) "  এই সেশনে সংরক্ষিত" else "  সাময়িকভাবে সংরক্ষণ করুন")
         }
         Text(
-            if (bookmarked) "শব্দটি এই স্ক্রিনের সেশনে চিহ্নিত হয়েছে। স্থায়ী বুকমার্ক ও সিঙ্ক এখনো যুক্ত হয়নি।"
-            else "এটি সাময়িক বুকমার্ক; অ্যাপ বন্ধ করলে সংরক্ষণ থাকবে না।",
+            if (bookmarked) "শব্দটি এই ডিভাইসে সংরক্ষিত। অ্যাকাউন্ট-ভিত্তিক সিঙ্ক এখনো নেই।"
+            else "বুকমার্কটি সরানো হয়েছে। সংরক্ষণ শুধু এই ডিভাইসে থাকে।",
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 12.sp
         )
@@ -215,15 +221,26 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 }
 
 @Composable internal fun StudyPlan() {
+    val context = LocalContext.current
     val tasks = listOf("আজকের ব্রিফিং পড়া", "১০টি MCQ অনুশীলন", "৫টি নতুন শব্দ শেখা", "আগের ভুলগুলো রিভিশন")
-    val done = remember { mutableStateListOf<String>() }
+    val done = remember { mutableStateListOf<String>().apply {
+        addAll(LocalLearningStore.getCompletedStudyTasks(context).filter { it in tasks })
+    } }
     Scroll {
         Intro("আপনার পড়ার পরিকল্পনা", "ছোট, বাস্তবসম্মত সেশন দিয়ে ধারাবাহিকতা তৈরি করুন।")
         Panel {
             Text("আজকের কাজ", fontWeight = FontWeight.Bold)
             tasks.forEach { task ->
-                Row(Modifier.fillMaxWidth().clickable { if (task in done) done.remove(task) else done.add(task) }.padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(checked = task in done, onCheckedChange = { checked -> if (checked) done.add(task) else done.remove(task) }); Text(task)
+                Row(Modifier.fillMaxWidth().clickable {
+                    val checked = task !in done
+                    if (checked) done.add(task) else done.remove(task)
+                    LocalLearningStore.setStudyTaskCompleted(context, task, checked)
+                }.padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(checked = task in done, onCheckedChange = { checked ->
+                        if (checked && task !in done) done.add(task)
+                        if (!checked) done.remove(task)
+                        LocalLearningStore.setStudyTaskCompleted(context, task, checked)
+                    }); Text(task)
                 }
             }
             Text(done.size.toString() + " / " + tasks.size + " সম্পন্ন", color = MaterialTheme.colorScheme.onSurfaceVariant)
