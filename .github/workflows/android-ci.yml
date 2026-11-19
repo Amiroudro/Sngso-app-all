@@ -11,6 +11,8 @@ permissions:
 
 jobs:
   unit-and-build:
+    # Routine PR/push gate. Manual dispatch is reserved for the emulator job.
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
