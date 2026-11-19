@@ -71,17 +71,45 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
                     Row(Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) { RadioButton(selected == i, { selected = i }); Text("Option " + (i + 1) + "  " + option) }
                 }
             }
-            Primary("উত্তর জমা দিন") { if (selected >= 0) nav.navigate("answer") }
+            Primary("উত্তর জমা দিন") {
+                if (selected >= 0) {
+                    nav.currentBackStackEntry?.savedStateHandle?.set("selectedAnswer", selected)
+                    nav.navigate("answer")
+                }
+            }
             Text("নমুনা প্রশ্ন; প্রকৃত পরীক্ষার প্রশ্ন বা পূর্বাভাস নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
         }
     }
 }
 
 @Composable internal fun Answer(nav: NavHostController) {
+    val selectedAnswer = nav.previousBackStackEntry?.savedStateHandle?.get<Int>("selectedAnswer") ?: -1
+    val correctAnswer = 0
+    val options = listOf("৪ নভেম্বর ১৯৭২", "১৬ ডিসেম্বর ১৯৭২", "২৬ মার্চ ১৯৭১", "১০ জানুয়ারি ১৯৭২")
+    val isCorrect = selectedAnswer == correctAnswer
     Scroll {
         Panel {
-            Row(verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Default.CheckCircle, null, tint = MaterialTheme.colorScheme.tertiary); Spacer(Modifier.width(8.dp)); Text("উত্তর ব্যাখ্যা", fontSize = 20.sp, fontWeight = FontWeight.Bold) }
-            Text("সঠিক উত্তর: ৪ নভেম্বর ১৯৭২", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    if (isCorrect) Icons.Default.CheckCircle else Icons.Default.Info,
+                    null,
+                    tint = if (isCorrect) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary
+                )
+                Spacer(Modifier.width(8.dp))
+                Text("উত্তর ব্যাখ্যা", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            }
+            Text(
+                if (isCorrect) "আপনার উত্তর সঠিক" else "আপনার উত্তর সঠিক নয়",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = if (isCorrect) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.error
+            )
+            if (selectedAnswer in options.indices) {
+                Text("আপনার উত্তর: ${options[selectedAnswer]}")
+            } else {
+                Text("আপনার উত্তর পাওয়া যায়নি।")
+            }
+            Text("সঠিক উত্তর: ${options[correctAnswer]}", fontWeight = FontWeight.SemiBold)
             Text("গণপরিষদে বাংলাদেশের সংবিধান ১৯৭২ সালের ৪ নভেম্বর গৃহীত হয় এবং ১৬ ডিসেম্বর ১৯৭২ কার্যকর হয়। গৃহীত হওয়ার তারিখ ও কার্যকর হওয়ার তারিখ আলাদা।")
             Text("পরীক্ষার কৌশল: ‘গৃহীত’, ‘স্বাক্ষরিত’ ও ‘কার্যকর’ শব্দের পার্থক্য খেয়াল করুন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
