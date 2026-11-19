@@ -56,6 +56,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 private fun SarangshoApp() {
     val nav = rememberNavController()
     val entry by nav.currentBackStackEntryAsState()
@@ -234,7 +235,8 @@ private fun Scroll(content: @Composable ColumnScope.() -> Unit) {
         OutlinedButton(onClick = {}, modifier = Modifier.fillMaxWidth()) { Icon(Icons.Default.BookmarkBorder, null); Text("  সংরক্ষণ করুন") }
     }
 }
-@Composable private fun Summary(nav: NavHostController) {
+@Composable @OptIn(ExperimentalMaterial3Api::class)
+private fun Summary(nav: NavHostController) {
     var level by remember { mutableIntStateOf(0) }
     val labels = listOf("৩০ সেকেন্ড", "২ মিনিট", "বিস্তারিত")
     val texts = listOf("ঘটনাটির মূল বিষয় এক বাক্যে বুঝুন।", "মূল সিদ্ধান্ত, সংশ্লিষ্ট প্রতিষ্ঠান এবং বাংলাদেশের জন্য সম্ভাব্য তাৎপর্য সংক্ষেপে পড়ুন।", "বিস্তারিত সংস্করণে পটভূমি, প্রক্রিয়া, মূল তথ্য, সংশ্লিষ্ট পক্ষের অবস্থান, অনিশ্চয়তা এবং পরীক্ষায় প্রাসঙ্গিক ধারণা থাকবে।")
