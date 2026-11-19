@@ -10,7 +10,8 @@
 - Semantic light and dark color schemes are centralized.
 - Search and category filters work against explicitly labelled local sample stories.
 - The onboarding path has a Compose instrumentation test.
-- Vocabulary bookmark state and study-plan checklist state are stored locally with Android SharedPreferences; this is device-only and does not sync.
+- Vocabulary Lab has a searchable five-entry sample word list with per-word bookmark controls; bookmarks and the fixed study-plan checklist are stored locally with Android SharedPreferences. The Saved screen lists/removes bookmarked words and refreshes when returning to either screen. This is device-only and does not sync.
+- Vocabulary definitions and examples are prototype learning content; dictionary/source references and a maintained exam vocabulary feed are not connected.
 - Authentication, saved articles, downloads, feedback submission and user analytics are not represented as working services.
 - Empty and unavailable states explain when their data/service is not connected.
 - Sample stories and sample vocabulary are labelled as such.
@@ -23,7 +24,8 @@
 | P0 | No real-device visual verification | Screenshots from a small phone, large phone and tablet |
 | P1 | No Gradle Wrapper is committed | Add and validate wrapper files before external developer handoff |
 | P1 | Editorial engine contract is not connected | Contract tests against approved edition fixtures |
-| P1 | Only vocabulary bookmarks and the fixed study checklist have basic device-local persistence; saved articles, settings, dated plans and practice history are not persisted | Room/DataStore implementation, repository tests and migration tests |
+| P1 | Vocabulary bookmarks and the fixed study checklist have basic device-local persistence; saved articles, settings, dated plans and practice history are not persisted | Room/DataStore implementation, repository tests and migration tests |
+| P1 | Vocabulary entries are a small manually authored sample without dictionary/source citations or feed updates | Add reviewed word records with source metadata, provenance and update validation |
 | P1 | Authentication and account recovery are unavailable | Real auth integration or remove account creation from release UI |
 | P1 | Offline edition download/sync is unavailable | Download lifecycle, storage errors and stale-cache tests |
 | P2 | Screen routes are still string-based | Move to typed route definitions before route count expands further |
@@ -38,7 +40,7 @@
 3. Replace string routes with typed destinations and add deep-link contracts.
 4. Introduce screen-level ViewModels and immutable UI state.
 5. Connect approved edition fixtures, then the real engine API.
-6. Replace the initial SharedPreferences store with Room/DataStore repositories for offline reading, saved items, preferences and learning progress.
+6. Add reviewed, source-attributed vocabulary records and a controlled update path; replace the initial SharedPreferences store with Room/DataStore repositories for offline reading, saved items, preferences and learning progress.
 7. Capture rendered screenshots and run the Impeccable critique/audit pass at real device sizes.
 8. Complete Bengali typography, TalkBack, font scaling, dark theme and reduced-motion checks.
 
