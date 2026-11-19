@@ -110,7 +110,7 @@ private fun Screen(route: String, nav: NavHostController) {
         "world" -> Topics(nav, true)
         "graph" -> Graph()
         "data" -> DataExplorer()
-        "vocabulary" -> Vocabulary()
+        "vocabulary" -> Vocabulary(nav)
         "challenge" -> Challenge(nav)
         "answer" -> Answer(nav)
         "writing" -> Writing()
@@ -230,15 +230,39 @@ private fun Scroll(content: @Composable ColumnScope.() -> Unit) {
 }
 @Composable private fun Feed(nav: NavHostController) {
     var filter by remember { mutableStateOf("সব") }
+    var query by remember { mutableStateOf("") }
+    val stories = listOf(
+        Triple("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি", "অর্থনীতি", "৬ মিনিট"),
+        Triple("জাতিসংঘ ও জলবায়ু আলোচনার সাম্প্রতিক অগ্রগতি", "বিশ্ব", "৫ মিনিট"),
+        Triple("আন্তর্জাতিক আদালতের এখতিয়ার ও বিচারিক প্রক্রিয়া", "আইন ও বিচার", "৭ মিনিট")
+    )
+    val filtered = stories.filter { story ->
+        val categoryMatches = filter == "সব" ||
+            (filter == "বাংলাদেশ" && story.second != "বিশ্ব") ||
+            (filter == "বিশ্ব" && story.second == "বিশ্ব") ||
+            (filter == "অর্থনীতি" && story.second == "অর্থনীতি")
+        val queryMatches = query.isBlank() || story.first.contains(query, ignoreCase = true)
+        categoryMatches && queryMatches
+    }
     Scroll {
         Intro("সংবাদ অনুসন্ধান", "বিষয় ও গুরুত্ব অনুযায়ী পড়ার তালিকা সাজান।")
-        OutlinedTextField("", {}, Modifier.fillMaxWidth(), enabled = false, placeholder = { Text("শিরোনাম বা বিষয় খুঁজুন • সার্চ শিগগিরই") }, leadingIcon = { Icon(Icons.Default.Search, null) })
+        OutlinedTextField(query, { query = it }, Modifier.fillMaxWidth(),
+            placeholder = { Text("শিরোনাম বা বিষয় খুঁজুন") },
+            leadingIcon = { Icon(Icons.Default.Search, null) }, singleLine = true)
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            listOf("সব", "বাংলাদেশ", "বিশ্ব", "অর্থনীতি").forEach { FilterChip(filter == it, { filter = it }, label = { Text(it) }) }
+            listOf("সব", "বাংলাদেশ", "বিশ্ব", "অর্থনীতি").forEach {
+                FilterChip(selected = filter == it, onClick = { filter = it }, label = { Text(it) })
+            }
         }
-        Story("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি", "অর্থনীতি", "৬ মিনিট", nav)
-        Story("জাতিসংঘ ও জলবায়ু আলোচনার সাম্প্রতিক অগ্রগতি", "বিশ্ব", "৫ মিনিট", nav)
-        Story("আন্তর্জাতিক আদালতের এখতিয়ার ও বিচারিক প্রক্রিয়া", "আইন ও বিচার", "৭ মিনিট", nav)
+        if (filtered.isEmpty()) {
+            Panel {
+                Text("কোনো নমুনা ফল পাওয়া যায়নি", fontWeight = FontWeight.SemiBold)
+                Text("অন্য শব্দ লিখুন অথবা ফিল্টার বদলান।", color = SarangshoPalette.Muted)
+            }
+        } else {
+            filtered.forEach { Story(it.first, it.second, it.third, nav) }
+        }
+        Text("এগুলো UI পরীক্ষার নমুনা শিরোনাম, লাইভ সংবাদ নয়।", color = SarangshoPalette.Muted, fontSize = 11.sp)
     }
 }
 @Composable private fun Article(nav: NavHostController) {
@@ -317,7 +341,7 @@ private fun Summary(nav: NavHostController) {
         }
     }
 }
-@Composable private fun Vocabulary() {
+@Composable private fun Vocabulary(nav: NavHostController) {
     var reveal by remember { mutableStateOf(false) }
     Scroll {
         Intro("আজকের শব্দ", "শব্দের অর্থ, ব্যবহার ও পরীক্ষায় প্রয়োগ শিখুন।")
@@ -333,7 +357,7 @@ private fun Summary(nav: NavHostController) {
         }
         OutlinedButton(onClick = {}, modifier = Modifier.fillMaxWidth()) { Icon(Icons.Default.BookmarkBorder, null); Text("  শব্দটি সংরক্ষণ করুন") }
         listOf("Accountability", "Sustainable", "Mitigate", "Consensus").forEach { word ->
-            Text(word, Modifier.fillMaxWidth().clickable { }.padding(vertical = 6.dp), fontWeight = FontWeight.Medium)
+            Text(word, Modifier.fillMaxWidth().clickable { nav.navigate("word-detail") }.padding(vertical = 6.dp), fontWeight = FontWeight.Medium)
         }
     }
 }
