@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.sarangsho.plus.features.learning.*
 import com.sarangsho.plus.features.reading.*
 import com.sarangsho.plus.features.settings.*
@@ -79,7 +80,11 @@ private fun SarangshoApp() {
             bottomBar = {
                 if (route in tabs) NavigationBar(containerColor = Color.White) {
                     tabs.forEachIndexed { index, target ->
-                        NavigationBarItem(selected = route == target, onClick = { nav.navigate(target) { launchSingleTop = true } },
+                        NavigationBarItem(selected = route == target, onClick = { nav.navigate(target) {
+                                popUpTo(nav.graph.findStartDestination().id) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            } },
                             icon = { Icon(icons[index], labels[index]) }, label = { Text(labels[index], fontSize = 10.sp) })
                     }
                 }
@@ -134,66 +139,3 @@ private fun Screen(route: String, nav: NavHostController) {
         "feedback" -> Feedback()
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
