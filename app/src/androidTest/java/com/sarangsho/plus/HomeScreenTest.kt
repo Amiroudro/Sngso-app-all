@@ -26,6 +26,6 @@ class HomeScreenTest {
         composeRule.onNodeWithText("কোন বিষয়গুলো পড়তে চান?").assertIsDisplayed()
 
         composeRule.onNodeWithText("আমার ব্রিফিং দেখুন").performClick()
-        composeRule.onNodeWithText("আজকের প্রধান বিষয়").assertIsDisplayed()
+        composeRule.onNodeWithText("প্রধান প্রতিবেদন").assertIsDisplayed()
     }
 }
