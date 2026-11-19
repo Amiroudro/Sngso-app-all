@@ -2,6 +2,7 @@ name: Android UI CI
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
 
 # Keep only the newest verification run for a PR. This prevents multiple
@@ -48,10 +49,18 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  # Emulator boot is comparatively expensive. Run it manually after the
-  # routine build gate passes, not on every pull-request update.
+  # Emulator boot is comparatively expensive. For an unmerged PR, this job
+  # runs only when the draft is marked ready for review, and only after the
+  # routine unit/build job succeeds. After merge, workflow_dispatch is also
+  # available from the default branch for deliberate manual reruns.
   compose-instrumentation:
-    if: github.event_name == 'workflow_dispatch'
+    needs: unit-and-build
+    if: >-
+      always() &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event_name == 'pull_request' &&
+        github.event.action == 'ready_for_review' &&
+        needs.unit-and-build.result == 'success'))
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
