@@ -65,3 +65,23 @@ A source-level scan of the current branch found:
 - `word-detail` and `language` currently have no literal incoming navigation call. They are reachable only if a future/dynamic entry point is added, or they may be obsolete; confirm intended entry points before release.
 
 This checks string consistency only. It does not prove that every screen renders, that every interaction works, or that navigation survives process recreation. A compiled build and device-level tests are still required.
+
+## Test coverage inventory (2026-11-20)
+
+A source review of the test files found five authored Android instrumentation test methods:
+
+| Test file | Test methods | What they cover |
+|---|---:|---|
+| `HomeScreenTest.kt` | 3 | Welcome screen text, first-run onboarding to Home, and the sample Feed category filter |
+| `LocalLearningStoreTest.kt` | 2 | Adding/reading/removing bookmarked words and completing/removing study tasks |
+
+Coverage limits:
+
+- These are Android instrumentation tests, not JVM unit tests.
+- The two local-store tests clear their test preferences before and after each test.
+- The test source uses Compose UI test APIs and AndroidX instrumentation APIs declared in the app module.
+- No test currently verifies all 47 routes, article/summary navigation, quiz answer/result correctness, vocabulary search/bookmark UI, Saved-screen removal, study-plan UI persistence, process recreation, or accessibility behavior.
+- The tests are authored only. Until CI gets a runner and executes them on an emulator, they are not passing tests.
+- The routine CI step `:app:assembleDebugAndroidTest` only compiles/packages the instrumentation APK. It is not a substitute for `:app:connectedDebugAndroidTest`.
+
+The next test expansion should follow actual user journeys and stable data contracts, not attempt to create one shallow test for every screen.
