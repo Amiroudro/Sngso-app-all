@@ -37,10 +37,12 @@ The debug APK is written to `app/build/outputs/apk/debug/app-debug.apk`.
 
 ## GitHub Actions usage
 
-- Pull requests and pushes run unit tests and debug APK assembly.
+- Pull-request updates run unit tests and debug APK assembly.
+- The workflow does not run a second time for branch pushes while a pull request is open.
+- A concurrency group cancels an older in-progress verification for the same pull request when a newer commit arrives.
 - Emulator instrumentation is manual because booting an emulator consumes substantially more Actions time.
 - A manual workflow dispatch runs only the emulator instrumentation job. It skips the routine unit/build job, avoiding a second build in the same run.
-- This keeps routine verification focused on compile, unit tests and APK assembly while conserving the included Actions allowance.
+- APK artifacts are retained for one day to limit storage usage. Download a needed APK promptly after a successful run.
 
 ## Reproducibility and integrity
 
@@ -53,4 +55,4 @@ The wrapper verifies the downloaded Gradle distribution against the pinned SHA-2
 
 ## Current verification status
 
-The wrapper files and CI commands are committed. This does not mean the latest source has passed a build. Recent GitHub Actions jobs failed before a runner was assigned, so Gradle did not start and no compiler or test result was produced. Treat the build as unverified until the build and test commands complete successfully.
+The wrapper files and CI commands are committed. This does not mean the latest source has passed a build. Recent GitHub Actions jobs failed before a runner was assigned, so Gradle did not start and no compiler or test result was produced. The latest workflow changes reduce duplicate runs and artifact retention, but have not themselves been exercised by a successful build. Treat the build as unverified until the build and test commands complete successfully.
