@@ -198,7 +198,7 @@ internal fun Summary(nav: NavHostController) {
     }
 }
 
-@Composable internal fun DataExplorer() {
+@Composable internal fun DataExplorer(nav: NavHostController) {
     Scroll {
         Intro("তথ্য ও পরিসংখ্যান", "সংখ্যার সঙ্গে একক, সময়কাল, সংজ্ঞা ও মূল উৎস দেখুন।")
         Panel { Kicker("ইন্ডিকেটর কার্ড • নমুনা"); Text("মূল্যস্ফীতি", fontSize = 20.sp, fontWeight = FontWeight.Bold); Text("সর্বশেষ মান: লাইভ ডেটা সংযুক্ত নয়", color = MaterialTheme.colorScheme.onSurfaceVariant); HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant); Text("সময়কাল: উল্লেখ করতে হবে"); Text("একক: শতাংশ"); Text("উৎস: সংশ্লিষ্ট সরকারি পরিসংখ্যান সংস্থা") }
@@ -314,7 +314,7 @@ internal fun Summary(nav: NavHostController) {
     }
 }
 
-@Composable internal fun Sources() {
+@Composable internal fun Sources(nav: NavHostController) {
     Scroll {
         Intro("উৎস ও যাচাই", "প্রতিটি তথ্য কোথা থেকে এসেছে এবং কীভাবে যাচাই হয়েছে তা দেখুন।")
         Panel { Text("উৎস-তথ্য", fontWeight = FontWeight.Bold); Text("প্রকৃত সংস্করণ যুক্ত হলে প্রকাশক, শিরোনাম, মূল URL, প্রকাশকাল, হালনাগাদ সময়, প্রবেশযোগ্যতা ও যাচাইয়ের অবস্থা দেখানো হবে।") }
