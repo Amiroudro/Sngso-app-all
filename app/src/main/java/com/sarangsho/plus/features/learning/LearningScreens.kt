@@ -16,6 +16,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -76,6 +79,22 @@ private val vocabularyEntries = listOf(
 
 @Composable internal fun Vocabulary(nav: NavHostController) {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val bookmarkedWords = remember {
+        mutableStateListOf<String>().apply {
+            addAll(LocalLearningStore.getBookmarkedWords(context))
+        }
+    }
+    DisposableEffect(lifecycleOwner, context) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                bookmarkedWords.clear()
+                bookmarkedWords.addAll(LocalLearningStore.getBookmarkedWords(context))
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
     var query by rememberSaveable { mutableStateOf("") }
     val filteredWords = vocabularyEntries.filter { entry ->
         query.isBlank() ||
@@ -101,9 +120,7 @@ private val vocabularyEntries = listOf(
         }
         filteredWords.forEach { entry ->
             var reveal by rememberSaveable(entry.term) { mutableStateOf(false) }
-            var bookmarked by remember(entry.term) {
-                mutableStateOf(LocalLearningStore.isWordBookmarked(context, entry.term))
-            }
+            val bookmarked = entry.term in bookmarkedWords
             Panel {
                 Kicker(entry.partOfSpeech.uppercase())
                 Text(entry.term, fontSize = 25.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
@@ -126,8 +143,10 @@ private val vocabularyEntries = listOf(
                         Text(if (reveal) "সংক্ষিপ্ত করুন" else "বিস্তারিত দেখুন")
                     }
                     OutlinedButton(onClick = {
-                        bookmarked = !bookmarked
-                        LocalLearningStore.setWordBookmarked(context, entry.term, bookmarked)
+                        val shouldBookmark = !bookmarked
+                        LocalLearningStore.setWordBookmarked(context, entry.term, shouldBookmark)
+                        if (shouldBookmark) bookmarkedWords.add(entry.term)
+                        else bookmarkedWords.remove(entry.term)
                     }) {
                         Icon(
                             if (bookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
