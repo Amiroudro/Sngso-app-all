@@ -35,7 +35,16 @@ private val pages = listOf(
     Page("bangladesh", "বাংলাদেশ বিষয়াবলি"), Page("world", "বিশ্ব বিষয়াবলি"), Page("graph", "জ্ঞান মানচিত্র"),
     Page("data", "তথ্য ও পরিসংখ্যান"), Page("vocabulary", "Vocabulary Lab"), Page("challenge", "BCS & Bank Challenge"),
     Page("answer", "উত্তরের ব্যাখ্যা"), Page("writing", "লিখিত অনুশীলন"), Page("revision", "Revision Deck"),
-    Page("search", "অনুসন্ধান ও উৎস"), Page("saved", "সংরক্ষিত"), Page("profile", "আমার প্রোফাইল")
+    Page("search", "অনুসন্ধান ও উৎস"), Page("saved", "সংরক্ষিত"), Page("profile", "আমার প্রোফাইল"),
+    Page("onboarding-goals", "আপনার লক্ষ্য"), Page("onboarding-interests", "আপনার আগ্রহ"),
+    Page("archive", "পুরোনো সংস্করণ"), Page("edition", "দৈনিক সংস্করণ"),
+    Page("topic-detail", "বিষয়ের পাঠ"), Page("sources", "তথ্যসূত্র"),
+    Page("quiz-setup", "অনুশীলন সাজান"), Page("quiz-results", "অনুশীলনের ফল"),
+    Page("word-detail", "শব্দের বিস্তারিত"), Page("study-plan", "পড়ার পরিকল্পনা"),
+    Page("notifications", "নোটিফিকেশন"), Page("settings", "সেটিংস"),
+    Page("reading-settings", "পড়ার পছন্দ"), Page("downloads", "অফলাইন লাইব্রেরি"),
+    Page("help", "সহায়তা"), Page("about", "Sarangsho Plus সম্পর্কে"),
+    Page("feedback", "মতামত জানান")
 )
 private val tabs = listOf("home", "feed", "challenge", "saved", "profile")
 private val labels = listOf("হোম", "অনুসন্ধান", "প্র্যাকটিস", "সংরক্ষিত", "প্রোফাইল")
@@ -57,7 +66,7 @@ private fun SarangshoApp() {
     val title = pages.first { it.route == route }.title
     SarangshoTheme {
         Scaffold(
-            containerColor = SarangshoPalette.Paper,
+            containerColor = MaterialTheme.colorScheme.background,
             topBar = {
                 if (route != "welcome") CenterAlignedTopAppBar(
                     title = { Text(title, fontSize = 17.sp, fontWeight = FontWeight.SemiBold) },
@@ -109,6 +118,23 @@ private fun Screen(route: String, nav: NavHostController) {
         "search" -> Search(nav)
         "saved" -> Saved(nav)
         "profile" -> Profile(nav)
+        "onboarding-goals" -> OnboardingGoals(nav)
+        "onboarding-interests" -> OnboardingInterests(nav)
+        "archive" -> Archive(nav)
+        "edition" -> Edition(nav)
+        "topic-detail" -> TopicDetail(nav)
+        "sources" -> Sources()
+        "quiz-setup" -> QuizSetup(nav)
+        "quiz-results" -> QuizResults(nav)
+        "word-detail" -> WordDetail()
+        "study-plan" -> StudyPlan()
+        "notifications" -> Notifications()
+        "settings" -> Settings(nav)
+        "reading-settings" -> ReadingSettings()
+        "downloads" -> Downloads()
+        "help" -> Help()
+        "about" -> About()
+        "feedback" -> Feedback()
     }
 }
 
@@ -165,7 +191,7 @@ private fun Scroll(content: @Composable ColumnScope.() -> Unit) {
             Text("বাংলাদেশ ও বিশ্বের গুরুত্বপূর্ণ ঘটনা বুঝুন, প্রেক্ষাপট জানুন এবং BCS ও Bank পরীক্ষার জন্য শিখুন।", color = SarangshoPalette.Muted, lineHeight = 25.sp)
         }
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Primary("শুরু করুন") { nav.navigate("home") }
+            Primary("শুরু করুন") { nav.navigate("onboarding-goals") }
             OutlinedButton(onClick = { nav.navigate("signin") }, modifier = Modifier.fillMaxWidth()) { Text("সাইন ইন") }
             Text("নমুনা সংস্করণ • অ্যাকাউন্ট ছাড়াও দেখা যাবে", color = SarangshoPalette.Muted, fontSize = 11.sp)
         }
@@ -389,6 +415,222 @@ private fun Summary(nav: NavHostController) {
         RowLink("রিভিশন ডেক", "মনে রাখার অনুশীলন", Icons.Default.Style) { nav.navigate("revision") }
         RowLink("লিখিত অনুশীলন", "আপনার উত্তর ও খসড়া", Icons.Default.EditNote) { nav.navigate("writing") }
         RowLink("সাইন ইন", "অ্যাকাউন্ট ও সিঙ্ক", Icons.Default.Login) { nav.navigate("signin") }
-        RowLink("সেটিংস ও পছন্দ", "ভাষা, ফন্ট, নোটিফিকেশন ও গোপনীয়তা", Icons.Default.Settings) {}
+        RowLink("নোটিফিকেশন", "আপডেট ও রিভিশন স্মরণ", Icons.Default.Notifications) { nav.navigate("notifications") }
+        RowLink("সেটিংস ও পছন্দ", "ভাষা, ফন্ট, ডাউনলোড ও গোপনীয়তা", Icons.Default.Settings) { nav.navigate("settings") }
+        RowLink("সহায়তা", "প্রশ্ন, সমস্যা ও মতামত", Icons.Default.HelpOutline) { nav.navigate("help") }
+    }
+}
+
+
+@Composable private fun OnboardingGoals(nav: NavHostController) {
+    var goal by remember { mutableStateOf("BCS প্রস্তুতি") }
+    Scroll {
+        Intro("আপনি কী অর্জন করতে চান?", "আপনার লক্ষ্য অনুযায়ী পড়ার অভিজ্ঞতা সাজানো হবে।")
+        listOf("BCS প্রস্তুতি", "Bank recruitment", "বিশ্ববিদ্যালয় ও সাধারণ জ্ঞান", "প্রতিদিনের খবর বুঝে পড়া").forEach { option ->
+            Surface(color = if (goal == option) MaterialTheme.colorScheme.secondary.copy(alpha = 0.18f) else MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(12.dp), border = BorderStroke(1.dp, if (goal == option) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline),
+                modifier = Modifier.fillMaxWidth().clickable { goal = option }) {
+                Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(selected = goal == option, onClick = { goal = option }); Text(option, fontWeight = FontWeight.SemiBold)
+                }
+            }
+        }
+        Primary("এগিয়ে যান") { nav.navigate("onboarding-interests") }
+        Text("পছন্দ পরে সেটিংস থেকে বদলানো যাবে।", color = SarangshoPalette.Muted, fontSize = 12.sp)
+    }
+}
+
+@Composable private fun OnboardingInterests(nav: NavHostController) {
+    val interests = listOf("বাংলাদেশ", "আন্তর্জাতিক বিষয়", "অর্থনীতি ও ব্যাংকিং", "আইন ও সংবিধান", "বিজ্ঞান ও প্রযুক্তি", "পরিবেশ ও জলবায়ু", "সমাজ ও উন্নয়ন")
+    val selected = remember { mutableStateListOf("বাংলাদেশ", "অর্থনীতি ও ব্যাংকিং") }
+    Scroll {
+        Intro("কোন বিষয়গুলো পড়তে চান?", "শুরুতে কয়েকটি বেছে নিন। পরে যেকোনো সময় পরিবর্তন করতে পারবেন।")
+        interests.forEach { item ->
+            Row(Modifier.fillMaxWidth().clickable { if (item in selected) selected.remove(item) else selected.add(item) }.padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(checked = item in selected, onCheckedChange = { checked -> if (checked) selected.add(item) else selected.remove(item) }); Text(item)
+            }
+        }
+        Primary("আমার ব্রিফিং দেখুন") { nav.navigate("home") }
+        Text("এই পছন্দগুলো শুধু ডেমো সেশনে থাকে; অ্যাকাউন্টে সিঙ্ক হয় না।", color = SarangshoPalette.Muted, fontSize = 12.sp)
+    }
+}
+
+@Composable private fun Archive(nav: NavHostController) {
+    Scroll {
+        Intro("দৈনিক সংস্করণ", "আগের দিনের ব্রিফিং খুঁজুন এবং পরে পড়ার জন্য খুলুন।")
+        Panel { Text("সাম্প্রতিক সংস্করণ", fontWeight = FontWeight.Bold); Text("প্রকাশিত সংস্করণের তালিকা ইঞ্জিন থেকে যুক্ত হলে এখানে তারিখ, ভাষা ও অবস্থা দেখানো হবে।", color = SarangshoPalette.Muted) }
+        RowLink("আজকের সংস্করণ", "লাইভ কনটেন্ট সংযুক্ত নয়", Icons.Default.Today) { nav.navigate("edition") }
+        RowLink("গতকালের সংস্করণ", "আর্কাইভ ডেটা অপেক্ষমাণ", Icons.Default.CalendarMonth) { nav.navigate("edition") }
+    }
+}
+
+@Composable private fun Edition(nav: NavHostController) {
+    Scroll {
+        Intro("দৈনিক ব্রিফিং", "একটি সংস্করণের সব পাঠ, অনুশীলন ও তথ্যসূত্র এক জায়গায়।")
+        Panel { Text("সংস্করণের অবস্থা", fontWeight = FontWeight.Bold); Text("এই প্রোটোটাইপে কোনো প্রকাশিত সংস্করণ লোড হয়নি।", color = SarangshoPalette.Muted); AssistChip(onClick = {}, label = { Text("কনটেন্ট অপেক্ষমাণ") }) }
+        RowLink("প্রধান সংবাদ", "সংস্করণ থেকে যাচাইকৃত গল্প", Icons.Default.Article) { nav.navigate("article") }
+        RowLink("বাংলাদেশ বিষয়াবলি", "দেশের গুরুত্বপূর্ণ ঘটনা", Icons.Default.Flag) { nav.navigate("bangladesh") }
+        RowLink("বিশ্ব বিষয়াবলি", "আন্তর্জাতিক প্রেক্ষাপট", Icons.Default.Public) { nav.navigate("world") }
+        RowLink("আজকের অনুশীলন", "BCS ও Bank প্রশ্ন", Icons.Default.Quiz) { nav.navigate("quiz-setup") }
+        RowLink("তথ্যসূত্র ও যাচাই", "উৎস, সময় ও প্রবেশযোগ্যতা", Icons.Default.Source) { nav.navigate("sources") }
+    }
+}
+
+@Composable private fun TopicDetail(nav: NavHostController) {
+    Scroll {
+        Intro("বিষয়ভিত্তিক পাঠ", "একটি বিষয়ের মৌলিক ধারণা, সাম্প্রতিক ঘটনা ও পরীক্ষার সংযোগ একত্রে।")
+        Panel { Text("মূল ধারণা", fontWeight = FontWeight.Bold); Text("বিষয়ভিত্তিক ব্যাখ্যা ও সংজ্ঞা যাচাইকৃত পাঠ্যসূত্র থেকে যুক্ত হবে।") }
+        RowLink("সংশ্লিষ্ট সংবাদ", "এই বিষয়ের সাম্প্রতিক ঘটনা", Icons.Default.Article) { nav.navigate("feed") }
+        RowLink("জ্ঞান মানচিত্র", "প্রতিষ্ঠান ও ধারণার সম্পর্ক", Icons.Default.Hub) { nav.navigate("graph") }
+        RowLink("তথ্য ও পরিসংখ্যান", "উৎসসহ প্রাসঙ্গিক সূচক", Icons.Default.BarChart) { nav.navigate("data") }
+        RowLink("অনুশীলন", "বিষয়ভিত্তিক প্রশ্ন", Icons.Default.EditNote) { nav.navigate("quiz-setup") }
+    }
+}
+
+@Composable private fun Sources() {
+    Scroll {
+        Intro("উৎস ও যাচাই", "প্রতিটি তথ্য কোথা থেকে এসেছে এবং কীভাবে যাচাই হয়েছে তা দেখুন।")
+        Panel { Text("উৎস-তথ্য", fontWeight = FontWeight.Bold); Text("প্রকৃত সংস্করণ যুক্ত হলে প্রকাশক, শিরোনাম, মূল URL, প্রকাশকাল, হালনাগাদ সময়, প্রবেশযোগ্যতা ও যাচাইয়ের অবস্থা দেখানো হবে।") }
+        listOf("প্রাথমিক সরকারি নথি", "আদালত ও আইনগত নথি", "আন্তর্জাতিক সংস্থা", "সংবাদ প্রকাশনা").forEach {
+            Panel { Text(it, fontWeight = FontWeight.SemiBold); Text("উৎস-রেজিস্ট্রি থেকে তথ্য আসবে", color = SarangshoPalette.Muted, fontSize = 12.sp) }
+        }
+    }
+}
+
+@Composable private fun QuizSetup(nav: NavHostController) {
+    var exam by remember { mutableStateOf("BCS") }; var duration by remember { mutableStateOf("১৫ মিনিট") }
+    Scroll {
+        Intro("অনুশীলন সাজান", "আপনার প্রস্তুতির ধরন অনুযায়ী প্রশ্ন বেছে নিন।")
+        Text("পরীক্ষা", fontWeight = FontWeight.SemiBold)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("BCS", "Bank", "Mixed").forEach { FilterChip(selected = exam == it, onClick = { exam = it }, label = { Text(it) }) } }
+        Text("সময়", fontWeight = FontWeight.SemiBold)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("৫ মিনিট", "১৫ মিনিট", "৩০ মিনিট").forEach { FilterChip(selected = duration == it, onClick = { duration = it }, label = { Text(it) }) } }
+        Panel { Text("আপনার নির্বাচন", fontWeight = FontWeight.Bold); Text(exam + " • " + duration); Text("প্রশ্নের সংখ্যা ও বিষয়বস্তু প্রকৃত প্রশ্নব্যাংক যুক্ত হলে নির্ধারিত হবে।", color = SarangshoPalette.Muted) }
+        Primary("অনুশীলন শুরু করুন") { nav.navigate("challenge") }
+    }
+}
+
+@Composable private fun QuizResults(nav: NavHostController) {
+    Scroll {
+        Intro("অনুশীলন সম্পন্ন", "এই স্ক্রিনটি ফলাফল উপস্থাপনের কাঠামো।")
+        Panel { Text("ফলাফল এখনো তৈরি হয়নি", fontWeight = FontWeight.Bold, fontSize = 20.sp); Text("প্রশ্ন-উত্তর যাচাই, স্কোরিং ও সেশন সংরক্ষণ যুক্ত না হওয়া পর্যন্ত কোনো নম্বর বা পারফরম্যান্স দেখানো হবে না।", color = SarangshoPalette.Muted) }
+        Primary("আবার অনুশীলন করুন") { nav.navigate("quiz-setup") }
+        OutlinedButton(onClick = { nav.navigate("revision") }, modifier = Modifier.fillMaxWidth()) { Text("রিভিশন ডেক খুলুন") }
+    }
+}
+
+@Composable private fun WordDetail() {
+    Scroll {
+        Intro("শব্দের ব্যবহার", "শব্দের অর্থের পাশাপাশি বাক্যে ব্যবহার ও পরীক্ষায় প্রয়োগ বুঝুন।")
+        Panel {
+            Text("Resilience", fontSize = 28.sp, fontWeight = FontWeight.Bold); Text("/rɪˈzɪliəns/ • noun", color = SarangshoPalette.Muted)
+            Text("বাংলা অর্থ: প্রতিকূলতা কাটিয়ে ওঠার সক্ষমতা")
+            Text("Definition: The ability to recover quickly from difficulty.")
+            Text("Synonyms: toughness, adaptability"); Text("Antonym: fragility")
+            Text("Collocation: community resilience, economic resilience")
+            Text("Example: Resilience helps communities recover after disasters.")
+        }
+        Text("এই শব্দের ডেটা নমুনা; অভিধান-উৎস যুক্ত হলে উৎসের তথ্য দেখানো হবে।", color = SarangshoPalette.Muted, fontSize = 12.sp)
+    }
+}
+
+@Composable private fun StudyPlan() {
+    val tasks = listOf("আজকের ব্রিফিং পড়া", "১০টি MCQ অনুশীলন", "৫টি নতুন শব্দ শেখা", "আগের ভুলগুলো রিভিশন")
+    val done = remember { mutableStateListOf<String>() }
+    Scroll {
+        Intro("আপনার পড়ার পরিকল্পনা", "ছোট, বাস্তবসম্মত সেশন দিয়ে ধারাবাহিকতা তৈরি করুন।")
+        Panel {
+            Text("আজকের কাজ", fontWeight = FontWeight.Bold)
+            tasks.forEach { task ->
+                Row(Modifier.fillMaxWidth().clickable { if (task in done) done.remove(task) else done.add(task) }.padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(checked = task in done, onCheckedChange = { checked -> if (checked) done.add(task) else done.remove(task) }); Text(task)
+                }
+            }
+            Text(done.size.toString() + " / " + tasks.size + " সম্পন্ন", color = SarangshoPalette.Muted)
+        }
+        Text("ডেমো পরিকল্পনা: অগ্রগতি এই স্ক্রিনে থাকে, স্থায়ীভাবে সংরক্ষিত হয় না।", color = SarangshoPalette.Muted, fontSize = 12.sp)
+    }
+}
+
+@Composable private fun Notifications() {
+    Scroll {
+        Intro("নোটিফিকেশন", "নতুন সংস্করণ, ডাউনলোড ও রিভিশনের আপডেট এখানে দেখা যাবে।")
+        Panel { Icon(Icons.Default.NotificationsNone, null, tint = SarangshoPalette.Teal, modifier = Modifier.size(30.dp)); Text("এখনো কোনো নোটিফিকেশন নেই", fontWeight = FontWeight.Bold, fontSize = 18.sp); Text("নতুন আপডেট এলে এখানে তারিখ ও প্রয়োজনীয় পদক্ষেপসহ দেখানো হবে।", color = SarangshoPalette.Muted) }
+    }
+}
+
+@Composable private fun Settings(nav: NavHostController) {
+    Scroll {
+        Intro("সেটিংস", "অ্যাপের ব্যবহার, পড়া ও ব্যক্তিগত তথ্য নিয়ন্ত্রণ করুন।")
+        RowLink("পড়ার পছন্দ", "ফন্ট, আকার, লাইন স্পেসিং ও থিম", Icons.Default.TextFields) { nav.navigate("reading-settings") }
+        RowLink("অফলাইন লাইব্রেরি", "ডাউনলোড ও স্টোরেজ", Icons.Default.Download) { nav.navigate("downloads") }
+        RowLink("নোটিফিকেশন", "কোন আপডেট পাবেন", Icons.Default.Notifications) { nav.navigate("notifications") }
+        RowLink("গোপনীয়তা", "ডেটা ও অ্যাকাউন্ট নিয়ন্ত্রণ", Icons.Default.PrivacyTip) { nav.navigate("help") }
+        RowLink("সহায়তা ও মতামত", "সমস্যা জানান বা প্রশ্ন করুন", Icons.Default.SupportAgent) { nav.navigate("help") }
+        RowLink("অ্যাপ সম্পর্কে", "সংস্করণ ও প্রকল্পের তথ্য", Icons.Default.Info) { nav.navigate("about") }
+    }
+}
+
+@Composable private fun ReadingSettings() {
+    var fontSize by remember { mutableFloatStateOf(18f) }; var lineSpacing by remember { mutableFloatStateOf(1.5f) }
+    var sepia by remember { mutableStateOf(false) }
+    Scroll {
+        Intro("পড়ার পছন্দ", "দীর্ঘ লেখা আরাম করে পড়ার জন্য নিজের মতো সাজান।")
+        Panel {
+            Text("লেখার আকার: " + fontSize.toInt().toString() + " sp", fontWeight = FontWeight.SemiBold)
+            Slider(value = fontSize, onValueChange = { fontSize = it }, valueRange = 16f..26f)
+            Text("লাইন স্পেসিং: " + "%.1f".format(lineSpacing), fontWeight = FontWeight.SemiBold)
+            Slider(value = lineSpacing, onValueChange = { lineSpacing = it }, valueRange = 1.2f..2.0f)
+            Row(verticalAlignment = Alignment.CenterVertically) { Text("উষ্ণ কাগজের ব্যাকগ্রাউন্ড", Modifier.weight(1f)); Switch(checked = sepia, onCheckedChange = { sepia = it }) }
+        }
+        Panel { Text("নমুনা পাঠ", fontSize = fontSize.sp, lineHeight = (fontSize * lineSpacing).sp); Text("বাংলা ও ইংরেজি একসঙ্গে পড়ার সময় অক্ষরের গঠন এবং লাইনের ফাঁক যেন পরিষ্কার থাকে।", fontSize = fontSize.sp, lineHeight = (fontSize * lineSpacing).sp) }
+        Text("এই পছন্দগুলো এখনো স্থায়ীভাবে সংরক্ষিত হয় না।", color = SarangshoPalette.Muted, fontSize = 12.sp)
+    }
+}
+
+@Composable private fun Downloads() {
+    Scroll {
+        Intro("অফলাইন লাইব্রেরি", "ডাউনলোড করা সংস্করণ নেটওয়ার্ক ছাড়াও পড়ুন।")
+        Panel { Icon(Icons.Default.CloudOff, null, tint = SarangshoPalette.Teal, modifier = Modifier.size(30.dp)); Text("কোনো সংস্করণ ডাউনলোড করা নেই", fontWeight = FontWeight.Bold, fontSize = 18.sp); Text("ডাউনলোড সুবিধা যুক্ত হলে সংরক্ষিত সংস্করণ, ফাইলের আকার, শেষ সিঙ্ক ও স্টোরেজ ব্যবহার এখানে দেখানো হবে।", color = SarangshoPalette.Muted) }
+    }
+}
+
+@Composable private fun Help() {
+    val questions = listOf(
+        "সংবাদ কীভাবে যাচাই করা হয়?" to "প্রতিটি গল্পে উৎস, তারিখ এবং যাচাইয়ের অবস্থা দেখানো হবে।",
+        "ইন্টারনেট ছাড়া পড়া যাবে?" to "অফলাইন ডাউনলোড ও ক্যাশিং সুবিধা তৈরি হলে সংরক্ষিত সংস্করণ পড়া যাবে।",
+        "BCS ও Bank প্রস্তুতি কীভাবে সাজাব?" to "প্র্যাকটিস, শব্দভান্ডার, লিখিত অনুশীলন ও রিভিশন একত্রে ব্যবহার করুন."
+    )
+    val expanded = remember { mutableStateListOf<String>() }
+    Scroll {
+        Intro("সহায়তা কেন্দ্র", "সাধারণ প্রশ্নের উত্তর ও সমস্যা সমাধানের পথ।")
+        questions.forEach { (question, answer) ->
+            Panel {
+                Row(Modifier.fillMaxWidth().clickable { if (question in expanded) expanded.remove(question) else expanded.add(question) }, verticalAlignment = Alignment.CenterVertically) {
+                    Text(question, Modifier.weight(1f), fontWeight = FontWeight.SemiBold)
+                    Icon(if (question in expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore, null)
+                }
+                if (question in expanded) Text(answer, color = SarangshoPalette.Muted, lineHeight = 22.sp)
+            }
+        }
+    }
+}
+
+@Composable private fun About() {
+    Scroll {
+        Intro("Sarangsho Plus", "সংবাদকে বোঝা, শেখা ও মনে রাখার একটি বাংলা-প্রথম প্ল্যাটফর্ম।")
+        Panel { Text("সংস্করণ 0.1.0 • প্রোটোটাইপ", fontWeight = FontWeight.Bold); Text("এই অ্যাপের লক্ষ্য হলো যাচাইকৃত বর্তমান ঘটনাকে প্রেক্ষাপট, ধারণা, তথ্যসূত্র ও পরীক্ষার অনুশীলনের সঙ্গে যুক্ত করা।") }
+        Text("স্বাধীনভাবে যাচাই না করা পর্যন্ত কোনো সংবাদ, সংখ্যা বা উৎসকে লাইভ বলে উপস্থাপন করা হবে না।", color = SarangshoPalette.Muted)
+    }
+}
+
+@Composable private fun Feedback() {
+    var message by remember { mutableStateOf("") }; var category by remember { mutableStateOf("সাধারণ মতামত") }
+    Scroll {
+        Intro("আপনার মতামত", "কোন জায়গাটি কাজ করছে না বা কী উন্নত করা দরকার, লিখে জানান।")
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { listOf("সাধারণ মতামত", "সমস্যা", "ভুল তথ্য").forEach { FilterChip(selected = category == it, onClick = { category = it }, label = { Text(it) }) } }
+        OutlinedTextField(message, { message = it }, Modifier.fillMaxWidth().height(180.dp), label = { Text("বিস্তারিত লিখুন") }, placeholder = { Text("কী ঘটেছে, কোন স্ক্রিনে, কী আশা করেছিলেন...") })
+        Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text("পাঠানো শিগগিরই চালু হবে") }
+        Text("মতামত পাঠানোর সার্ভিস এখনো সংযুক্ত নয়; এই খসড়া কোথাও পাঠানো হবে না।", color = SarangshoPalette.Muted, fontSize = 12.sp)
     }
 }
