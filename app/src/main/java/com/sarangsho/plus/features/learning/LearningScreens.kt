@@ -25,44 +25,124 @@ import androidx.navigation.NavHostController
 import com.sarangsho.plus.ui.theme.SarangshoPalette
 
 
+private data class VocabularyEntry(
+    val term: String,
+    val partOfSpeech: String,
+    val pronunciation: String,
+    val banglaMeaning: String,
+    val definition: String,
+    val synonyms: String,
+    val antonym: String,
+    val example: String
+)
+
+private val vocabularyEntries = listOf(
+    VocabularyEntry(
+        "Resilience", "Noun", "/rɪˈzɪliəns/",
+        "প্রতিকূলতা কাটিয়ে ওঠার সক্ষমতা",
+        "The ability to recover or adapt after difficulty.",
+        "adaptability, toughness", "fragility",
+        "Communities need resilience after a natural disaster."
+    ),
+    VocabularyEntry(
+        "Accountability", "Noun", "/əˌkaʊntəˈbɪləti/",
+        "জবাবদিহিতা; নিজের কাজের দায় নেওয়া",
+        "The duty to explain actions and accept responsibility.",
+        "responsibility, answerability", "irresponsibility",
+        "Public accountability helps strengthen democratic institutions."
+    ),
+    VocabularyEntry(
+        "Sustainable", "Adjective", "/səˈsteɪnəbl/",
+        "টেকসই; দীর্ঘদিন বজায় রাখা সম্ভব",
+        "Able to continue over time without exhausting resources.",
+        "viable, maintainable", "unsustainable",
+        "A sustainable policy considers both people and the environment."
+    ),
+    VocabularyEntry(
+        "Mitigate", "Verb", "/ˈmɪtɪɡeɪt/",
+        "প্রশমিত করা; ক্ষতি বা তীব্রতা কমানো",
+        "To make a harmful effect less severe.",
+        "reduce, alleviate", "aggravate",
+        "Early warnings can mitigate the impact of floods."
+    ),
+    VocabularyEntry(
+        "Consensus", "Noun", "/kənˈsensəs/",
+        "ঐকমত্য; সম্মিলিত মত",
+        "A general agreement reached by a group.",
+        "agreement, accord", "disagreement",
+        "The committee reached a consensus after discussion."
+    )
+)
+
 @Composable internal fun Vocabulary(nav: NavHostController) {
     val context = LocalContext.current
-    var reveal by rememberSaveable { mutableStateOf(false) }
-    var bookmarked by remember { mutableStateOf(LocalLearningStore.isWordBookmarked(context, "Resilience")) }
+    var query by rememberSaveable { mutableStateOf("") }
+    val filteredWords = vocabularyEntries.filter { entry ->
+        query.isBlank() ||
+            entry.term.contains(query, ignoreCase = true) ||
+            entry.banglaMeaning.contains(query, ignoreCase = true)
+    }
     Scroll {
-        Intro("আজকের শব্দ", "শব্দের অর্থ, ব্যবহার ও পরীক্ষায় প্রয়োগ শিখুন।")
-        Panel {
-            Kicker("NOUN"); Text("Resilience", fontSize = 30.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface); Text("/rɪˈzɪliəns/ • উচ্চারণ", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            if (reveal) {
-                Text("বাংলা অর্থ: প্রতিকূলতা কাটিয়ে ওঠার সক্ষমতা", fontWeight = FontWeight.SemiBold)
-                Text("Definition: The ability to recover quickly from difficulty.")
-                Text("Synonym: toughness • Antonym: fragility", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
-                Text("Example: Communities need resilience after a natural disaster.")
-            } else Text("অর্থ ও উদাহরণ দেখতে নিচের বোতাম চাপুন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Primary(if (reveal) "আবার লুকান" else "অর্থ দেখুন") { reveal = !reveal }
+        Intro("Vocabulary Lab", "অর্থ, ব্যবহার ও পরীক্ষায় প্রয়োগ শিখুন। শব্দ বুকমার্ক করলে Saved-এ পাবেন।")
+        OutlinedTextField(
+            value = query,
+            onValueChange = { query = it },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            label = { Text("শব্দ বা বাংলা অর্থ খুঁজুন") },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) }
+        )
+        Text("${filteredWords.size}টি শব্দ", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        if (filteredWords.isEmpty()) {
+            Panel {
+                Text("কোনো শব্দ পাওয়া যায়নি", fontWeight = FontWeight.SemiBold)
+                Text("অন্য বানান বা বাংলা অর্থ দিয়ে খুঁজুন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
         }
-        OutlinedButton(
-            onClick = {
-                bookmarked = !bookmarked
-                LocalLearningStore.setWordBookmarked(context, "Resilience", bookmarked)
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Icon(
-                if (bookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
-                contentDescription = null
-            )
-            Text(if (bookmarked) "  বুকমার্ক করা হয়েছে" else "  বুকমার্ক করুন")
+        filteredWords.forEach { entry ->
+            var reveal by rememberSaveable(entry.term) { mutableStateOf(false) }
+            var bookmarked by remember(entry.term) {
+                mutableStateOf(LocalLearningStore.isWordBookmarked(context, entry.term))
+            }
+            Panel {
+                Kicker(entry.partOfSpeech.uppercase())
+                Text(entry.term, fontSize = 25.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                Text(entry.pronunciation, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
+                if (reveal) {
+                    Text("বাংলা অর্থ: ${entry.banglaMeaning}", fontWeight = FontWeight.SemiBold)
+                    Text("Definition: ${entry.definition}")
+                    Text("Synonyms: ${entry.synonyms}", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                    Text("Antonym: ${entry.antonym}", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                    Text("Example: ${entry.example}")
+                } else {
+                    Text(entry.banglaMeaning, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedButton(onClick = { reveal = !reveal }, modifier = Modifier.weight(1f)) {
+                        Text(if (reveal) "সংক্ষিপ্ত করুন" else "বিস্তারিত দেখুন")
+                    }
+                    OutlinedButton(onClick = {
+                        bookmarked = !bookmarked
+                        LocalLearningStore.setWordBookmarked(context, entry.term, bookmarked)
+                    }) {
+                        Icon(
+                            if (bookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                            contentDescription = if (bookmarked) "বুকমার্ক করা" else "বুকমার্ক করুন"
+                        )
+                        Text(if (bookmarked) "সংরক্ষিত" else "সংরক্ষণ")
+                    }
+                }
+            }
         }
         Text(
-            if (bookmarked) "শব্দটি এই ডিভাইসে সংরক্ষিত। অ্যাকাউন্ট-ভিত্তিক সিঙ্ক এখনো নেই।"
-            else "বুকমার্কটি সরানো হয়েছে। সংরক্ষণ শুধু এই ডিভাইসে থাকে।",
+            "শব্দগুলো প্রাথমিক শেখার নমুনা। প্রতিটি শব্দের জন্য অভিধান-উৎস ও পরীক্ষার রেফারেন্স যুক্ত করা এখনো বাকি।",
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontSize = 12.sp
+            fontSize = 11.sp
         )
-        listOf("Accountability", "Sustainable", "Mitigate", "Consensus").forEach { word ->
-            Text(word, Modifier.fillMaxWidth().clickable { nav.navigate("word-detail") }.padding(vertical = 6.dp), fontWeight = FontWeight.Medium)
-        }
     }
 }
 
