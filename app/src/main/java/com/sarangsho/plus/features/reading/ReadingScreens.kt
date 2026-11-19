@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,7 +42,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 }
 
 @Composable internal fun SignIn(nav: NavHostController) {
-    var email by remember { mutableStateOf("") }; var password by remember { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }; var password by rememberSaveable { mutableStateOf("") }
     Scroll {
         Intro("আপনার পড়াশোনা সঙ্গে রাখুন", "অ্যাকাউন্টে প্রবেশ করুন অথবা আপাতত স্থানীয়ভাবে চালিয়ে যান।")
         OutlinedTextField(email, { email = it }, Modifier.fillMaxWidth(), label = { Text("ইমেইল বা ফোন নম্বর") }, singleLine = true)
@@ -76,8 +77,8 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 }
 
 @Composable internal fun Feed(nav: NavHostController) {
-    var filter by remember { mutableStateOf("সব") }
-    var query by remember { mutableStateOf("") }
+    var filter by rememberSaveable { mutableStateOf("সব") }
+    var query by rememberSaveable { mutableStateOf("") }
     val stories = listOf(
         Triple("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি", "অর্থনীতি", "৬ মিনিট"),
         Triple("জাতিসংঘ ও জলবায়ু আলোচনার সাম্প্রতিক অগ্রগতি", "বিশ্ব", "৫ মিনিট"),
@@ -131,7 +132,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 
 @Composable @OptIn(ExperimentalMaterial3Api::class)
 internal fun Summary(nav: NavHostController) {
-    var level by remember { mutableIntStateOf(0) }
+    var level by rememberSaveable { mutableIntStateOf(0) }
     val labels = listOf("৩০ সেকেন্ড", "২ মিনিট", "বিস্তারিত")
     val texts = listOf("ঘটনাটির মূল বিষয় এক বাক্যে বুঝুন।", "মূল সিদ্ধান্ত, সংশ্লিষ্ট প্রতিষ্ঠান এবং বাংলাদেশের জন্য সম্ভাব্য তাৎপর্য সংক্ষেপে পড়ুন।", "বিস্তারিত সংস্করণে পটভূমি, প্রক্রিয়া, মূল তথ্য, সংশ্লিষ্ট পক্ষের অবস্থান, অনিশ্চয়তা এবং পরীক্ষায় প্রাসঙ্গিক ধারণা থাকবে।")
     Scroll {
@@ -200,7 +201,7 @@ internal fun Summary(nav: NavHostController) {
 }
 
 @Composable internal fun Search(nav: NavHostController) {
-    var query by remember { mutableStateOf("") }; var searched by remember { mutableStateOf(false) }
+    var query by rememberSaveable { mutableStateOf("") }; var searched by rememberSaveable { mutableStateOf(false) }
     Scroll {
         Intro("এক জায়গায় খুঁজুন", "সংবাদ, বিষয়, শব্দ, প্রতিষ্ঠান ও প্রকাশনার নাম লিখুন।")
         OutlinedTextField(query, { query = it; searched = false }, Modifier.fillMaxWidth(), placeholder = { Text("যেমন: মূল্যস্ফীতি, ICJ, resilience") }, leadingIcon = { Icon(Icons.Default.Search, null) }, singleLine = true)
@@ -239,7 +240,7 @@ internal fun Summary(nav: NavHostController) {
 }
 
 @Composable internal fun OnboardingGoals(nav: NavHostController) {
-    var goal by remember { mutableStateOf("BCS প্রস্তুতি") }
+    var goal by rememberSaveable { mutableStateOf("BCS প্রস্তুতি") }
     Scroll {
         Intro("আপনি কী অর্জন করতে চান?", "আপনার লক্ষ্য অনুযায়ী পড়ার অভিজ্ঞতা সাজানো হবে।")
         listOf("BCS প্রস্তুতি", "Bank recruitment", "বিশ্ববিদ্যালয় ও সাধারণ জ্ঞান", "প্রতিদিনের খবর বুঝে পড়া").forEach { option ->
