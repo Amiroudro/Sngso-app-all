@@ -41,8 +41,10 @@ jobs:
           path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
 
+  # Emulator boot is comparatively expensive. Keep it manual so ordinary PR
+  # verification uses the included Actions minutes for compile/tests first.
   compose-instrumentation:
-    # Use the stable 24.04 runner image for hardware-accelerated Android emulation.
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
