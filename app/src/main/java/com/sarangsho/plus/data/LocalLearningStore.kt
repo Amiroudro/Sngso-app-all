@@ -15,8 +15,11 @@ object LocalLearningStore {
     private fun preferences(context: Context) =
         context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
+    fun getBookmarkedWords(context: Context): Set<String> =
+        preferences(context).getStringSet(KEY_BOOKMARKED_WORDS, emptySet()).orEmpty().toSet()
+
     fun isWordBookmarked(context: Context, word: String): Boolean =
-        word in preferences(context).getStringSet(KEY_BOOKMARKED_WORDS, emptySet()).orEmpty()
+        word in getBookmarkedWords(context)
 
     fun setWordBookmarked(context: Context, word: String, bookmarked: Boolean) {
         val prefs = preferences(context)
