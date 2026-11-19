@@ -25,6 +25,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 
 @Composable internal fun Vocabulary(nav: NavHostController) {
     var reveal by rememberSaveable { mutableStateOf(false) }
+    var bookmarked by rememberSaveable { mutableStateOf(false) }
     Scroll {
         Intro("আজকের শব্দ", "শব্দের অর্থ, ব্যবহার ও পরীক্ষায় প্রয়োগ শিখুন।")
         Panel {
@@ -37,7 +38,22 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
             } else Text("অর্থ ও উদাহরণ দেখতে নিচের বোতাম চাপুন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
             Primary(if (reveal) "আবার লুকান" else "অর্থ দেখুন") { reveal = !reveal }
         }
-        OutlinedButton(onClick = {}, modifier = Modifier.fillMaxWidth()) { Icon(Icons.Default.BookmarkBorder, null); Text("  শব্দটি সংরক্ষণ করুন") }
+        OutlinedButton(
+            onClick = { bookmarked = !bookmarked },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                if (bookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                contentDescription = null
+            )
+            Text(if (bookmarked) "  এই সেশনে সংরক্ষিত" else "  সাময়িকভাবে সংরক্ষণ করুন")
+        }
+        Text(
+            if (bookmarked) "শব্দটি এই স্ক্রিনের সেশনে চিহ্নিত হয়েছে। স্থায়ী বুকমার্ক ও সিঙ্ক এখনো যুক্ত হয়নি।"
+            else "এটি সাময়িক বুকমার্ক; অ্যাপ বন্ধ করলে সংরক্ষণ থাকবে না।",
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 12.sp
+        )
         listOf("Accountability", "Sustainable", "Mitigate", "Consensus").forEach { word ->
             Text(word, Modifier.fillMaxWidth().clickable { nav.navigate("word-detail") }.padding(vertical = 6.dp), fontWeight = FontWeight.Medium)
         }
