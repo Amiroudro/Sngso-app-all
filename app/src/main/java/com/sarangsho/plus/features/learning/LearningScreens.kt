@@ -153,3 +153,11 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
         Text("ডেমো পরিকল্পনা: অগ্রগতি এই স্ক্রিনে থাকে, স্থায়ীভাবে সংরক্ষিত হয় না।", color = SarangshoPalette.Muted, fontSize = 12.sp)
     }
 }
+
+
+@Composable internal fun PracticeHistory() {
+    Scroll {
+        Intro("অনুশীলনের ইতিহাস", "আগের সেশন, বিষয়ভিত্তিক দুর্বলতা ও পুনরায় চেষ্টা করার সুযোগ।")
+        Panel { Text("কোনো সেশন সংরক্ষিত নেই", fontWeight = FontWeight.Bold); Text("প্রশ্নব্যাংক, স্কোরিং ও স্থানীয় সংরক্ষণ যুক্ত হলে প্রতিটি প্রচেষ্টার তারিখ, ফল এবং ভুলের ব্যাখ্যা এখানে থাকবে।", color = SarangshoPalette.Muted) }
+    }
+}
