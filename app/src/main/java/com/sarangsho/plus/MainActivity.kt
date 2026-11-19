@@ -152,7 +152,7 @@ private fun Scroll(content: @Composable ColumnScope.() -> Unit) {
 }
 @Composable private fun Kicker(text: String) { Text(text.uppercase(), fontSize = 10.sp, color = SarangshoPalette.Teal, fontWeight = FontWeight.Bold, letterSpacing = 1.sp) }
 @Composable private fun Panel(content: @Composable ColumnScope.() -> Unit) {
-    Surface(color = Color.White, shape = RoundedCornerShape(15.dp), border = BorderStroke(1.dp, SarangshoPalette.Line), modifier = Modifier.fillMaxWidth()) {
+    Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(15.dp), border = BorderStroke(1.dp, SarangshoPalette.Line), modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp), content = content)
     }
 }
@@ -180,7 +180,7 @@ private fun Scroll(content: @Composable ColumnScope.() -> Unit) {
 }
 
 @Composable private fun Welcome(nav: NavHostController) {
-    Column(Modifier.fillMaxSize().background(SarangshoPalette.Paper).padding(25.dp), verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(25.dp), verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(Modifier.height(8.dp))
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(18.dp)) {
             Surface(color = SarangshoPalette.Deep, shape = RoundedCornerShape(26.dp), modifier = Modifier.size(104.dp)) {
@@ -232,7 +232,7 @@ private fun Scroll(content: @Composable ColumnScope.() -> Unit) {
     var filter by remember { mutableStateOf("সব") }
     Scroll {
         Intro("সংবাদ অনুসন্ধান", "বিষয় ও গুরুত্ব অনুযায়ী পড়ার তালিকা সাজান।")
-        OutlinedTextField("", {}, Modifier.fillMaxWidth(), enabled = false, placeholder = { Text("শিরোনাম বা বিষয় খুঁজুন") }, leadingIcon = { Icon(Icons.Default.Search, null) })
+        OutlinedTextField("", {}, Modifier.fillMaxWidth(), enabled = false, placeholder = { Text("শিরোনাম বা বিষয় খুঁজুন • সার্চ শিগগিরই") }, leadingIcon = { Icon(Icons.Default.Search, null) })
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             listOf("সব", "বাংলাদেশ", "বিশ্ব", "অর্থনীতি").forEach { FilterChip(filter == it, { filter = it }, label = { Text(it) }) }
         }
@@ -246,12 +246,12 @@ private fun Scroll(content: @Composable ColumnScope.() -> Unit) {
         Kicker("আন্তর্জাতিক আইন • নমুনা নিবন্ধ")
         Text("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন", fontSize = 25.sp, fontWeight = FontWeight.Bold, lineHeight = 34.sp)
         Text("প্রকাশকাল ও হালনাগাদ সময়: উৎস-ডেটা সংযুক্ত হলে এখানে দেখানো হবে", color = SarangshoPalette.Muted, fontSize = 12.sp)
-        Panel { Text("যাচাইয়ের অবস্থা", fontWeight = FontWeight.Bold); Text("প্রকৃত সংস্করণে প্রতিটি গুরুত্বপূর্ণ দাবির পাশে উৎস, তারিখ এবং যাচাইয়ের অবস্থা থাকবে।"); AssistChip(onClick = {}, label = { Text("প্রাথমিক উৎস") }) }
+        Panel { Text("যাচাইয়ের অবস্থা", fontWeight = FontWeight.Bold); Text("প্রকৃত সংস্করণে প্রতিটি গুরুত্বপূর্ণ দাবির পাশে উৎস, তারিখ এবং যাচাইয়ের অবস্থা থাকবে।"); AssistChip(onClick = {}, enabled = false, label = { Text("প্রাথমিক উৎস") }) }
         RowLink("তিন-স্তরের সারাংশ", "দ্রুত ধারণা থেকে বিস্তারিত ব্যাখ্যা", Icons.Default.Subject) { nav.navigate("summary") }
         RowLink("ঘটনার টাইমলাইন", "তারিখ অনুযায়ী ঘটনাপ্রবাহ", Icons.Default.Timeline) { nav.navigate("timeline") }
         RowLink("পত্রিকার দৃষ্টিভঙ্গি", "শুধু অনুমোদিত ও পাওয়া উৎস", Icons.Default.CompareArrows) { nav.navigate("perspectives") }
         RowLink("জ্ঞান মানচিত্র", "প্রতিষ্ঠান ও ধারণার সম্পর্ক", Icons.Default.Hub) { nav.navigate("graph") }
-        OutlinedButton(onClick = {}, modifier = Modifier.fillMaxWidth()) { Icon(Icons.Default.BookmarkBorder, null); Text("  সংরক্ষণ করুন") }
+        OutlinedButton(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Icon(Icons.Default.BookmarkBorder, null); Text("  সংরক্ষণ সুবিধা আসছে") }
     }
 }
 @Composable @OptIn(ExperimentalMaterial3Api::class)
@@ -288,7 +288,7 @@ private fun Summary(nav: NavHostController) {
     val list = if (world) listOf("জাতিসংঘ ও আন্তর্জাতিক সংস্থা", "আন্তর্জাতিক আইন ও চুক্তি", "বিশ্ব অর্থনীতি", "জলবায়ু ও পরিবেশ", "দক্ষিণ এশিয়া", "ভূরাজনীতি") else listOf("সংবিধান ও সরকারব্যবস্থা", "অর্থনীতি ও ব্যাংকিং", "সমাজ ও উন্নয়ন", "পরিবেশ ও জলবায়ু", "শিক্ষা ও স্বাস্থ্য", "আইন ও বিচার")
     Scroll {
         Intro(if (world) "বিশ্ব বিষয়াবলি" else "বাংলাদেশ বিষয়াবলি", "বর্তমান ঘটনা, মৌলিক ধারণা ও পরীক্ষার প্রস্তুতি একসঙ্গে দেখুন।")
-        list.forEach { RowLink(it, "বিষয়ভিত্তিক নোট, সাম্প্রতিক ঘটনা ও অনুশীলন", Icons.Default.Public) { nav.navigate(if (world) "graph" else "data") } }
+        list.forEach { RowLink(it, "বিষয়ভিত্তিক নোট, সাম্প্রতিক ঘটনা ও অনুশীলন", Icons.Default.Public) { nav.navigate("topic-detail") } }
     }
 }
 @Composable private fun Graph() {
@@ -332,7 +332,9 @@ private fun Summary(nav: NavHostController) {
             Primary(if (reveal) "আবার লুকান" else "অর্থ দেখুন") { reveal = !reveal }
         }
         OutlinedButton(onClick = {}, modifier = Modifier.fillMaxWidth()) { Icon(Icons.Default.BookmarkBorder, null); Text("  শব্দটি সংরক্ষণ করুন") }
-        listOf("Accountability", "Sustainable", "Mitigate", "Consensus").forEach { Text(it, Modifier.fillMaxWidth().padding(vertical = 6.dp), fontWeight = FontWeight.Medium) }
+        listOf("Accountability", "Sustainable", "Mitigate", "Consensus").forEach { word ->
+            Text(word, Modifier.fillMaxWidth().clickable { }.padding(vertical = 6.dp), fontWeight = FontWeight.Medium)
+        }
     }
 }
 @Composable private fun Challenge(nav: NavHostController) {
@@ -342,7 +344,7 @@ private fun Summary(nav: NavHostController) {
         Panel {
             Text("বাংলাদেশের সংবিধান কবে গণপরিষদে গৃহীত হয়?", fontSize = 19.sp, fontWeight = FontWeight.Bold, lineHeight = 28.sp)
             listOf("৪ নভেম্বর ১৯৭২", "১৬ ডিসেম্বর ১৯৭২", "২৬ মার্চ ১৯৭১", "১০ জানুয়ারি ১৯৭২").forEachIndexed { i, option ->
-                Surface(color = if (selected == i) Color(0xFFE4F0ED) else Color.White, shape = RoundedCornerShape(10.dp), border = BorderStroke(1.dp, if (selected == i) SarangshoPalette.Teal else SarangshoPalette.Line), modifier = Modifier.fillMaxWidth().clickable { selected = i }) {
+                Surface(color = if (selected == i) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(10.dp), border = BorderStroke(1.dp, if (selected == i) SarangshoPalette.Teal else SarangshoPalette.Line), modifier = Modifier.fillMaxWidth().clickable { selected = i }) {
                     Row(Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) { RadioButton(selected == i, { selected = i }); Text("Option " + (i + 1) + "  " + option) }
                 }
             }
@@ -359,7 +361,8 @@ private fun Summary(nav: NavHostController) {
             Text("গণপরিষদে বাংলাদেশের সংবিধান ১৯৭২ সালের ৪ নভেম্বর গৃহীত হয় এবং ১৬ ডিসেম্বর ১৯৭২ কার্যকর হয়। গৃহীত হওয়ার তারিখ ও কার্যকর হওয়ার তারিখ আলাদা।")
             Text("পরীক্ষার কৌশল: ‘গৃহীত’, ‘স্বাক্ষরিত’ ও ‘কার্যকর’ শব্দের পার্থক্য খেয়াল করুন।", color = SarangshoPalette.Muted)
         }
-        Primary("পরের প্রশ্ন") { nav.navigate("challenge") }
+        Primary("আরও অনুশীলন") { nav.navigate("challenge") }
+        OutlinedButton(onClick = { nav.navigate("quiz-results") }, modifier = Modifier.fillMaxWidth()) { Text("সেশন শেষ করুন") }
         OutlinedButton(onClick = { nav.navigate("revision") }, modifier = Modifier.fillMaxWidth()) { Text("রিভিশনে যোগ করুন") }
     }
 }
@@ -370,7 +373,7 @@ private fun Summary(nav: NavHostController) {
         Panel { Kicker("বিশ্লেষণী প্রশ্ন"); Text("জলবায়ু পরিবর্তন বাংলাদেশের উন্নয়ন পরিকল্পনায় কী ধরনের চ্যালেঞ্জ তৈরি করে? উদাহরণসহ আলোচনা করুন।", fontWeight = FontWeight.SemiBold, fontSize = 18.sp, lineHeight = 28.sp) }
         OutlinedTextField(draft, { draft = it }, Modifier.fillMaxWidth().height(220.dp), label = { Text("আপনার উত্তর লিখুন") }, placeholder = { Text("ভূমিকা, মূল আলোচনা, উদাহরণ ও উপসংহার...") })
         Text(draft.length.toString() + " অক্ষর", color = SarangshoPalette.Muted, fontSize = 11.sp)
-        Primary("খসড়া সংরক্ষণ করুন") {}
+        Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text("খসড়া সংরক্ষণ শিগগিরই চালু হবে") }
     }
 }
 @Composable private fun Revision() {
@@ -467,7 +470,7 @@ private fun Summary(nav: NavHostController) {
 @Composable private fun Edition(nav: NavHostController) {
     Scroll {
         Intro("দৈনিক ব্রিফিং", "একটি সংস্করণের সব পাঠ, অনুশীলন ও তথ্যসূত্র এক জায়গায়।")
-        Panel { Text("সংস্করণের অবস্থা", fontWeight = FontWeight.Bold); Text("এই প্রোটোটাইপে কোনো প্রকাশিত সংস্করণ লোড হয়নি।", color = SarangshoPalette.Muted); AssistChip(onClick = {}, label = { Text("কনটেন্ট অপেক্ষমাণ") }) }
+        Panel { Text("সংস্করণের অবস্থা", fontWeight = FontWeight.Bold); Text("এই প্রোটোটাইপে কোনো প্রকাশিত সংস্করণ লোড হয়নি।", color = SarangshoPalette.Muted); AssistChip(onClick = {}, enabled = false, label = { Text("কনটেন্ট অপেক্ষমাণ") }) }
         RowLink("প্রধান সংবাদ", "সংস্করণ থেকে যাচাইকৃত গল্প", Icons.Default.Article) { nav.navigate("article") }
         RowLink("বাংলাদেশ বিষয়াবলি", "দেশের গুরুত্বপূর্ণ ঘটনা", Icons.Default.Flag) { nav.navigate("bangladesh") }
         RowLink("বিশ্ব বিষয়াবলি", "আন্তর্জাতিক প্রেক্ষাপট", Icons.Default.Public) { nav.navigate("world") }
