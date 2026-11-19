@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,8 +35,8 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 }
 
 @Composable internal fun ReadingSettings() {
-    var fontSize by remember { mutableFloatStateOf(18f) }; var lineSpacing by remember { mutableFloatStateOf(1.5f) }
-    var sepia by remember { mutableStateOf(false) }
+    var fontSize by rememberSaveable { mutableFloatStateOf(18f) }; var lineSpacing by rememberSaveable { mutableFloatStateOf(1.5f) }
+    var sepia by rememberSaveable { mutableStateOf(false) }
     Scroll {
         Intro("পড়ার পছন্দ", "দীর্ঘ লেখা আরাম করে পড়ার জন্য নিজের মতো সাজান।")
         Panel {
@@ -79,7 +80,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 }
 
 @Composable internal fun Feedback() {
-    var message by remember { mutableStateOf("") }; var category by remember { mutableStateOf("সাধারণ মতামত") }
+    var message by rememberSaveable { mutableStateOf("") }; var category by rememberSaveable { mutableStateOf("সাধারণ মতামত") }
     Scroll {
         Intro("আপনার মতামত", "কোন জায়গাটি কাজ করছে না বা কী উন্নত করা দরকার, লিখে জানান।")
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { listOf("সাধারণ মতামত", "সমস্যা", "ভুল তথ্য").forEach { FilterChip(selected = category == it, onClick = { category = it }, label = { Text(it) }) } }
@@ -99,7 +100,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 }
 
 @Composable internal fun LanguageSettings() {
-    var language by remember { mutableStateOf("বাংলা") }
+    var language by rememberSaveable { mutableStateOf("বাংলা") }
     Scroll {
         Intro("অ্যাপের ভাষা", "প্রধান ব্যাখ্যার ভাষা বেছে নিন। ইংরেজি পরিভাষা প্রয়োজন অনুযায়ী পাশে থাকবে।")
         listOf("বাংলা", "English", "বাংলা + English").forEach {
@@ -112,8 +113,8 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 }
 
 @Composable internal fun SignUp(nav: NavHostController) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
     Scroll {
         Intro("নতুন অ্যাকাউন্ট", "আপনার পড়ার অগ্রগতি একাধিক ডিভাইসে রাখতে অ্যাকাউন্ট তৈরি করুন।")
         OutlinedTextField(email, { email = it }, Modifier.fillMaxWidth(), label = { Text("ইমেইল") }, singleLine = true)
@@ -125,7 +126,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 }
 
 @Composable internal fun PasswordReset() {
-    var email by remember { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
     Scroll {
         Intro("পাসওয়ার্ড পুনরুদ্ধার", "অ্যাকাউন্ট যাচাই ও ইমেইল পাঠানোর ব্যবস্থা সংযুক্ত হলে এখানে চালু হবে।")
         OutlinedTextField(email, { email = it }, Modifier.fillMaxWidth(), label = { Text("অ্যাকাউন্টের ইমেইল") }, singleLine = true)
@@ -134,7 +135,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 }
 
 @Composable internal fun ReportStory() {
-    var details by remember { mutableStateOf("") }
+    var details by rememberSaveable { mutableStateOf("") }
     Scroll {
         Intro("তথ্য সংশোধনের অনুরোধ", "ভুল তারিখ, সংখ্যা, উদ্ধৃতি বা প্রসঙ্গ চোখে পড়লে নির্দিষ্ট করে জানান।")
         OutlinedTextField(details, { details = it }, Modifier.fillMaxWidth().height(180.dp), label = { Text("কী ভুল হয়েছে?") }, placeholder = { Text("দাবি, সংশোধনের প্রস্তাব এবং প্রাসঙ্গিক উৎসের লিংক লিখুন।") })
