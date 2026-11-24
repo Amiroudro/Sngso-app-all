@@ -514,20 +514,34 @@ internal fun Summary(nav: NavHostController) {
 
 @Composable internal fun Profile(nav: NavHostController) {
     Scroll {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-            Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(50.dp)) { Icon(Icons.Default.Person, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(16.dp).size(34.dp)) }
-            Column { Text("পাঠক প্রোফাইল", fontSize = 20.sp, fontWeight = FontWeight.Bold); Text("স্থানীয় ডেমো • সাইন ইন করা হয়নি", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp) }
+        Intro("আমার প্রোফাইল", "আপনার পড়া, শেখা ও অ্যাপের পছন্দ এক জায়গায়।")
+        Panel {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+                Surface(color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(50.dp)) {
+                    Icon(Icons.Default.Person, null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.padding(17.dp).size(34.dp))
+                }
+                Column(Modifier.weight(1f)) {
+                    Text("সারাংশ পাঠক", fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                    Text("স্থানীয় ডেমো • সাইন ইন করা হয়নি", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                    AssistChip(onClick = { nav.navigate("signin") }, label = { Text("সাইন ইন / অ্যাকাউন্ট") })
+                }
+            }
         }
-        Panel { Text("শেখার অগ্রগতি", fontWeight = FontWeight.Bold); Text("প্রকৃত ব্যবহার-ডেটা যুক্ত না হওয়া পর্যন্ত কোনো স্কোর বা ধারাবাহিকতার সংখ্যা দেখানো হবে না।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        Text("আপনার শেখার জায়গা", fontWeight = FontWeight.Bold, fontSize = 17.sp)
         RowLink("আমার শব্দভান্ডার", "সংরক্ষিত শব্দ ও পুনরাবৃত্তি", Icons.Default.Translate) { nav.navigate("vocabulary") }
         RowLink("রিভিশন ডেক", "মনে রাখার অনুশীলন", Icons.Default.Style) { nav.navigate("revision") }
         RowLink("লিখিত অনুশীলন", "আপনার উত্তর ও খসড়া", Icons.Default.EditNote) { nav.navigate("writing") }
         RowLink("অনুশীলনের ইতিহাস", "আগের সেশন ও ভুলের তালিকা", Icons.Default.History) { nav.navigate("practice-history") }
         RowLink("পড়ার ইতিহাস", "সম্প্রতি খোলা পাঠ", Icons.Default.MenuBook) { nav.navigate("reading-history") }
-        RowLink("সাইন ইন", "অ্যাকাউন্ট ও সিঙ্ক", Icons.Default.Login) { nav.navigate("signin") }
+        Text("অ্যাপ ও পছন্দ", fontWeight = FontWeight.Bold, fontSize = 17.sp)
         RowLink("নোটিফিকেশন", "আপডেট ও রিভিশন স্মরণ", Icons.Default.Notifications) { nav.navigate("notifications") }
         RowLink("সেটিংস ও পছন্দ", "ভাষা, ফন্ট, ডাউনলোড ও গোপনীয়তা", Icons.Default.Settings) { nav.navigate("settings") }
         RowLink("সহায়তা", "প্রশ্ন, সমস্যা ও মতামত", Icons.Default.HelpOutline) { nav.navigate("help") }
+        RowLink("Sarangsho Plus সম্পর্কে", "সংস্করণ ও অ্যাপের নীতিমালা", Icons.Default.Info) { nav.navigate("about") }
+        Panel {
+            Kicker("গোপনীয়তা ও অগ্রগতি")
+            Text("প্রকৃত ব্যবহার-ডেটা যুক্ত না হওয়া পর্যন্ত কোনো স্কোর, ধারাবাহিকতা বা সাপ্তাহিক অ্যানালিটিক্স দেখানো হবে না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, lineHeight = 20.sp)
+        }
     }
 }
 
