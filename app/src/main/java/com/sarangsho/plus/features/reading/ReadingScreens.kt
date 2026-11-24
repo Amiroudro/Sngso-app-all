@@ -60,29 +60,148 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 
 @Composable internal fun Home(nav: NavHostController) {
     Scroll {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Sarangsho+", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
-            Text("DAILY BRIEFING", fontSize = 10.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, letterSpacing = 1.2.sp)
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(
+                    "সারাংশ+",
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Text(
+                    "পড়ুন • বুঝুন • প্রস্তুতি নিন",
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Surface(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shape = RoundedCornerShape(50.dp)
+            ) {
+                Text(
+                    "DAILY BRIEFING",
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    fontSize = 9.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
         }
+
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-        Intro("আজকের ব্রিফিং", "সংবাদ বুঝুন, প্রেক্ষাপট জানুন, তারপর শেখা বিষয় অনুশীলন করুন।")
-        Primary("আজকের অনুশীলন শুরু করুন") { nav.navigate("quiz-setup") }
 
-        Text("প্রধান প্রতিবেদন", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
-        Story("আন্তর্জাতিক আদালতের বিচারিক প্রক্রিয়া ও রোহিঙ্গা সংকট", "আন্তর্জাতিক আইন", "নমুনা পাঠ", nav)
-        Story("উপকূলীয় দুর্যোগ প্রস্তুতি ও সরকারি সতর্কতা", "বাংলাদেশ", "নমুনা পাঠ", nav)
+        Intro(
+            "আজকের ব্রিফিং",
+            "গুরুত্বপূর্ণ ঘটনা থেকে প্রেক্ষাপট, ধারণা ও পরীক্ষার প্রস্তুতি।"
+        )
 
-        Text("শিখুন ও অনুশীলন করুন", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
-        RowLink("তিন-স্তরের সারাংশ", "৩০ সেকেন্ড, ২ মিনিট অথবা বিস্তারিত", Icons.Default.Subject) { nav.navigate("summary") }
-        RowLink("ঘটনার টাইমলাইন", "তারিখ ও প্রেক্ষাপট আলাদা করে দেখুন", Icons.Default.Timeline) { nav.navigate("timeline") }
-        RowLink("পত্রিকার দৃষ্টিভঙ্গি", "উপলভ্য ও অনুমোদিত উৎস তুলনা", Icons.Default.CompareArrows) { nav.navigate("perspectives") }
-        RowLink("Vocabulary Lab", "শব্দ শিখুন, মনে রাখুন", Icons.Default.Translate) { nav.navigate("vocabulary") }
+        Panel {
+            Kicker("প্রধান প্রতিবেদন • নমুনা পাঠ")
+            Text(
+                "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন",
+                fontSize = 23.sp,
+                lineHeight = 32.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                "আন্তর্জাতিক আদালতের এখতিয়ার, রাষ্ট্রের দায়বদ্ধতা এবং রোহিঙ্গা সংকটের আইনি প্রেক্ষাপট।",
+                fontSize = 14.sp,
+                lineHeight = 23.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                AssistChip(
+                    onClick = {},
+                    enabled = false,
+                    label = { Text("আন্তর্জাতিক আইন") }
+                )
+                AssistChip(
+                    onClick = {},
+                    enabled = false,
+                    label = { Text("নমুনা কনটেন্ট") }
+                )
+            }
+            Primary("প্রতিবেদনটি পড়ুন") { nav.navigate("article") }
+        }
 
-        Text("আরও দেখুন", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
-        RowLink("আজকের সংস্করণ", "তারিখভিত্তিক সব প্রকাশনা", Icons.Default.CalendarMonth) { nav.navigate("archive") }
-        RowLink("পড়ার পরিকল্পনা", "নিজের সময় অনুযায়ী প্রস্তুতি", Icons.Default.CalendarToday) { nav.navigate("study-plan") }
-        RowLink("নোটিফিকেশন", "সংস্করণ ও রিভিশনের আপডেট", Icons.Default.Notifications) { nav.navigate("notifications") }
-        Text("সব শিরোনাম এই স্ক্রিনে UI নমুনা; লাইভ ইঞ্জিন ডেটা নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        RowLink(
+            "সব প্রতিবেদন দেখুন",
+            "বিষয় অনুযায়ী সংবাদ ও ব্যাখ্যা",
+            Icons.Default.ArrowForward
+        ) { nav.navigate("feed") }
+
+        Text(
+            "সংবাদ থেকে শেখা",
+            fontSize = 19.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Text(
+            "একটি ঘটনার পেছনের তথ্য, সময়রেখা ও উৎস আলাদা করে দেখুন।",
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 13.sp
+        )
+        RowLink(
+            "তিন-স্তরের সারাংশ",
+            "৩০ সেকেন্ড, ২ মিনিট অথবা বিস্তারিত",
+            Icons.Default.Subject
+        ) { nav.navigate("summary") }
+        RowLink(
+            "ঘটনার টাইমলাইন",
+            "তারিখ ও প্রেক্ষাপট আলাদা করে দেখুন",
+            Icons.Default.Timeline
+        ) { nav.navigate("timeline") }
+        RowLink(
+            "পত্রিকার দৃষ্টিভঙ্গি",
+            "উপলভ্য ও অনুমোদিত উৎস তুলনা",
+            Icons.Default.CompareArrows
+        ) { nav.navigate("perspectives") }
+        RowLink(
+            "তথ্য ও পরিসংখ্যান",
+            "সংজ্ঞা, একক, সময়কাল ও মূল উৎস",
+            Icons.Default.QueryStats
+        ) { nav.navigate("data") }
+
+        Text(
+            "প্রস্তুতি চালিয়ে যান",
+            fontSize = 19.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Text(
+            "পড়া বিষয়কে শব্দভান্ডার ও পরীক্ষার অনুশীলনের সঙ্গে যুক্ত করুন।",
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 13.sp
+        )
+        RowLink(
+            "Vocabulary Lab",
+            "শব্দ, অর্থ, collocation ও ব্যবহার",
+            Icons.Default.Translate
+        ) { nav.navigate("vocabulary") }
+        RowLink(
+            "BCS ও Bank অনুশীলন",
+            "প্রশ্নের ধরন বেছে প্রস্তুতি নিন",
+            Icons.Default.EditNote
+        ) { nav.navigate("quiz-setup") }
+        RowLink(
+            "পড়ার পরিকল্পনা",
+            "নিজের সময় অনুযায়ী প্রস্তুতি",
+            Icons.Default.CalendarToday
+        ) { nav.navigate("study-plan") }
+
+        Text(
+            "এই হোম স্ক্রিনে প্রদর্শিত প্রতিবেদন ও বিষয়বস্তু নমুনা। লাইভ সংবাদ, ব্যক্তিগত অগ্রগতি বা পরীক্ষার ফল হিসেবে এগুলো ব্যবহার করবেন না।",
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 11.sp,
+            lineHeight = 17.sp
+        )
     }
 }
 @Composable internal fun Feed(nav: NavHostController) {
