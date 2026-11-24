@@ -3,6 +3,7 @@ package com.sarangsho.plus.data
 import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
+import java.time.LocalDate
 
 /**
  * Small offline-first store for learner preferences and progress.
@@ -13,6 +14,7 @@ object LocalLearningStore {
     private const val PREFS_NAME = "sarangsho_learning"
     private const val KEY_BOOKMARKED_WORDS = "bookmarked_words"
     private const val KEY_COMPLETED_STUDY_TASKS = "completed_study_tasks"
+    private const val KEY_COMPLETED_STUDY_TASKS_DATE = "completed_study_tasks_date"
     private const val KEY_WRITING_DRAFT = "writing_draft"
     private const val KEY_SAVED_ARTICLES = "saved_articles"
     private const val KEY_READING_FONT_SIZE = "reading_font_size"
@@ -45,14 +47,33 @@ object LocalLearningStore {
         prefs.edit().putStringSet(KEY_BOOKMARKED_WORDS, words).apply()
     }
 
-    fun getCompletedStudyTasks(context: Context): Set<String> =
-        preferences(context).getStringSet(KEY_COMPLETED_STUDY_TASKS, emptySet()).orEmpty().toSet()
+    /** Study-plan checkmarks belong to the device's current local calendar day. */
+    fun getCompletedStudyTasks(context: Context): Set<String> {
+        val prefs = preferences(context)
+        val today = LocalDate.now().toString()
+        if (prefs.getString(KEY_COMPLETED_STUDY_TASKS_DATE, null) != today) {
+            prefs.edit()
+                .putString(KEY_COMPLETED_STUDY_TASKS_DATE, today)
+                .putStringSet(KEY_COMPLETED_STUDY_TASKS, emptySet())
+                .apply()
+            return emptySet()
+        }
+        return prefs.getStringSet(KEY_COMPLETED_STUDY_TASKS, emptySet()).orEmpty().toSet()
+    }
 
     fun setStudyTaskCompleted(context: Context, task: String, completed: Boolean) {
         val prefs = preferences(context)
-        val tasks = prefs.getStringSet(KEY_COMPLETED_STUDY_TASKS, emptySet()).orEmpty().toMutableSet()
+        val today = LocalDate.now().toString()
+        val tasks = if (prefs.getString(KEY_COMPLETED_STUDY_TASKS_DATE, null) == today) {
+            prefs.getStringSet(KEY_COMPLETED_STUDY_TASKS, emptySet()).orEmpty().toMutableSet()
+        } else {
+            mutableSetOf()
+        }
         if (completed) tasks.add(task) else tasks.remove(task)
-        prefs.edit().putStringSet(KEY_COMPLETED_STUDY_TASKS, tasks).apply()
+        prefs.edit()
+            .putString(KEY_COMPLETED_STUDY_TASKS_DATE, today)
+            .putStringSet(KEY_COMPLETED_STUDY_TASKS, tasks)
+            .apply()
     }
 
     fun getOnboardingGoal(context: Context): String =
