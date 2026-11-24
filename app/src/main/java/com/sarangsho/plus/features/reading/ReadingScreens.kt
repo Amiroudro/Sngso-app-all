@@ -640,7 +640,8 @@ internal fun Summary(nav: NavHostController) {
 }
 
 @Composable internal fun OnboardingGoals(nav: NavHostController) {
-    var goal by rememberSaveable { mutableStateOf("BCS প্রস্তুতি") }
+    val context = LocalContext.current
+    var goal by rememberSaveable { mutableStateOf(LocalLearningStore.getOnboardingGoal(context)) }
     val options = listOf(
         "BCS প্রস্তুতি" to "প্রিলিমিনারি, লিখিত ও সাম্প্রতিক বিষয়",
         "Bank recruitment" to "ব্যাংক নিয়োগ পরীক্ষা ও সাধারণ জ্ঞান",
@@ -671,8 +672,11 @@ internal fun Summary(nav: NavHostController) {
                 }
             }
         }
-        Primary("বিষয় বেছে নিন") { nav.navigate("onboarding-interests") }
-        Text("এই পছন্দ এখন ডেমো সেশনে ব্যবহৃত হয়; অ্যাকাউন্টে সংরক্ষিত হয় না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+        Primary("বিষয় বেছে নিন") {
+            LocalLearningStore.setOnboardingGoal(context, goal)
+            nav.navigate("onboarding-interests")
+        }
+        Text("আপনার লক্ষ্য এই ডিভাইসে সংরক্ষিত হবে। অ্যাকাউন্ট সিঙ্ক এখনো যুক্ত হয়নি।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
     }
 }
 
@@ -686,7 +690,10 @@ internal fun Summary(nav: NavHostController) {
         "পরিবেশ ও জলবায়ু" to "পরিবর্তন, ঝুঁকি ও অভিযোজন",
         "সমাজ ও উন্নয়ন" to "শিক্ষা, স্বাস্থ্য ও উন্নয়ন"
     )
-    var selected by rememberSaveable { mutableStateOf(listOf("বাংলাদেশ", "অর্থনীতি ও ব্যাংকিং")) }
+    val context = LocalContext.current
+    var selected by rememberSaveable {
+        mutableStateOf(LocalLearningStore.getOnboardingInterests(context).toList().sorted())
+    }
     Scroll {
         Kicker("আপনার অভিজ্ঞতা সাজান • ২/২")
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -717,8 +724,14 @@ internal fun Summary(nav: NavHostController) {
                 }
             }
         }
-        Primary("আমার ব্রিফিং দেখুন") { nav.navigate("home") }
-        Text("নির্বাচিত বিষয়: ${selected.size}টি • এই পছন্দ ডেমো সেশনে থাকে, অ্যাকাউন্টে সিঙ্ক হয় না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+        Primary("আমার ব্রিফিং দেখুন") {
+            LocalLearningStore.setOnboardingInterests(context, selected.toSet())
+            nav.navigate("home") {
+                popUpTo("welcome") { inclusive = true }
+                launchSingleTop = true
+            }
+        }
+        Text("নির্বাচিত বিষয়: ${selected.size}টি • পছন্দগুলো এই ডিভাইসে সংরক্ষিত হবে; অ্যাকাউন্ট সিঙ্ক এখনো যুক্ত হয়নি।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
     }
 }
 
