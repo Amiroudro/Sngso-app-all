@@ -398,8 +398,14 @@ private val vocabularyEntries = listOf(
     val hasResult = correctCount != null && questionCount != null && questionCount > 0
     val percentage = if (hasResult) (correctCount!! * 100) / questionCount!! else 0
     val context = LocalContext.current
-    LaunchedEffect(correctCount, questionCount) {
-        if (hasResult) LocalLearningStore.recordPracticeAttempt(context, correctCount!!, questionCount!!)
+    // The result route can be recomposed or revisited. Store a marker on the
+    // originating answer entry so one completed session is recorded only once.
+    val alreadyRecorded = resultState?.get<Boolean>("practiceAttemptRecorded") == true
+    LaunchedEffect(correctCount, questionCount, alreadyRecorded) {
+        if (hasResult && !alreadyRecorded) {
+            LocalLearningStore.recordPracticeAttempt(context, correctCount!!, questionCount!!)
+            resultState?.set("practiceAttemptRecorded", true)
+        }
     }
     Scroll {
         Intro("অনুশীলন সম্পন্ন", "এই সেশনের উত্তর যাচাইয়ের ফলাফল।")
@@ -418,13 +424,14 @@ private val vocabularyEntries = listOf(
                     if (correctCount == questionCount) "দারুণ! নমুনা প্রশ্নটির উত্তর সঠিক হয়েছে।"
                     else "ভুল উত্তরটি আবার দেখে নিন এবং ব্যাখ্যাটি মনে রাখুন।"
                 )
-                Text("এটি বর্তমানে একটি নমুনা প্রশ্নের ফলাফল; পূর্ণ প্রশ্নব্যাংক বা স্থায়ী ইতিহাস নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("এটি একটি নমুনা প্রশ্নের ফলাফল। সেশনটি এই ডিভাইসের অনুশীলনের ইতিহাসে সংরক্ষিত হবে।", color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else {
                 Text("এই সেশনের ফল পাওয়া যায়নি", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                 Text("প্রথমে অনুশীলনের প্রশ্নের উত্তর জমা দিন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
         Primary("আবার অনুশীলন করুন") { nav.navigate("quiz-setup") }
+        OutlinedButton(onClick = { nav.navigate("practice-history") }, modifier = Modifier.fillMaxWidth()) { Text("অনুশীলনের ইতিহাস দেখুন") }
         OutlinedButton(onClick = { nav.navigate("revision") }, modifier = Modifier.fillMaxWidth()) { Text("রিভিশন ডেক খুলুন") }
     }
 }
