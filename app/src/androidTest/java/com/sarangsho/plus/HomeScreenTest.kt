@@ -108,6 +108,26 @@ class HomeScreenTest {
     }
 
     @Test
+    fun learningActivityShortcutsOpenTheirMatchingDestinations() {
+        completeOnboarding()
+
+        composeRule.onNodeWithText("শিখুন").performClick()
+        composeRule.onNodeWithText("আপনার শেখার হিসাব • এই ডিভাইস").assertIsDisplayed()
+
+        composeRule.onNodeWithText("সম্পন্ন পড়ার কাজ").performClick()
+        composeRule.onNodeWithText("আপনার পড়ার পরিকল্পনা").assertIsDisplayed()
+
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+        composeRule.onNodeWithText("অনুশীলন সেশন").performClick()
+        composeRule.onNodeWithText("অনুশীলনের ইতিহাস").assertIsDisplayed()
+        composeRule.onNodeWithText("এখনো কোনো সেশন সংরক্ষিত নেই").assertIsDisplayed()
+
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+        composeRule.onNodeWithText("সংরক্ষিত শব্দ").performClick()
+        composeRule.onNodeWithText("আপনার সংরক্ষিত বিষয়").assertIsDisplayed()
+    }
+
+    @Test
     fun learnHubPracticeFlowRecordsAndDisplaysACompletedAttempt() {
         completeOnboarding()
 
