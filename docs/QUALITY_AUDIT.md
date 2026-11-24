@@ -68,11 +68,11 @@ This checks string consistency only. It does not prove that every screen renders
 
 ## Test coverage inventory (updated 2026-11-24)
 
-A source review of the test files found 30 authored Android instrumentation test methods:
+A source review of the test files found 31 authored Android instrumentation test methods:
 
 | Test file | Test methods | What they cover |
 |---|---:|---|
-| `HomeScreenTest.kt` | 12 | Welcome, onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, accessible Learn-hub shortcuts, language settings navigation/persistence, Today-to-archive navigation, selected-word detail navigation, vocabulary synonym search, and the sample quiz-to-history journey |
+| `HomeScreenTest.kt` | 13 | Welcome, onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, accessible Learn-hub shortcuts, language settings navigation/persistence, Today-to-archive navigation, selected-word detail navigation, bookmarking from Word Detail, trimmed synonym search, and the sample quiz-to-history journey |
 | `LocalLearningStoreTest.kt` | 18 | Topic, vocabulary search, bookmarks, drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration/bounds, practice-history validation/bounds, and daily study-task persistence/reset |
 
 Coverage limits:
