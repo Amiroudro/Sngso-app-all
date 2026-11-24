@@ -289,15 +289,51 @@ private val vocabularyEntries = listOf(
 }
 
 @Composable internal fun Writing() {
-    var draft by rememberSaveable { mutableStateOf("") }
+    val context = LocalContext.current
+    var draft by rememberSaveable { mutableStateOf(LocalLearningStore.getWritingDraft(context)) }
+    var saved by rememberSaveable { mutableStateOf(true) }
     Scroll {
-        Intro("লিখিত অনুশীলন", "নিজের ভাষায় উত্তর লিখুন। খসড়া সংরক্ষণ এখনো সংযুক্ত নয়।")
-        Panel { Kicker("বিশ্লেষণী প্রশ্ন"); Text("জলবায়ু পরিবর্তন বাংলাদেশের উন্নয়ন পরিকল্পনায় কী ধরনের চ্যালেঞ্জ তৈরি করে? উদাহরণসহ আলোচনা করুন।", fontWeight = FontWeight.SemiBold, fontSize = 18.sp, lineHeight = 28.sp) }
-        OutlinedTextField(draft, { draft = it }, Modifier.fillMaxWidth().height(220.dp), label = { Text("আপনার উত্তর লিখুন") }, placeholder = { Text("ভূমিকা, মূল আলোচনা, উদাহরণ ও উপসংহার...") })
-        Text(draft.length.toString() + " অক্ষর", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
-        Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text("খসড়া সংরক্ষণ শিগগিরই চালু হবে") }
+        Intro("লিখিত অনুশীলন", "নিজের ভাষায় উত্তর লিখুন। খসড়া এই ডিভাইসে সংরক্ষণ করা যাবে।")
+        Panel {
+            Kicker("বিশ্লেষণী প্রশ্ন • নমুনা")
+            Text(
+                "জলবায়ু পরিবর্তন বাংলাদেশের উন্নয়ন পরিকল্পনায় কী ধরনের চ্যালেঞ্জ তৈরি করে? উদাহরণসহ আলোচনা করুন।",
+                fontWeight = FontWeight.SemiBold, fontSize = 18.sp, lineHeight = 28.sp
+            )
+            Text("উত্তরের কাঠামো: ভূমিকা, প্রভাব, বাংলাদেশের প্রেক্ষাপট, নীতিগত করণীয় ও উপসংহার।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, lineHeight = 19.sp)
+        }
+        OutlinedTextField(
+            value = draft,
+            onValueChange = { draft = it; saved = false },
+            modifier = Modifier.fillMaxWidth().height(250.dp),
+            label = { Text("আপনার উত্তর লিখুন") },
+            placeholder = { Text("ভূমিকা দিয়ে শুরু করুন...") },
+            supportingText = { Text("${draft.length} অক্ষর") }
+        )
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(
+                if (saved) "এই ডিভাইসে সংরক্ষিত" else "পরিবর্তন সংরক্ষণ করা হয়নি",
+                color = if (saved) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 11.sp
+            )
+            TextButton(onClick = { draft = ""; saved = false }) { Text("মুছে ফেলুন") }
+        }
+        Button(
+            onClick = {
+                LocalLearningStore.setWritingDraft(context, draft)
+                saved = true
+            },
+            enabled = !saved && draft.isNotBlank(),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(Icons.Default.Save, null)
+            Spacer(Modifier.width(8.dp))
+            Text("খসড়া সংরক্ষণ করুন")
+        }
+        Text("খসড়াটি শুধু এই ডিভাইসে থাকে। অ্যাকাউন্ট বা ক্লাউডে সিঙ্ক হয় না এবং স্বয়ংক্রিয় মূল্যায়নও চালু নেই।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, lineHeight = 17.sp)
     }
 }
+
 
 @Composable internal fun Revision() {
     var flipped by rememberSaveable { mutableStateOf(false) }
