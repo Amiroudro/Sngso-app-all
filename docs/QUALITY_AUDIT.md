@@ -73,7 +73,7 @@ A source review of the test files found 26 authored Android instrumentation test
 | Test file | Test methods | What they cover |
 |---|---:|---|
 | `HomeScreenTest.kt` | 8 | Welcome, onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, Learn-hub shortcuts, and the sample quiz-to-history journey |
-| `LocalLearningStoreTest.kt` | 15 | Topic, vocabulary search, bookmarks, drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration/bounds, practice-history validation/bounds, and daily study-task persistence/reset |
+| `LocalLearningStoreTest.kt` | 18 | Topic, vocabulary search, bookmarks, drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration/bounds, practice-history validation/bounds, and daily study-task persistence/reset |
 
 Coverage limits:
 
