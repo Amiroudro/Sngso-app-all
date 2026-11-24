@@ -24,6 +24,7 @@ object LocalLearningStore {
     private const val KEY_NOTIFY_EXAM = "notify_exam"
     private const val KEY_RECENT_ARTICLES = "recent_articles"
     private const val KEY_PRACTICE_HISTORY = "practice_history"
+    private const val KEY_FEEDBACK_DRAFT = "feedback_draft"
 
     private fun preferences(context: Context) =
         context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -53,6 +54,13 @@ object LocalLearningStore {
 
     fun getWritingDraft(context: Context): String =
         preferences(context).getString(KEY_WRITING_DRAFT, "").orEmpty()
+
+    fun getFeedbackDraft(context: Context): String =
+        preferences(context).getString(KEY_FEEDBACK_DRAFT, "").orEmpty()
+
+    fun setFeedbackDraft(context: Context, draft: String) {
+        preferences(context).edit().putString(KEY_FEEDBACK_DRAFT, draft).apply()
+    }
 
     fun setWritingDraft(context: Context, draft: String) {
         preferences(context).edit().putString(KEY_WRITING_DRAFT, draft).apply()
