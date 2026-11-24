@@ -494,10 +494,21 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
 
 @Composable internal fun StudyPlan() {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val tasks = listOf("আজকের ব্রিফিং পড়া", "১০টি MCQ অনুশীলন", "৫টি নতুন শব্দ শেখা", "আগের ভুলগুলো রিভিশন")
     val done = remember { mutableStateListOf<String>().apply {
         addAll(LocalLearningStore.getCompletedStudyTasks(context).filter { it in tasks })
     } }
+    DisposableEffect(lifecycleOwner, context) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                done.clear()
+                done.addAll(LocalLearningStore.getCompletedStudyTasks(context).filter { it in tasks })
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
     Scroll {
         Intro("আপনার পড়ার পরিকল্পনা", "ছোট, বাস্তবসম্মত সেশন দিয়ে ধারাবাহিকতা তৈরি করুন।")
         Panel {
