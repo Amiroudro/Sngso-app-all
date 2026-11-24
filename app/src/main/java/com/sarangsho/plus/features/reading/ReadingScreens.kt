@@ -611,6 +611,9 @@ internal fun Summary(nav: NavHostController) {
 }
 
 @Composable internal fun Profile(nav: NavHostController) {
+    val context = LocalContext.current
+    val learningGoal = LocalLearningStore.getOnboardingGoal(context)
+    val learningInterests = LocalLearningStore.getOnboardingInterests(context).sorted()
     Scroll {
         Intro("আমার প্রোফাইল", "আপনার পড়া, শেখা ও অ্যাপের পছন্দ এক জায়গায়।")
         Panel {
@@ -623,6 +626,20 @@ internal fun Summary(nav: NavHostController) {
                     Text("স্থানীয় ডেমো • সাইন ইন করা হয়নি", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
                     AssistChip(onClick = { nav.navigate("signin") }, label = { Text("সাইন ইন / অ্যাকাউন্ট") })
                 }
+            }
+        }
+        Panel {
+            Kicker("আপনার শেখার পছন্দ")
+            Text(learningGoal, fontWeight = FontWeight.Bold, fontSize = 17.sp)
+            Text(
+                if (learningInterests.isEmpty()) "এখনো কোনো বিষয় নির্বাচন করা হয়নি।"
+                else learningInterests.joinToString(" • "),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 12.sp,
+                lineHeight = 19.sp
+            )
+            TextButton(onClick = { nav.navigate("onboarding-goals") }) {
+                Text("লক্ষ্য ও বিষয় পরিবর্তন")
             }
         }
         Text("আপনার শেখার জায়গা", fontWeight = FontWeight.Bold, fontSize = 17.sp)
