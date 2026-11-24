@@ -185,4 +185,25 @@ class LocalLearningStoreTest {
             LocalLearningStore.getCompletedStudyTasks(context)
         )
     }
+    @Test
+    fun completedStudyTasksResetWhenTheLocalCalendarDateChanges() {
+        val prefs = context.getSharedPreferences("sarangsho_learning", 0)
+        prefs.edit()
+            .putString("completed_study_tasks_date", "2000-01-01")
+            .putStringSet("completed_study_tasks", setOf("আজকের ব্রিফিং পড়া"))
+            .commit()
+
+        assertTrue(LocalLearningStore.getCompletedStudyTasks(context).isEmpty())
+        assertEquals(
+            java.time.LocalDate.now().toString(),
+            prefs.getString("completed_study_tasks_date", null)
+        )
+
+        LocalLearningStore.setStudyTaskCompleted(context, "আজকের ব্রিফিং পড়া", true)
+        assertEquals(
+            setOf("আজকের ব্রিফিং পড়া"),
+            LocalLearningStore.getCompletedStudyTasks(context)
+        )
+    }
+
 }
