@@ -1,6 +1,6 @@
 # Sarangsho Plus screen architecture
 
-This is a product inventory, not a target screen count. The current prototype exposes 47 navigation destinations, while several capabilities remain honest empty or disabled shells until their services exist. A route should exist only when it supports a distinct user task, a meaningful decision, or a necessary system state. Related content belongs in a detail section or bottom sheet when that is clearer than another page.
+This is a product inventory, not a target screen count. The current prototype exposes 48 navigation destinations, while several capabilities remain honest empty or disabled shells until their services exist. A route should exist only when it supports a distinct user task, a meaningful decision, or a necessary system state. Related content belongs in a detail section or bottom sheet when that is clearer than another page.
 
 ## Primary navigation
 
