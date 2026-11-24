@@ -88,6 +88,34 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         Intro("আজকের ব্রিফিং", "গুরুত্বপূর্ণ ঘটনা থেকে প্রেক্ষাপট, ধারণা ও পরীক্ষার প্রস্তুতি।")
+        Surface(
+            color = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            shape = RoundedCornerShape(18.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Kicker("আপনার প্রস্তুতি")
+                Text("আজকের পড়ার লক্ষ্য ঠিক করুন", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    "লক্ষ্য নির্ধারণ করলে আপনার দৈনিক পড়ার পরিকল্পনা এখানে দেখা যাবে।",
+                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.82f),
+                    fontSize = 12.sp,
+                    lineHeight = 19.sp
+                )
+                Button(
+                    onClick = { nav.navigate("onboarding-goals") },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary
+                    )
+                ) {
+                    Text("লক্ষ্য নির্ধারণ করুন")
+                    Spacer(Modifier.width(6.dp))
+                    Icon(Icons.Default.ArrowForward, null, modifier = Modifier.size(16.dp))
+                }
+            }
+        }
         Panel {
             Kicker("প্রধান প্রতিবেদন • নমুনা পাঠ")
             Text(
