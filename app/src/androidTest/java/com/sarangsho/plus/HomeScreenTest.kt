@@ -168,6 +168,19 @@ class HomeScreenTest {
     }
 
     @Test
+    fun vocabularySearchMatchesSynonymsAndExamples() {
+        completeOnboarding()
+
+        composeRule.onNodeWithText("শিখুন").performClick()
+        composeRule.onNodeWithText("শব্দ শেখা শুরু করুন").performClick()
+        composeRule.onNodeWithText("শব্দ বা বাংলা অর্থ খুঁজুন")
+            .performTextInput("adaptability")
+
+        composeRule.onNodeWithText("Resilience").assertIsDisplayed()
+        composeRule.onNodeWithText("Mitigate").assertDoesNotExist()
+    }
+
+    @Test
     fun learnHubPracticeFlowRecordsAndDisplaysACompletedAttempt() {
         completeOnboarding()
 
