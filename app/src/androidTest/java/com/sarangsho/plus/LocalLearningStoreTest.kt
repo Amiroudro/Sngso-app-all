@@ -78,6 +78,17 @@ class LocalLearningStoreTest {
     }
 
     @Test
+    fun notificationPreferencesPersistIndependently() {
+        LocalLearningStore.setDailyBriefingNotifications(context, false)
+        LocalLearningStore.setWordNotifications(context, true)
+        LocalLearningStore.setExamNotifications(context, false)
+
+        assertFalse(LocalLearningStore.getDailyBriefingNotifications(context))
+        assertTrue(LocalLearningStore.getWordNotifications(context))
+        assertFalse(LocalLearningStore.getExamNotifications(context))
+    }
+
+    @Test
     fun completedStudyTasksCanBeAddedAndRemoved() {
         LocalLearningStore.setStudyTaskCompleted(context, "Read today's briefing", true)
         LocalLearningStore.setStudyTaskCompleted(context, "Revise vocabulary", true)
