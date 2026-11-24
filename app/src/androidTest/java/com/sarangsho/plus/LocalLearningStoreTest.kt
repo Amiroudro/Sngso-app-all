@@ -28,6 +28,15 @@ class LocalLearningStoreTest {
     }
 
     @Test
+    fun selectedTopicPersistsAndCanBeChanged() {
+        LocalLearningStore.setSelectedTopic(context, "অর্থনীতি ও ব্যাংকিং")
+        assertEquals("অর্থনীতি ও ব্যাংকিং", LocalLearningStore.getSelectedTopic(context))
+
+        LocalLearningStore.setSelectedTopic(context, "আন্তর্জাতিক আইন ও চুক্তি")
+        assertEquals("আন্তর্জাতিক আইন ও চুক্তি", LocalLearningStore.getSelectedTopic(context))
+    }
+
+    @Test
     fun localVocabularySearchMatchesTermsAndBanglaMeanings() {
         assertTrue(searchVocabulary("resilience").any { it.first == "Resilience" })
         assertTrue(searchVocabulary("জবাবদিহিতা").any { it.first == "Accountability" })
