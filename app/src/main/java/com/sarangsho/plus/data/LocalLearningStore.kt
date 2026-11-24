@@ -25,6 +25,8 @@ object LocalLearningStore {
     private const val KEY_RECENT_ARTICLES = "recent_articles"
     private const val KEY_PRACTICE_HISTORY = "practice_history"
     private const val KEY_FEEDBACK_DRAFT = "feedback_draft"
+    private const val KEY_ONBOARDING_GOAL = "onboarding_goal"
+    private const val KEY_ONBOARDING_INTERESTS = "onboarding_interests"
 
     private fun preferences(context: Context) =
         context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -50,6 +52,25 @@ object LocalLearningStore {
         val tasks = prefs.getStringSet(KEY_COMPLETED_STUDY_TASKS, emptySet()).orEmpty().toMutableSet()
         if (completed) tasks.add(task) else tasks.remove(task)
         prefs.edit().putStringSet(KEY_COMPLETED_STUDY_TASKS, tasks).apply()
+    }
+
+    fun getOnboardingGoal(context: Context): String =
+        preferences(context).getString(KEY_ONBOARDING_GOAL, "BCS প্রস্তুতি").orEmpty()
+
+    fun setOnboardingGoal(context: Context, goal: String) {
+        require(goal.isNotBlank())
+        preferences(context).edit().putString(KEY_ONBOARDING_GOAL, goal.trim()).apply()
+    }
+
+    fun getOnboardingInterests(context: Context): Set<String> =
+        preferences(context).getStringSet(
+            KEY_ONBOARDING_INTERESTS,
+            setOf("বাংলাদেশ", "অর্থনীতি ও ব্যাংকিং")
+        ).orEmpty().toSet()
+
+    fun setOnboardingInterests(context: Context, interests: Set<String>) {
+        val cleaned = interests.map(String::trim).filter(String::isNotBlank).toSet()
+        preferences(context).edit().putStringSet(KEY_ONBOARDING_INTERESTS, cleaned).apply()
     }
 
     fun getWritingDraft(context: Context): String =
