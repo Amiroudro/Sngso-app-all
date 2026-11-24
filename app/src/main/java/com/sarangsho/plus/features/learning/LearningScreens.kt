@@ -87,8 +87,38 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
 }
 
 @Composable internal fun LearningHub(nav: NavHostController) {
+    val context = LocalContext.current
+    val savedWordCount = LocalLearningStore.getBookmarkedWords(context).size
+    val completedTaskCount = LocalLearningStore.getCompletedStudyTasks(context).size
+    val practiceSessionCount = LocalLearningStore.getPracticeHistory(context).size
     Scroll {
         Intro("শিখুন", "সংবাদ থেকে পাওয়া জ্ঞানকে শব্দভান্ডার, অনুশীলন ও রিভিশনের মাধ্যমে স্থায়ী করুন।")
+        Panel {
+            Kicker("আপনার শেখার হিসাব • এই ডিভাইস")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                    Text(savedWordCount.toString(), fontSize = 23.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                    Text("সংরক্ষিত শব্দ", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                    Text(completedTaskCount.toString(), fontSize = 23.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                    Text("সম্পন্ন পড়ার কাজ", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                    Text(practiceSessionCount.toString(), fontSize = 23.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                    Text("অনুশীলন সেশন", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+            Text(
+                "এগুলো শুধু এই ডিভাইসে সংরক্ষিত কার্যকলাপের হিসাব; কোনো ক্লাউড বা পরীক্ষার ফল নয়।",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 11.sp,
+                lineHeight = 16.sp
+            )
+        }
         Panel {
             Kicker("VOCABULARY LAB")
             Text("শব্দভান্ডার গড়ে তুলুন", fontSize = 20.sp, fontWeight = FontWeight.Bold)
