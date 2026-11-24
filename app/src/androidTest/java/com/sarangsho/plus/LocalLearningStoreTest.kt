@@ -103,6 +103,30 @@ class LocalLearningStoreTest {
     }
 
     @Test
+    fun readingHistoryPreservesNewestFirstOrderAndMovesReopenedArticleToTop() {
+        LocalLearningStore.recordArticleRead(context, "story-one")
+        LocalLearningStore.recordArticleRead(context, "story-two")
+        LocalLearningStore.recordArticleRead(context, "story-one")
+
+        assertEquals(listOf("story-one", "story-two"), LocalLearningStore.getRecentArticles(context))
+    }
+
+    @Test
+    fun practiceAttemptsPersistNewestFirstAndCanBeCleared() {
+        LocalLearningStore.recordPracticeAttempt(context, 1, 2)
+        LocalLearningStore.recordPracticeAttempt(context, 2, 2)
+
+        val attempts = LocalLearningStore.getPracticeHistory(context)
+        assertEquals(2, attempts.size)
+        assertEquals(2, attempts[0].correct)
+        assertEquals(2, attempts[0].total)
+        assertEquals(1, attempts[1].correct)
+
+        LocalLearningStore.clearPracticeHistory(context)
+        assertTrue(LocalLearningStore.getPracticeHistory(context).isEmpty())
+    }
+
+    @Test
     fun completedStudyTasksCanBeAddedAndRemoved() {
         LocalLearningStore.setStudyTaskCompleted(context, "Read today's briefing", true)
         LocalLearningStore.setStudyTaskCompleted(context, "Revise vocabulary", true)
