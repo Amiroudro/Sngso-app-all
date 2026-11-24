@@ -316,7 +316,7 @@ private val vocabularyEntries = listOf(
                 color = if (saved) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 11.sp
             )
-            TextButton(onClick = { draft = ""; saved = false }) { Text("মুছে ফেলুন") }
+            TextButton(onClick = { draft = ""; LocalLearningStore.setWritingDraft(context, ""); saved = true }) { Text("মুছে ফেলুন") }
         }
         Button(
             onClick = {
