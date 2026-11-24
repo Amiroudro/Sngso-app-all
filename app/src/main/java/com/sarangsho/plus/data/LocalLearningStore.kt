@@ -139,7 +139,16 @@ object LocalLearningStore {
             } catch (_: Exception) { emptyList() }
             // Older builds stored this as a StringSet. Its original order was not retained,
             // but migrate its contents rather than discarding a user's saved history.
-            is Set<*> -> stored.filterIsInstance<String>().filter(String::isNotBlank).sorted()
+            is Set<*> -> {
+                val migrated = stored.filterIsInstance<String>()
+                    .filter(String::isNotBlank)
+                    .distinct()
+                    .sorted()
+                val json = JSONArray()
+                migrated.forEach(json::put)
+                prefs.edit().putString(KEY_RECENT_ARTICLES, json.toString()).apply()
+                migrated
+            }
             else -> emptyList()
         }
     }
