@@ -1,6 +1,8 @@
 package com.sarangsho.plus.data
 
 import android.content.Context
+import org.json.JSONArray
+import org.json.JSONObject
 
 /**
  * Small offline-first store for learner preferences and progress.
@@ -21,6 +23,7 @@ object LocalLearningStore {
     private const val KEY_NOTIFY_WORD = "notify_word"
     private const val KEY_NOTIFY_EXAM = "notify_exam"
     private const val KEY_RECENT_ARTICLES = "recent_articles"
+    private const val KEY_PRACTICE_HISTORY = "practice_history"
 
     private fun preferences(context: Context) =
         context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -67,18 +70,55 @@ object LocalLearningStore {
         preferences(context).edit().putStringSet(KEY_SAVED_ARTICLES, articles).apply()
     }
 
-    fun getRecentArticles(context: Context): List<String> =
-        preferences(context).getStringSet(KEY_RECENT_ARTICLES, emptySet()).orEmpty().toList()
+    /** Most recently opened article first. JSON preserves order, unlike SharedPreferences StringSet. */
+    fun getRecentArticles(context: Context): List<String> {
+        val raw = preferences(context).getString(KEY_RECENT_ARTICLES, null) ?: return emptyList()
+        return try {
+            val json = JSONArray(raw)
+            (0 until json.length()).mapNotNull { json.optString(it).takeIf(String::isNotBlank) }
+        } catch (_: Exception) { emptyList() }
+    }
 
     fun recordArticleRead(context: Context, articleId: String) {
-        val articles = preferences(context).getStringSet(KEY_RECENT_ARTICLES, emptySet()).orEmpty().toMutableSet()
-        articles.remove(articleId)
-        articles.add(articleId)
-        preferences(context).edit().putStringSet(KEY_RECENT_ARTICLES, articles).apply()
+        if (articleId.isBlank()) return
+        val articles = (listOf(articleId) + getRecentArticles(context).filterNot { it == articleId }).take(50)
+        val json = JSONArray()
+        articles.forEach(json::put)
+        preferences(context).edit().putString(KEY_RECENT_ARTICLES, json.toString()).apply()
     }
 
     fun clearReadingHistory(context: Context) {
         preferences(context).edit().remove(KEY_RECENT_ARTICLES).apply()
+    }
+
+    data class PracticeAttempt(val correct: Int, val total: Int, val timestamp: Long)
+
+    fun getPracticeHistory(context: Context): List<PracticeAttempt> {
+        val raw = preferences(context).getString(KEY_PRACTICE_HISTORY, null) ?: return emptyList()
+        return try {
+            val json = JSONArray(raw)
+            (0 until json.length()).mapNotNull { index ->
+                val item = json.optJSONObject(index) ?: return@mapNotNull null
+                val total = item.optInt("total")
+                val correct = item.optInt("correct")
+                val timestamp = item.optLong("timestamp")
+                if (total > 0 && correct in 0..total && timestamp > 0) PracticeAttempt(correct, total, timestamp) else null
+            }
+        } catch (_: Exception) { emptyList() }
+    }
+
+    fun recordPracticeAttempt(context: Context, correct: Int, total: Int) {
+        require(total > 0 && correct in 0..total)
+        val attempts = (listOf(PracticeAttempt(correct, total, System.currentTimeMillis())) + getPracticeHistory(context)).take(100)
+        val json = JSONArray()
+        attempts.forEach { attempt ->
+            json.put(JSONObject().put("correct", attempt.correct).put("total", attempt.total).put("timestamp", attempt.timestamp))
+        }
+        preferences(context).edit().putString(KEY_PRACTICE_HISTORY, json.toString()).apply()
+    }
+
+    fun clearPracticeHistory(context: Context) {
+        preferences(context).edit().remove(KEY_PRACTICE_HISTORY).apply()
     }
 
     fun getReadingFontSize(context: Context): Float =
