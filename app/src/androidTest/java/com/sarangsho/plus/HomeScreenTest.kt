@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import org.junit.Rule
 import org.junit.Test
 
@@ -49,11 +50,17 @@ class HomeScreenTest {
     }
 
     @Test
-    fun libraryTabOpensSavedItemsScreen() {
+    fun libraryTabShowsOneClearEmptyStateAndSearchNoMatchState() {
         completeOnboarding()
 
         composeRule.onNodeWithText("লাইব্রেরি").performClick()
         composeRule.onNodeWithText("আপনার সংরক্ষিত বিষয়").assertIsDisplayed()
-        composeRule.onNodeWithText("সংরক্ষিত বিষয় খুঁজুন").assertIsDisplayed()
+        composeRule.onNodeWithText("আপনার লাইব্রেরি এখনো খালি").assertIsDisplayed()
+        composeRule.onNodeWithText("এখনো কোনো নিবন্ধ সংরক্ষণ করা হয়নি").assertDoesNotExist()
+        composeRule.onNodeWithText("এখনো কোনো শব্দ বুকমার্ক করা হয়নি").assertDoesNotExist()
+
+        composeRule.onNodeWithText("নিবন্ধ বা শব্দ লিখুন").performTextInput("no-such-saved-item")
+        composeRule.onNodeWithText("কোনো সংরক্ষিত বিষয় মেলেনি").assertIsDisplayed()
+        composeRule.onNodeWithText("আপনার লাইব্রেরি এখনো খালি").assertDoesNotExist()
     }
 }
