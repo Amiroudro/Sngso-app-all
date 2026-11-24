@@ -128,7 +128,7 @@ class HomeScreenTest {
         composeRule.onNodeWithText("অনুশীলন সম্পন্ন").assertIsDisplayed()
         composeRule.onNodeWithText("1 / 1").assertIsDisplayed()
         composeRule.onNodeWithText("অনুশীলনের ইতিহাস দেখুন").performClick()
-        composeRule.onNodeWithText("অনুশীলনের ইতিহাস").assertIsDisplayed()
+        composeRule.onAllNodesWithText("অনুশীলনের ইতিহাস").onFirst().assertIsDisplayed()
         composeRule.onNodeWithText("1 / 1 সঠিক").assertIsDisplayed()
     }
 
