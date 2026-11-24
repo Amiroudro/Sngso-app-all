@@ -16,6 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.input.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -642,7 +646,7 @@ internal fun Summary(nav: NavHostController) {
         "পরিবেশ ও জলবায়ু" to "পরিবর্তন, ঝুঁকি ও অভিযোজন",
         "সমাজ ও উন্নয়ন" to "শিক্ষা, স্বাস্থ্য ও উন্নয়ন"
     )
-    val selected = rememberSaveable { mutableStateListOf("বাংলাদেশ", "অর্থনীতি ও ব্যাংকিং") }
+    var selected by rememberSaveable { mutableStateOf(listOf("বাংলাদেশ", "অর্থনীতি ও ব্যাংকিং")) }
     Scroll {
         Kicker("আপনার অভিজ্ঞতা সাজান • ২/২")
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -658,13 +662,12 @@ internal fun Summary(nav: NavHostController) {
                 shape = RoundedCornerShape(13.dp),
                 border = BorderStroke(1.dp, if (checked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant),
                 modifier = Modifier.fillMaxWidth().clickable {
-                    if (checked) selected.remove(name) else selected.add(name)
+                    selected = if (checked) selected - name else selected + name
                 }
             ) {
                 Row(Modifier.padding(horizontal = 12.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = checked, onCheckedChange = { value ->
-                        if (value && name !in selected) selected.add(name)
-                        if (!value) selected.remove(name)
+                        selected = if (value) selected + name else selected - name
                     })
                     Spacer(Modifier.width(8.dp))
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
