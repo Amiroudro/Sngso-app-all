@@ -153,6 +153,21 @@ class HomeScreenTest {
     }
 
     @Test
+    fun vocabularyOpensTheSelectedWordDetail() {
+        completeOnboarding()
+
+        composeRule.onNodeWithText("শিখুন").performClick()
+        composeRule.onNodeWithText("শব্দ শেখা শুরু করুন").performClick()
+        composeRule.onAllNodesWithText("পূর্ণাঙ্গ পাঠ খুলুন")[0]
+            .assertHasClickAction()
+            .performClick()
+
+        composeRule.onNodeWithText("Resilience").assertIsDisplayed()
+        composeRule.onNodeWithText("Definition: The ability to recover or adapt after difficulty.")
+            .assertIsDisplayed()
+    }
+
+    @Test
     fun learnHubPracticeFlowRecordsAndDisplaysACompletedAttempt() {
         completeOnboarding()
 
