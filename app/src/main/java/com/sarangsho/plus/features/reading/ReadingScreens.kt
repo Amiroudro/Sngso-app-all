@@ -274,10 +274,18 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 }
 
 @Composable internal fun Article(nav: NavHostController) {
+    val context = LocalContext.current
+    var saved by rememberSaveable { mutableStateOf(LocalLearningStore.isArticleSaved(context, "sample-international-justice")) }
     Scroll {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             Kicker("বিশ্লেষণ • নমুনা নিবন্ধ")
             AssistChip(onClick = {}, enabled = false, label = { Text("নমুনা", fontSize = 10.sp) })
+            IconButton(onClick = {
+                saved = !saved
+                LocalLearningStore.setArticleSaved(context, "sample-international-justice", saved)
+            }) {
+                Icon(if (saved) Icons.Default.Bookmark else Icons.Default.BookmarkBorder, contentDescription = if (saved) "সংরক্ষিত" else "সংরক্ষণ করুন")
+            }
         }
         Text("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন", fontSize = 25.sp, lineHeight = 34.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
         Text("আন্তর্জাতিক আইন • রোহিঙ্গা সংকট • বিচারিক প্রক্রিয়া", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
@@ -517,37 +525,55 @@ internal fun Summary(nav: NavHostController) {
 @Composable internal fun Saved(nav: NavHostController) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val bookmarkedWords = remember {
-        mutableStateListOf<String>().apply {
-            addAll(LocalLearningStore.getBookmarkedWords(context).sorted())
-        }
-    }
+    val bookmarkedWords = remember { mutableStateListOf<String>().apply { addAll(LocalLearningStore.getBookmarkedWords(context).sorted()) } }
+    val savedArticles = remember { mutableStateListOf<String>().apply { addAll(LocalLearningStore.getSavedArticles(context).sorted()) } }
     DisposableEffect(lifecycleOwner, context) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
                 bookmarkedWords.clear()
                 bookmarkedWords.addAll(LocalLearningStore.getBookmarkedWords(context).sorted())
+                savedArticles.clear()
+                savedArticles.addAll(LocalLearningStore.getSavedArticles(context).sorted())
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
     Scroll {
-        Intro("আপনার সংরক্ষিত বিষয়", "আপনার বুকমার্ক করা শব্দ এই ডিভাইসেই সংরক্ষিত থাকে।")
+        Intro("আপনার সংরক্ষিত বিষয়", "পরে পড়ার জন্য রাখা নিবন্ধ ও শব্দ এখানে পাবেন।")
+        Text("সংরক্ষিত নিবন্ধ • ${savedArticles.size}", fontWeight = FontWeight.Bold, fontSize = 17.sp)
+        if (savedArticles.isEmpty()) {
+            Panel {
+                Icon(Icons.Default.BookmarkBorder, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
+                Text("এখনো কোনো নিবন্ধ সংরক্ষণ করা হয়নি", fontWeight = FontWeight.SemiBold)
+                Text("নিবন্ধের বুকমার্ক আইকন ব্যবহার করে পরে পড়ার জন্য সংরক্ষণ করুন।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+            }
+        } else {
+            savedArticles.forEach { id ->
+                Panel {
+                    Kicker("সংরক্ষিত নিবন্ধ • নমুনা")
+                    Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        TextButton(onClick = { nav.navigate("article") }) { Text("পড়ুন") }
+                        TextButton(onClick = {
+                            LocalLearningStore.setArticleSaved(context, id, false)
+                            savedArticles.remove(id)
+                        }) { Text("সংরক্ষণ সরান") }
+                    }
+                }
+            }
+        }
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        Text("সংরক্ষিত শব্দ • ${bookmarkedWords.size}", fontWeight = FontWeight.Bold, fontSize = 17.sp)
         if (bookmarkedWords.isEmpty()) {
             Panel {
-                Icon(Icons.Default.Bookmarks, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(30.dp))
-                Text("এখনো কোনো শব্দ বুকমার্ক করা হয়নি", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                Text("Vocabulary Lab-এ গিয়ে কোনো শব্দ বুকমার্ক করলে সেটি এখানে দেখা যাবে। সংবাদ ও রিভিশন কার্ড সংরক্ষণ এখনো চালু হয়নি।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("এখনো কোনো শব্দ বুকমার্ক করা হয়নি", fontWeight = FontWeight.SemiBold)
+                Text("Vocabulary Lab-এ গিয়ে কোনো শব্দ বুকমার্ক করলে সেটি এখানে দেখা যাবে।", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Primary("Vocabulary Lab খুলুন") { nav.navigate("vocabulary") }
             }
         } else {
-            Text("সংরক্ষিত শব্দ • ${bookmarkedWords.size}", fontWeight = FontWeight.Bold, fontSize = 17.sp)
             bookmarkedWords.toList().forEach { word ->
-                Row(
-                    Modifier.fillMaxWidth().padding(vertical = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Row(Modifier.fillMaxWidth().padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f).padding(vertical = 9.dp)) {
                         Text(word, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
                         Text("Vocabulary Lab • এই ডিভাইসে সংরক্ষিত", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
@@ -562,7 +588,7 @@ internal fun Summary(nav: NavHostController) {
         }
         RowLink("Vocabulary Lab", "আরও শব্দ শিখুন ও বুকমার্ক করুন", Icons.Default.Translate) { nav.navigate("vocabulary") }
         RowLink("সংরক্ষিত সংগ্রহ", "ফোল্ডার ও বিষয়ভিত্তিক তালিকা", Icons.Default.Folder) { nav.navigate("saved-collections") }
-        Text("বর্তমানে শুধু Vocabulary Lab-এর বুকমার্ক এই তালিকায় আসে। অ্যাকাউন্ট বা অন্য ডিভাইসে সিঙ্ক হয় না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+        Text("সংরক্ষিত নিবন্ধ ও শব্দ শুধু এই ডিভাইসে থাকে। অ্যাকাউন্ট বা অন্য ডিভাইসে সিঙ্ক হয় না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
     }
 }
 
