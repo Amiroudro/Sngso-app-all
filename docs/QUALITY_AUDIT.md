@@ -60,19 +60,19 @@
 A source-level scan of the current branch found:
 
 - 48 unique route declarations and 48 matching screen-dispatch branches.
-- 90 literal `navigate("…")` calls across the activity and feature files; no literal target points to an undeclared route.
+- 92 literal `navigate("…")` calls across the activity and feature files; no literal target points to an undeclared route.
 - One variable-driven `navigate(target)` call powers bottom navigation. Its four possible values (`home`, `learn`, `saved`, `feed`) are all declared routes.
-- The Language Settings screen is reachable from Settings. `word-detail` has no literal incoming navigation call and remains an orphaned sample detail screen; either connect it to a selected vocabulary entry or remove it before release.
+- The Language Settings screen is reachable from Settings, and the edition archive is reachable from Today. `word-detail` has no literal incoming navigation call and remains an orphaned sample detail screen; either connect it to a selected vocabulary entry or remove it before release.
 
 This checks string consistency only. It does not prove that every screen renders, that every interaction works, or that navigation survives process recreation. A compiled build and device-level tests are still required.
 
 ## Test coverage inventory (updated 2026-11-24)
 
-A source review of the test files found 27 authored Android instrumentation test methods:
+A source review of the test files found 28 authored Android instrumentation test methods:
 
 | Test file | Test methods | What they cover |
 |---|---:|---|
-| `HomeScreenTest.kt` | 9 | Welcome, onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, accessible Learn-hub shortcuts, language settings navigation/persistence, and the sample quiz-to-history journey |
+| `HomeScreenTest.kt` | 10 | Welcome, onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, accessible Learn-hub shortcuts, language settings navigation/persistence, Today-to-archive navigation, and the sample quiz-to-history journey |
 | `LocalLearningStoreTest.kt` | 18 | Topic, vocabulary search, bookmarks, drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration/bounds, practice-history validation/bounds, and daily study-task persistence/reset |
 
 Coverage limits:
