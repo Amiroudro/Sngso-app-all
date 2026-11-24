@@ -60,7 +60,7 @@
 A source-level scan of the current branch found:
 
 - 48 unique route declarations and 48 matching screen-dispatch branches.
-- 83 literal `navigate("…")` calls across the activity and feature files.
+- 90 literal `navigate("…")` calls across the activity and feature files.
 - No literal navigation target points to an undeclared route.
 - `word-detail` and `language` currently have no literal incoming navigation call. They are reachable only if a future/dynamic entry point is added, or they may be obsolete; confirm intended entry points before release.
 
