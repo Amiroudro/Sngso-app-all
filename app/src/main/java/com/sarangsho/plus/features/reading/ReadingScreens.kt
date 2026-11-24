@@ -164,37 +164,58 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
     var filter by rememberSaveable { mutableStateOf("সব") }
     var query by rememberSaveable { mutableStateOf("") }
     val stories = listOf(
-        Triple("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি", "অর্থনীতি", "৬ মিনিট"),
-        Triple("জাতিসংঘ ও জলবায়ু আলোচনার সাম্প্রতিক অগ্রগতি", "বিশ্ব", "৫ মিনিট"),
-        Triple("আন্তর্জাতিক আদালতের এখতিয়ার ও বিচারিক প্রক্রিয়া", "আইন ও বিচার", "৭ মিনিট")
+        Triple("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি", "অর্থনীতি", "নমুনা পাঠ • ৬ মিনিট"),
+        Triple("জাতিসংঘ ও জলবায়ু আলোচনার প্রেক্ষাপট", "বিশ্ব", "নমুনা পাঠ • ৫ মিনিট"),
+        Triple("আন্তর্জাতিক আদালতের এখতিয়ার ও বিচারিক প্রক্রিয়া", "আইন ও বিচার", "নমুনা পাঠ • ৭ মিনিট"),
+        Triple("সংবিধান, সংসদ ও রাষ্ট্রীয় প্রতিষ্ঠান", "বাংলাদেশ", "নমুনা পাঠ • ৪ মিনিট")
     )
     val filtered = stories.filter { story ->
         val categoryMatches = filter == "সব" ||
-            (filter == "বাংলাদেশ" && story.second != "বিশ্ব") ||
+            (filter == "বাংলাদেশ" && story.second in listOf("বাংলাদেশ", "অর্থনীতি", "আইন ও বিচার")) ||
             (filter == "বিশ্ব" && story.second == "বিশ্ব") ||
             (filter == "অর্থনীতি" && story.second == "অর্থনীতি")
         val queryMatches = query.isBlank() || story.first.contains(query, ignoreCase = true)
         categoryMatches && queryMatches
     }
     Scroll {
-        Intro("সংবাদ অনুসন্ধান", "বিষয় ও গুরুত্ব অনুযায়ী পড়ার তালিকা সাজান।")
-        OutlinedTextField(query, { query = it }, Modifier.fillMaxWidth(),
-            placeholder = { Text("শিরোনাম বা বিষয় খুঁজুন") },
-            leadingIcon = { Icon(Icons.Default.Search, null) }, singleLine = true)
+        Intro("সকল সংবাদ", "বিষয় অনুযায়ী পড়ুন, প্রেক্ষাপট দেখুন এবং উৎস যাচাই করুন।")
+        OutlinedTextField(query, { query = it }, Modifier.fillMaxWidth(), placeholder = { Text("শিরোনাম বা বিষয় খুঁজুন") }, leadingIcon = { Icon(Icons.Default.Search, null) }, singleLine = true)
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             listOf("সব", "বাংলাদেশ", "বিশ্ব", "অর্থনীতি").forEach {
                 FilterChip(selected = filter == it, onClick = { filter = it }, label = { Text(it) })
             }
         }
+        Panel {
+            Kicker("সম্পাদকীয় নির্দেশনা")
+            Text("প্রতিটি প্রতিবেদনে প্রকাশের সময়, মূল উৎস, যাচাইয়ের অবস্থা ও প্রাসঙ্গিকতা আলাদা করে দেখানো হবে।", fontSize = 13.sp, lineHeight = 21.sp)
+        }
         if (filtered.isEmpty()) {
             Panel {
-                Text("কোনো নমুনা ফল পাওয়া যায়নি", fontWeight = FontWeight.SemiBold)
-                Text("অন্য শব্দ লিখুন অথবা ফিল্টার বদলান।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Icon(Icons.Default.SearchOff, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
+                Text("কোনো ফল পাওয়া যায়নি", fontWeight = FontWeight.SemiBold)
+                Text("বানান বদলে দেখুন অথবা অন্য বিষয় বেছে নিন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         } else {
-            filtered.forEach { Story(it.first, it.second, it.third, nav) }
+            filtered.forEachIndexed { index, story ->
+                Panel {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Surface(color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(8.dp)) {
+                            Text("০${index + 1}", Modifier.padding(horizontal = 9.dp, vertical = 7.dp), color = MaterialTheme.colorScheme.onPrimaryContainer, fontWeight = FontWeight.Bold)
+                        }
+                        Kicker(story.second)
+                        Spacer(Modifier.weight(1f))
+                        AssistChip(onClick = {}, enabled = false, label = { Text("নমুনা", fontSize = 10.sp) })
+                    }
+                    Text(story.first, fontSize = 18.sp, fontWeight = FontWeight.Bold, lineHeight = 26.sp)
+                    Text(story.third, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        TextButton(onClick = { nav.navigate("article") }) { Text("বিস্তারিত পড়ুন") }
+                        TextButton(onClick = { nav.navigate("summary") }) { Text("সারাংশ") }
+                    }
+                }
+            }
         }
-        Text("এগুলো UI পরীক্ষার নমুনা শিরোনাম, লাইভ সংবাদ নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+        Text("এই তালিকার শিরোনামগুলো ইন্টারফেস পরীক্ষার নমুনা, লাইভ সংবাদ নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
     }
 }
 
