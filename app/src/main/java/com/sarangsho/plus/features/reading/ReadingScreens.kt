@@ -610,6 +610,8 @@ internal fun Summary(nav: NavHostController) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val bookmarkedWords = remember { mutableStateListOf<String>().apply { addAll(LocalLearningStore.getBookmarkedWords(context).sorted()) } }
     val savedArticles = remember { mutableStateListOf<String>().apply { addAll(LocalLearningStore.getSavedArticles(context).sorted()) } }
+    var query by rememberSaveable { mutableStateOf("") }
+    var filter by rememberSaveable { mutableStateOf("সব") }
     DisposableEffect(lifecycleOwner, context) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
@@ -622,17 +624,55 @@ internal fun Summary(nav: NavHostController) {
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
+    val normalizedQuery = query.trim()
+    val visibleArticles = if (filter == "শব্দ") emptyList() else savedArticles.filter { id ->
+        normalizedQuery.isBlank() || id.contains(normalizedQuery, ignoreCase = true) ||
+            (id == "sample-international-justice" && "গাম্বিয়া বনাম মিয়ানমার আন্তর্জাতিক বিচারিক প্রক্রিয়া".contains(normalizedQuery, ignoreCase = true))
+    }
+    val visibleWords = if (filter == "নিবন্ধ") emptyList() else bookmarkedWords.filter { word ->
+        normalizedQuery.isBlank() || word.contains(normalizedQuery, ignoreCase = true)
+    }
     Scroll {
         Intro("আপনার সংরক্ষিত বিষয়", "পরে পড়ার জন্য রাখা নিবন্ধ ও শব্দ এখানে পাবেন।")
-        Text("সংরক্ষিত নিবন্ধ • ${savedArticles.size}", fontWeight = FontWeight.Bold, fontSize = 17.sp)
-        if (savedArticles.isEmpty()) {
-            Panel {
-                Icon(Icons.Default.BookmarkBorder, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
-                Text("এখনো কোনো নিবন্ধ সংরক্ষণ করা হয়নি", fontWeight = FontWeight.SemiBold)
-                Text("নিবন্ধের বুকমার্ক আইকন ব্যবহার করে পরে পড়ার জন্য সংরক্ষণ করুন।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        OutlinedTextField(
+            value = query,
+            onValueChange = { query = it },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            label = { Text("সংরক্ষিত বিষয় খুঁজুন") },
+            placeholder = { Text("নিবন্ধ বা শব্দ লিখুন") },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+            trailingIcon = {
+                if (query.isNotEmpty()) {
+                    IconButton(onClick = { query = "" }) {
+                        Icon(Icons.Default.Close, contentDescription = "অনুসন্ধান মুছুন")
+                    }
+                }
             }
-        } else {
-            savedArticles.forEach { id ->
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            listOf("সব", "নিবন্ধ", "শব্দ").forEach { option ->
+                FilterChip(
+                    selected = filter == option,
+                    onClick = { filter = option },
+                    label = { Text(option) }
+                )
+            }
+        }
+        Text(
+            "দেখানো হচ্ছে • ${visibleArticles.size + visibleWords.size} / ${savedArticles.size + bookmarkedWords.size}",
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 12.sp
+        )
+        if (filter != "শব্দ") {
+            Text("সংরক্ষিত নিবন্ধ • ${visibleArticles.size}", fontWeight = FontWeight.Bold, fontSize = 17.sp)
+            if (visibleArticles.isEmpty() && (filter == "নিবন্ধ" || normalizedQuery.isNotBlank())) {
+                Panel {
+                    Text(if (savedArticles.isEmpty()) "এখনো কোনো নিবন্ধ সংরক্ষণ করা হয়নি" else "এই অনুসন্ধানে কোনো নিবন্ধ পাওয়া যায়নি", fontWeight = FontWeight.SemiBold)
+                    Text("নিবন্ধের বুকমার্ক আইকন ব্যবহার করে পরে পড়ার জন্য সংরক্ষণ করুন.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                }
+            }
+            visibleArticles.forEach { id ->
                 Panel {
                     Kicker("সংরক্ষিত নিবন্ধ • নমুনা")
                     Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
@@ -646,16 +686,17 @@ internal fun Summary(nav: NavHostController) {
                 }
             }
         }
-        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-        Text("সংরক্ষিত শব্দ • ${bookmarkedWords.size}", fontWeight = FontWeight.Bold, fontSize = 17.sp)
-        if (bookmarkedWords.isEmpty()) {
-            Panel {
-                Text("এখনো কোনো শব্দ বুকমার্ক করা হয়নি", fontWeight = FontWeight.SemiBold)
-                Text("Vocabulary Lab-এ গিয়ে কোনো শব্দ বুকমার্ক করলে সেটি এখানে দেখা যাবে।", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Primary("Vocabulary Lab খুলুন") { nav.navigate("vocabulary") }
+        if (filter != "নিবন্ধ") {
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            Text("সংরক্ষিত শব্দ • ${visibleWords.size}", fontWeight = FontWeight.Bold, fontSize = 17.sp)
+            if (visibleWords.isEmpty() && (filter == "শব্দ" || normalizedQuery.isNotBlank())) {
+                Panel {
+                    Text(if (bookmarkedWords.isEmpty()) "এখনো কোনো শব্দ বুকমার্ক করা হয়নি" else "এই অনুসন্ধানে কোনো শব্দ পাওয়া যায়নি", fontWeight = FontWeight.SemiBold)
+                    Text("Vocabulary Lab-এ গিয়ে কোনো শব্দ বুকমার্ক করলে সেটি এখানে দেখা যাবে।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Primary("Vocabulary Lab খুলুন") { nav.navigate("vocabulary") }
+                }
             }
-        } else {
-            bookmarkedWords.toList().forEach { word ->
+            visibleWords.forEach { word ->
                 Row(Modifier.fillMaxWidth().padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f).padding(vertical = 9.dp)) {
                         Text(word, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
@@ -667,6 +708,17 @@ internal fun Summary(nav: NavHostController) {
                     }) { Text("সরান") }
                 }
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            }
+        }
+        if (savedArticles.isEmpty() && bookmarkedWords.isEmpty()) {
+            Panel {
+                Text("আপনার লাইব্রেরি এখনো খালি", fontWeight = FontWeight.SemiBold)
+                Text("নিবন্ধ ও শব্দ বুকমার্ক করলে সেগুলো এখানে একসঙ্গে পাবেন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        } else if (visibleArticles.isEmpty() && visibleWords.isEmpty() && normalizedQuery.isNotBlank()) {
+            Panel {
+                Text("কোনো সংরক্ষিত বিষয় মেলেনি", fontWeight = FontWeight.SemiBold)
+                Text("বানান পরিবর্তন করে দেখুন অথবা অনুসন্ধান মুছে সব বিষয় দেখুন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
         RowLink("Vocabulary Lab", "আরও শব্দ শিখুন ও বুকমার্ক করুন", Icons.Default.Translate) { nav.navigate("vocabulary") }
