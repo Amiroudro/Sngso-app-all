@@ -29,6 +29,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.sarangsho.plus.data.LocalLearningStore
+import com.sarangsho.plus.features.learning.searchVocabulary
 import androidx.navigation.compose.rememberNavController
 import com.sarangsho.plus.ui.theme.SarangshoTheme
 import androidx.navigation.NavHostController
@@ -503,13 +504,31 @@ internal fun Summary(nav: NavHostController) {
     var scope by rememberSaveable { mutableStateOf("সব") }
     var searched by rememberSaveable { mutableStateOf(false) }
     val suggestions = listOf("বাংলাদেশ ব্যাংক", "সংবিধান", "জাতিসংঘ", "জলবায়ু অর্থায়ন", "Resilience")
+    val normalizedQuery = query.trim()
+    val storyTitle = "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন"
+    val storyTerms = listOf(storyTitle, "আন্তর্জাতিক আইন", "রোহিঙ্গা সংকট", "বিচারিক প্রক্রিয়া")
+    val topicTerms = listOf("বাংলাদেশ ব্যাংক", "সংবিধান", "জাতিসংঘ", "জলবায়ু অর্থায়ন", "আন্তর্জাতিক আইন")
+    val storyMatches = searched && scope in listOf("সব", "সংবাদ") &&
+        storyTerms.any { it.contains(normalizedQuery, ignoreCase = true) || normalizedQuery.contains(it, ignoreCase = true) }
+    val topicMatches = if (searched && scope in listOf("সব", "বিষয়")) {
+        topicTerms.filter { it.contains(normalizedQuery, ignoreCase = true) }
+    } else emptyList()
+    val wordMatches = if (searched && scope in listOf("সব", "শব্দ")) {
+        searchVocabulary(normalizedQuery)
+    } else emptyList()
+    val resultCount = (if (storyMatches) 1 else 0) + topicMatches.size + wordMatches.size
+
     Scroll {
-        Intro("অনুসন্ধান ও উৎস", "সংবাদ, বিষয়, শব্দ, প্রতিষ্ঠান এবং প্রকাশনার নাম খুঁজুন।")
+        Intro("অনুসন্ধান ও উৎস", "সংবাদ, বিষয় ও শব্দ খুঁজুন। ফলাফলগুলো বর্তমানে অ্যাপের নমুনা কনটেন্ট ও স্থানীয় শব্দতালিকা থেকে আসে।")
         OutlinedTextField(
             query, { query = it; searched = false }, Modifier.fillMaxWidth(),
             placeholder = { Text("কী খুঁজছেন?") },
             leadingIcon = { Icon(Icons.Default.Search, null) },
-            trailingIcon = { if (query.isNotBlank()) IconButton(onClick = { query = ""; searched = false }) { Icon(Icons.Default.Close, "মুছুন") } },
+            trailingIcon = {
+                if (query.isNotBlank()) IconButton(onClick = { query = ""; searched = false }) {
+                    Icon(Icons.Default.Close, "মুছুন")
+                }
+            },
             singleLine = true
         )
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -517,11 +536,14 @@ internal fun Summary(nav: NavHostController) {
                 FilterChip(selected = scope == it, onClick = { scope = it; searched = false }, label = { Text(it) })
             }
         }
-        Primary("খুঁজুন") { searched = query.isNotBlank() }
+        Primary("খুঁজুন") { searched = normalizedQuery.isNotBlank() }
         if (!searched) {
             Text("জনপ্রিয় অনুসন্ধান", fontWeight = FontWeight.Bold, fontSize = 17.sp)
             suggestions.forEach { item ->
-                Row(Modifier.fillMaxWidth().clickable { query = item; searched = false }.padding(vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    Modifier.fillMaxWidth().clickable { query = item; searched = true }.padding(vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Icon(Icons.Default.TrendingUp, null, tint = MaterialTheme.colorScheme.primary)
                     Spacer(Modifier.width(10.dp))
                     Text(item, Modifier.weight(1f))
@@ -530,13 +552,44 @@ internal fun Summary(nav: NavHostController) {
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             }
         } else {
-            Panel {
-                Icon(Icons.Default.SearchOff, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
-                Text("অনুসন্ধান সূচি সংযুক্ত নয়", fontWeight = FontWeight.Bold)
-                Text("“$query” এর প্রকৃত ফলাফল দেখাতে সংবাদ, শব্দ ও উৎসের সূচি সংযুক্ত করতে হবে। এই স্ক্রিনে ফলাফল বানিয়ে দেখানো হচ্ছে না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, lineHeight = 20.sp)
+            Text("$resultCountটি ফলাফল", fontWeight = FontWeight.Bold, fontSize = 17.sp)
+            if (resultCount == 0) {
+                Panel {
+                    Icon(Icons.Default.SearchOff, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
+                    Text("কোনো ফল পাওয়া যায়নি", fontWeight = FontWeight.Bold)
+                    Text("অন্য বানান, বাংলা অর্থ অথবা অন্য বিভাগ দিয়ে খুঁজে দেখুন।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                }
+            }
+            if (storyMatches) {
+                Panel {
+                    Kicker("সংবাদ • নমুনা নিবন্ধ")
+                    Text(storyTitle, fontWeight = FontWeight.Bold, fontSize = 17.sp, lineHeight = 24.sp)
+                    Text("আন্তর্জাতিক আইন • রোহিঙ্গা সংকট", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                    TextButton(onClick = { nav.navigate("article") }) { Text("নিবন্ধ খুলুন") }
+                }
+            }
+            topicMatches.forEach { topic ->
+                Panel {
+                    Kicker("বিষয়")
+                    Text(topic, fontWeight = FontWeight.SemiBold)
+                    TextButton(onClick = { nav.navigate("topic-detail") }) { Text("বিষয়ভিত্তিক পাঠ খুলুন") }
+                }
+            }
+            wordMatches.forEach { (term, meaning) ->
+                Panel {
+                    Kicker("শব্দভান্ডার")
+                    Text(term, fontWeight = FontWeight.Bold, fontSize = 19.sp)
+                    Text(meaning, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    TextButton(onClick = { nav.navigate("vocabulary") }) { Text("Vocabulary Lab খুলুন") }
+                }
             }
         }
-        Text("প্রকৃত ফলাফলে প্রকাশক, মূল লিংক, প্রকাশের সময় ও প্রবেশযোগ্যতার অবস্থা দেখানো হবে।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+        Text(
+            "এটি স্থানীয় প্রোটোটাইপ অনুসন্ধান। লাইভ সংবাদ, প্রকাশক, মূল URL বা সম্পূর্ণ শব্দভান্ডারের সূচি এখনো সংযুক্ত নয়।",
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 11.sp,
+            lineHeight = 17.sp
+        )
     }
 }
 
