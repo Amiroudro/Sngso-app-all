@@ -12,7 +12,7 @@
 - Compose instrumentation tests cover onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, the Learn-hub activity shortcuts, the quiz-to-history journey, and local learning-store persistence. Their APK compiles in CI, but the instrumentation tests have not been executed on an emulator.
 - The routine pull-request workflow is configured to compile and package the instrumentation test APK using `:app:assembleDebugAndroidTest`. This checks that test sources compile; it does not execute the instrumentation tests.
 - Emulator instrumentation is gated to the PR's ready-for-review event after the routine build job succeeds, with manual dispatch retained for use after the workflow reaches the default branch.
-- Vocabulary Lab has a searchable five-entry sample word list with per-word bookmark controls. Saved words and articles, reader and language preferences, onboarding choices, notification preferences, writing and feedback drafts, reading history, practice history, and the study checklist are stored locally with Android SharedPreferences. The study checklist resets by local calendar date. These features are device-only and do not sync.
+- Vocabulary Lab has a searchable five-entry sample word list with per-word bookmark controls; search matches the term, part of speech, pronunciation, Bengali meaning, definition, synonyms, antonym and example. Saved words and articles, reader and language preferences, onboarding choices, notification preferences, writing and feedback drafts, reading history, practice history, and the study checklist are stored locally with Android SharedPreferences. The study checklist resets by local calendar date. These features are device-only and do not sync.
 - Vocabulary definitions and examples are prototype learning content; dictionary/source references and a maintained exam vocabulary feed are not connected.
 - Authentication, downloads, feedback submission and production user analytics are not connected. Saved articles are stored locally on-device; they are not account-synced.
 - Empty and unavailable states explain when their data/service is not connected.
@@ -68,11 +68,11 @@ This checks string consistency only. It does not prove that every screen renders
 
 ## Test coverage inventory (updated 2026-11-24)
 
-A source review of the test files found 29 authored Android instrumentation test methods:
+A source review of the test files found 30 authored Android instrumentation test methods:
 
 | Test file | Test methods | What they cover |
 |---|---:|---|
-| `HomeScreenTest.kt` | 11 | Welcome, onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, accessible Learn-hub shortcuts, language settings navigation/persistence, Today-to-archive navigation, selected-word detail navigation, and the sample quiz-to-history journey |
+| `HomeScreenTest.kt` | 12 | Welcome, onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, accessible Learn-hub shortcuts, language settings navigation/persistence, Today-to-archive navigation, selected-word detail navigation, vocabulary synonym search, and the sample quiz-to-history journey |
 | `LocalLearningStoreTest.kt` | 18 | Topic, vocabulary search, bookmarks, drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration/bounds, practice-history validation/bounds, and daily study-task persistence/reset |
 
 Coverage limits:
