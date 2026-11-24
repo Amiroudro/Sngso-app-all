@@ -71,13 +71,45 @@ private fun SarangshoApp() {
             containerColor = MaterialTheme.colorScheme.background,
             topBar = {
                 if (route != "welcome") CenterAlignedTopAppBar(
-                    title = { Text(title, fontSize = 17.sp, fontWeight = FontWeight.SemiBold) },
+                    title = {
+                        Text(
+                            if (route == "home") "Sarangsho+" else title,
+                            fontSize = if (route == "home") 20.sp else 17.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
                     navigationIcon = {
-                        IconButton(onClick = { if (route in tabs) nav.navigate("search") else nav.popBackStack() }) {
-                            Icon(if (route in tabs) Icons.Default.Search else Icons.AutoMirrored.Filled.ArrowBack, if (route in tabs) "অনুসন্ধান" else "পেছনে")
+                        IconButton(onClick = {
+                            when {
+                                route == "home" -> nav.navigate("settings")
+                                route in tabs -> nav.navigate("search")
+                                else -> nav.popBackStack()
+                            }
+                        }) {
+                            Icon(
+                                when {
+                                    route == "home" -> Icons.Default.Menu
+                                    route in tabs -> Icons.Default.Search
+                                    else -> Icons.AutoMirrored.Filled.ArrowBack
+                                },
+                                contentDescription = when {
+                                    route == "home" -> "মেনু"
+                                    route in tabs -> "অনুসন্ধান"
+                                    else -> "পেছনে"
+                                }
+                            )
                         }
                     },
-                    actions = { IconButton(onClick = { nav.navigate("profile") }) { Icon(Icons.Default.AccountCircle, "প্রোফাইল") } },
+                    actions = {
+                        if (route == "home") {
+                            IconButton(onClick = { nav.navigate("notifications") }) {
+                                Icon(Icons.Default.NotificationsNone, "নোটিফিকেশন")
+                            }
+                        }
+                        IconButton(onClick = { nav.navigate("profile") }) {
+                            Icon(Icons.Default.AccountCircle, "প্রোফাইল")
+                        }
+                    },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = MaterialTheme.colorScheme.background)
                 )
             },
