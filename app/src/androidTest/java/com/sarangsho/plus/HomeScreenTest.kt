@@ -129,6 +129,20 @@ class HomeScreenTest {
     }
 
     @Test
+    fun settingsExposeLanguageSelectionAndPersistIt() {
+        completeOnboarding()
+
+        composeRule.onNodeWithContentDescription("মেনু").performClick()
+        composeRule.onNodeWithText("অ্যাপের ভাষা").assertHasClickAction().performClick()
+        composeRule.onNodeWithText("English").performClick()
+        composeRule.onNodeWithText("নির্বাচন: English", substring = true).assertIsDisplayed()
+
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+        composeRule.onNodeWithText("অ্যাপের ভাষা").performClick()
+        composeRule.onNodeWithText("নির্বাচন: English", substring = true).assertIsDisplayed()
+    }
+
+    @Test
     fun learnHubPracticeFlowRecordsAndDisplaysACompletedAttempt() {
         completeOnboarding()
 
