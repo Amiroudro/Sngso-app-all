@@ -144,6 +144,7 @@ object LocalLearningStore {
                     .filter(String::isNotBlank)
                     .distinct()
                     .sorted()
+                    .take(50)
                 val json = JSONArray()
                 migrated.forEach(json::put)
                 prefs.edit().putString(KEY_RECENT_ARTICLES, json.toString()).apply()
