@@ -159,7 +159,7 @@ class LocalLearningStoreTest {
             """["story-a","story-m","story-z"]""",
             prefs.getString("recent_articles", null)
         )
-        assertTrue(prefs.getStringSet("recent_articles", null) == null)
+        assertTrue(prefs.all["recent_articles"] is String)
     }
 
     @Test
