@@ -72,11 +72,17 @@ object LocalLearningStore {
 
     /** Most recently opened article first. JSON preserves order, unlike SharedPreferences StringSet. */
     fun getRecentArticles(context: Context): List<String> {
-        val raw = preferences(context).getString(KEY_RECENT_ARTICLES, null) ?: return emptyList()
-        return try {
-            val json = JSONArray(raw)
-            (0 until json.length()).mapNotNull { json.optString(it).takeIf(String::isNotBlank) }
-        } catch (_: Exception) { emptyList() }
+        val prefs = preferences(context)
+        return when (val stored = prefs.all[KEY_RECENT_ARTICLES]) {
+            is String -> try {
+                val json = JSONArray(stored)
+                (0 until json.length()).mapNotNull { json.optString(it).takeIf(String::isNotBlank) }.distinct()
+            } catch (_: Exception) { emptyList() }
+            // Older builds stored this as a StringSet. Its original order was not retained,
+            // but migrate its contents rather than discarding a user's saved history.
+            is Set<*> -> stored.filterIsInstance<String>().filter(String::isNotBlank).sorted()
+            else -> emptyList()
+        }
     }
 
     fun recordArticleRead(context: Context, articleId: String) {
