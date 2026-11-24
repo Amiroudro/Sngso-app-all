@@ -13,6 +13,13 @@ The app keeps four top-level destinations, matching the most frequent jobs:
 
 Profile, notifications and settings are reached from the top bar.
 
+## Local search behavior
+
+- The search screen currently indexes the prototype's one sample article, the explicitly listed topic terms, and the five vocabulary entries bundled in the learning module.
+- Results are filtered by all, news, vocabulary, or topic scope. Empty states are shown when the local index has no match.
+- Search suggestions populate and run a local query. Opening a vocabulary result leads to Vocabulary Lab; opening the sample article leads to its article screen.
+- This is not a live editorial or source search. Server-backed search, complete feed indexing, source metadata, and query analytics remain unimplemented.
+
 ## First-run preference behavior
 
 - The learning goal and selected topic interests are stored on-device using the local learning preference store.
