@@ -172,17 +172,35 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 
 @Composable internal fun Article(nav: NavHostController) {
     Scroll {
-        Kicker("আন্তর্জাতিক আইন • নমুনা নিবন্ধ")
-        Text("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন", fontSize = 25.sp, fontWeight = FontWeight.Bold, lineHeight = 34.sp)
-        Text("প্রকাশকাল ও হালনাগাদ সময়: উৎস-ডেটা সংযুক্ত হলে এখানে দেখানো হবে", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
-        Panel { Text("যাচাইয়ের অবস্থা", fontWeight = FontWeight.Bold); Text("প্রকৃত সংস্করণে প্রতিটি গুরুত্বপূর্ণ দাবির পাশে উৎস, তারিখ এবং যাচাইয়ের অবস্থা থাকবে।"); AssistChip(onClick = {}, enabled = false, label = { Text("প্রাথমিক উৎস") }) }
-        RowLink("তিন-স্তরের সারাংশ", "দ্রুত ধারণা থেকে বিস্তারিত ব্যাখ্যা", Icons.Default.Subject) { nav.navigate("summary") }
-        RowLink("ঘটনার টাইমলাইন", "তারিখ অনুযায়ী ঘটনাপ্রবাহ", Icons.Default.Timeline) { nav.navigate("timeline") }
-        RowLink("পত্রিকার দৃষ্টিভঙ্গি", "শুধু অনুমোদিত ও পাওয়া উৎস", Icons.Default.CompareArrows) { nav.navigate("perspectives") }
-        RowLink("জ্ঞান মানচিত্র", "প্রতিষ্ঠান ও ধারণার সম্পর্ক", Icons.Default.Hub) { nav.navigate("graph") }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Kicker("বিশ্লেষণ • নমুনা নিবন্ধ")
+            AssistChip(onClick = {}, enabled = false, label = { Text("নমুনা", fontSize = 10.sp) })
+        }
+        Text("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন", fontSize = 25.sp, lineHeight = 34.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+        Text("আন্তর্জাতিক আইন • রোহিঙ্গা সংকট • বিচারিক প্রক্রিয়া", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        Panel {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Icon(Icons.Default.VerifiedUser, null, tint = MaterialTheme.colorScheme.primary)
+                Column(Modifier.weight(1f)) {
+                    Text("উৎস যাচাইয়ের অবস্থা", fontWeight = FontWeight.SemiBold)
+                    Text("এই স্ক্রিনে প্রকৃত উৎস-নথি সংযুক্ত নেই", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                }
+                AssistChip(onClick = {}, enabled = false, label = { Text("যাচাই হয়নি") })
+            }
+        }
+        Text("প্রথমে বুঝুন", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Panel {
+            Kicker("মূল বিষয়")
+            Text("রাষ্ট্রের বিরুদ্ধে আন্তর্জাতিক আদালতে দায়বদ্ধতার প্রশ্ন কীভাবে উত্থাপিত হয়, তা বুঝতে মামলার পক্ষ, আদালতের এখতিয়ার এবং প্রযোজ্য আন্তর্জাতিক আইন আলাদা করে দেখতে হয়।", fontSize = 15.sp, lineHeight = 25.sp)
+            Text("নমুনা ব্যাখ্যা • যাচাইকৃত সংবাদ প্রতিবেদন নয়", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+        }
+        Text("এই প্রতিবেদনের পাঠ-সরঞ্জাম", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        RowLink("তিন-স্তরের সারাংশ", "৩০ সেকেন্ড, ২ মিনিট ও বিস্তারিত পাঠ", Icons.Default.Subject) { nav.navigate("summary") }
+        RowLink("ঘটনার টাইমলাইন", "তারিখ ও ঘটনার সম্পর্ক যাচাই করে পড়ুন", Icons.Default.Timeline) { nav.navigate("timeline") }
+        RowLink("পত্রিকার দৃষ্টিভঙ্গি", "উৎস পাওয়া গেলে তুলনা করুন", Icons.Default.CompareArrows) { nav.navigate("perspectives") }
+        RowLink("জ্ঞান মানচিত্র", "প্রতিষ্ঠান, আইন ও ধারণার সম্পর্ক", Icons.Default.Hub) { nav.navigate("graph") }
         RowLink("উৎস ও যাচাই", "মূল নথি ও প্রকাশনার তথ্য", Icons.Default.Source) { nav.navigate("sources") }
         RowLink("তথ্য সংশোধনের অনুরোধ", "ভুল বা অস্পষ্ট তথ্য জানান", Icons.Default.Flag) { nav.navigate("report-story") }
-        OutlinedButton(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Icon(Icons.Default.BookmarkBorder, null); Text("  সংরক্ষণ সুবিধা আসছে") }
     }
 }
 
@@ -200,22 +218,74 @@ internal fun Summary(nav: NavHostController) {
 }
 
 @Composable internal fun Timeline() {
-    val events = listOf("ঐতিহাসিক পটভূমি", "আইনি প্রক্রিয়া", "বর্তমান পর্যায়", "পরবর্তী ধাপ")
+    val events = listOf(
+        "ঐতিহাসিক পটভূমি" to "প্রাসঙ্গিক প্রেক্ষাপট ও প্রাথমিক নথি যুক্ত হলে এখানে দেখানো হবে।",
+        "আইনি প্রক্রিয়া" to "আদালতের আবেদন, শুনানি ও আদেশের তারিখ মূল নথি থেকে যাচাই করতে হবে।",
+        "বর্তমান পর্যায়" to "সর্বশেষ অবস্থা হালনাগাদ সরকারি বা আদালতের নথি ছাড়া নিশ্চিত করা হবে না।",
+        "পরবর্তী ধাপ" to "নির্ধারিত শুনানি বা সম্ভাব্য পদক্ষেপকে নিশ্চিত ঘটনা হিসেবে দেখানো হবে না."
+    )
     Scroll {
-        Intro("ঘটনার ধারাবাহিকতা", "ঘটনার তারিখ, প্রকাশের তারিখ এবং পরবর্তী আপডেট আলাদা করে দেখানো হবে।")
-        Panel { Text("টাইমলাইন নীতি", fontWeight = FontWeight.Bold); Text("শুধু যাচাইকৃত তারিখ ও ঘটনার সম্পর্ক দেখানো হবে। অনুমানকে নিশ্চিত ঘটনা হিসেবে দেখানো হবে না।") }
-        events.forEachIndexed { i, event -> Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Surface(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(50.dp)) { Text((i + 1).toString(), Modifier.padding(8.dp), color = Color.White) }
-            Column { Text(event, fontWeight = FontWeight.Bold); Text("যাচাইকৃত ঘটনার বিবরণ ও তারিখ প্রয়োজন", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp) }
-        } }
+        Intro("ঘটনার টাইমলাইন", "ঘটনার তারিখ ও সংবাদ প্রকাশের তারিখ আলাদা করে দেখুন।")
+        Panel {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.Timeline, null, tint = MaterialTheme.colorScheme.primary)
+                Spacer(Modifier.width(8.dp))
+                Text("যাচাইয়ের নিয়ম", fontWeight = FontWeight.Bold)
+            }
+            Text("প্রতিটি বিন্দুর সঙ্গে তারিখ, ঘটনার বিবরণ এবং মূল উৎস থাকবে। যাচাই না হওয়া তারিখ এখানে বানিয়ে বসানো হয় না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp, lineHeight = 21.sp)
+        }
+        events.forEachIndexed { index, event ->
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.Top) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Surface(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(50.dp)) {
+                        Box(Modifier.size(30.dp), contentAlignment = Alignment.Center) {
+                            Text((index + 1).toString(), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                        }
+                    }
+                    if (index != events.lastIndex) Box(Modifier.width(2.dp).height(76.dp).background(MaterialTheme.colorScheme.outlineVariant))
+                }
+                Column(Modifier.weight(1f).padding(bottom = 18.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                    Text(event.first, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text(event.second, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, lineHeight = 19.sp)
+                    Text("তারিখ: উৎস-যাচাই প্রয়োজন", color = MaterialTheme.colorScheme.secondary, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                }
+            }
+        }
     }
 }
 
 @Composable internal fun Perspectives() {
+    val comparisons = listOf(
+        Triple("শিরোনাম ও গুরুত্ব", "প্রতিটি প্রকাশনা কোন দিকটিকে সামনে এনেছে?", "শিরোনাম ও প্রতিবেদন সংগ্রহ করা হয়নি"),
+        Triple("তথ্য ও বক্তব্য", "সংখ্যা, উদ্ধৃতি ও দাবির উৎস মিলিয়ে দেখুন।", "মূল প্রতিবেদন ও প্রাথমিক নথি প্রয়োজন"),
+        Triple("অনুপস্থিত প্রসঙ্গ", "কোন তথ্য বাদ পড়েছে বা অনিশ্চিত রয়ে গেছে?", "তুলনার জন্য পর্যাপ্ত উৎস নেই")
+    )
     Scroll {
-        Intro("একাধিক প্রকাশনার দৃষ্টিভঙ্গি", "প্রতিবেদনের ভাষা, গুরুত্ব, তথ্য ও অনুপস্থিত প্রসঙ্গ তুলনা করুন।")
-        Panel { Icon(Icons.Default.Info, null, tint = MaterialTheme.colorScheme.secondary); Text("এই নমুনা সংস্করণে কোনো সংবাদপত্রের নিবন্ধ সংগ্রহ বা তুলনা করা হয়নি।", fontWeight = FontWeight.SemiBold); Text("উৎসের অনুমতি, প্রবেশযোগ্যতা এবং মেটাডেটা যাচাই না হওয়া পর্যন্ত তুলনা ‘চালানো হয়নি’ হিসেবে থাকবে।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
-        listOf("শিরোনাম ও ফ্রেমিং", "যাচাইযোগ্য তথ্য", "উদ্ধৃত বক্তব্য", "অনুপস্থিত বা অনিশ্চিত বিষয়").forEach { Panel { Text(it, fontWeight = FontWeight.SemiBold); Text("উৎস-নির্ভর তথ্য যুক্ত হলে এই অংশ পূরণ হবে।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp) } }
+        Intro("পত্রিকার দৃষ্টিভঙ্গি", "একই ঘটনা বিভিন্ন প্রকাশনা কীভাবে তুলে ধরে, তা পাশাপাশি বিচার করুন।")
+        Panel {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.CompareArrows, null, tint = MaterialTheme.colorScheme.primary)
+                Spacer(Modifier.width(8.dp))
+                Text("তুলনার অবস্থা", fontWeight = FontWeight.Bold)
+                Spacer(Modifier.weight(1f))
+                AssistChip(onClick = {}, enabled = false, label = { Text("চালানো হয়নি") })
+            }
+            Text("এই নমুনা সংস্করণে কোনো সংবাদমাধ্যমের প্রতিবেদন সংগ্রহ করা হয়নি। তাই কোনো প্রকাশনার অবস্থান বা বক্তব্য এখানে আরোপ করা হচ্ছে না.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp, lineHeight = 21.sp)
+        }
+        comparisons.forEachIndexed { index, item ->
+            Panel {
+                Kicker("তুলনার ক্ষেত্র ০${index + 1}")
+                Text(item.first, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                Text(item.second, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.Info, null, tint = MaterialTheme.colorScheme.secondary, modifier = Modifier.size(16.dp))
+                    Spacer(Modifier.width(7.dp))
+                    Text(item.third, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+        }
+        Text("উৎসের প্রবেশযোগ্যতা, প্রকাশের সময় এবং একই ঘটনার সঙ্গে প্রাসঙ্গিকতা যাচাই না করে তুলনা প্রকাশ করা হবে না.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, lineHeight = 17.sp)
     }
 }
 
