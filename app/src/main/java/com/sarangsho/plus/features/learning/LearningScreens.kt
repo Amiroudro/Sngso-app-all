@@ -397,6 +397,10 @@ private val vocabularyEntries = listOf(
     val questionCount = resultState?.get<Int>("questionCount")
     val hasResult = correctCount != null && questionCount != null && questionCount > 0
     val percentage = if (hasResult) (correctCount!! * 100) / questionCount!! else 0
+    val context = LocalContext.current
+    LaunchedEffect(correctCount, questionCount) {
+        if (hasResult) LocalLearningStore.recordPracticeAttempt(context, correctCount!!, questionCount!!)
+    }
     Scroll {
         Intro("অনুশীলন সম্পন্ন", "এই সেশনের উত্তর যাচাইয়ের ফলাফল।")
         Panel {
@@ -471,8 +475,32 @@ private val vocabularyEntries = listOf(
 
 
 @Composable internal fun PracticeHistory() {
+    val context = LocalContext.current
+    val attempts = remember { mutableStateListOf<LocalLearningStore.PracticeAttempt>().apply {
+        addAll(LocalLearningStore.getPracticeHistory(context))
+    } }
     Scroll {
-        Intro("অনুশীলনের ইতিহাস", "আগের সেশন, বিষয়ভিত্তিক দুর্বলতা ও পুনরায় চেষ্টা করার সুযোগ।")
-        Panel { Text("কোনো সেশন সংরক্ষিত নেই", fontWeight = FontWeight.Bold); Text("প্রশ্নব্যাংক, স্কোরিং ও স্থানীয় সংরক্ষণ যুক্ত হলে প্রতিটি প্রচেষ্টার তারিখ, ফল এবং ভুলের ব্যাখ্যা এখানে থাকবে।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        Intro("অনুশীলনের ইতিহাস", "এই ডিভাইসে সংরক্ষিত নমুনা অনুশীলনের ফলাফল।")
+        if (attempts.isEmpty()) {
+            Panel {
+                Text("এখনো কোনো সেশন সংরক্ষিত নেই", fontWeight = FontWeight.Bold)
+                Text("নমুনা প্রশ্নের উত্তর জমা দিয়ে ফলাফল দেখলে সেটি এখানে যুক্ত হবে।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        } else {
+            Text("সাম্প্রতিক সেশন • ${attempts.size}", fontWeight = FontWeight.Bold)
+            attempts.forEach { attempt ->
+                Panel {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                        Column {
+                            Text("${attempt.correct} / ${attempt.total} সঠিক", fontWeight = FontWeight.Bold)
+                            Text("${(attempt.correct * 100) / attempt.total}% স্কোর", color = MaterialTheme.colorScheme.primary)
+                        }
+                        Text(java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM, java.text.DateFormat.SHORT).format(java.util.Date(attempt.timestamp)), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                    }
+                }
+            }
+            TextButton(onClick = { LocalLearningStore.clearPracticeHistory(context); attempts.clear() }) { Text("ইতিহাস মুছুন") }
+        }
+        Text("এটি নমুনা প্রশ্নের স্থানীয় ইতিহাস। পূর্ণ প্রশ্নব্যাংক, বিষয়ভিত্তিক বিশ্লেষণ ও অ্যাকাউন্ট সিঙ্ক এখনো নেই।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
     }
 }
