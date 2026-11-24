@@ -200,6 +200,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
         RowLink("সব প্রতিবেদন দেখুন", "বিষয় অনুযায়ী সংবাদ ও ব্যাখ্যা", Icons.Default.ArrowForward) {
             nav.navigate("feed")
         }
+        RowLink("পুরোনো সংস্করণ", "আগের দিনের ব্রিফিং ও প্রকাশনা", Icons.Default.CalendarMonth) { nav.navigate("archive") }
         Text("সংবাদ থেকে শেখা", fontSize = 19.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
         Text("একটি ঘটনার পেছনের তথ্য, সময়রেখা ও উৎস আলাদা করে দেখুন.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
         RowLink("তিন-স্তরের সারাংশ", "৩০ সেকেন্ড, ২ মিনিট অথবা বিস্তারিত", Icons.Default.Subject) { nav.navigate("summary") }
