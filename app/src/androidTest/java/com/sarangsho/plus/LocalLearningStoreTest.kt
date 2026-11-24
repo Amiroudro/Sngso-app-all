@@ -87,6 +87,21 @@ class LocalLearningStoreTest {
     }
 
     @Test
+    fun onboardingGoalAndInterestsPersistLocally() {
+        LocalLearningStore.setOnboardingGoal(context, "Bank recruitment")
+        LocalLearningStore.setOnboardingInterests(
+            context,
+            setOf("বাংলাদেশ", "অর্থনীতি ও ব্যাংকিং", "  ")
+        )
+
+        assertEquals("Bank recruitment", LocalLearningStore.getOnboardingGoal(context))
+        assertEquals(
+            setOf("বাংলাদেশ", "অর্থনীতি ও ব্যাংকিং"),
+            LocalLearningStore.getOnboardingInterests(context)
+        )
+    }
+
+    @Test
     fun notificationPreferencesPersistIndependently() {
         LocalLearningStore.setDailyBriefingNotifications(context, false)
         LocalLearningStore.setWordNotifications(context, true)
