@@ -32,35 +32,85 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 
 
 @Composable internal fun Welcome(nav: NavHostController) {
-    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(25.dp), verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(Modifier.height(8.dp))
-        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(18.dp)) {
-            Surface(color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(26.dp), modifier = Modifier.size(104.dp)) {
-                Box(contentAlignment = Alignment.Center) { Icon(Icons.Default.MenuBook, null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(52.dp)) }
-            }
-            Text("Sarangsho+", fontSize = 32.sp, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold)
-            Text("সঠিক তথ্য। গভীর উপলব্ধি। প্রস্তুতিতে এগিয়ে যান।", fontWeight = FontWeight.SemiBold, fontSize = 17.sp)
-            Text("বাংলাদেশ ও বিশ্বের গুরুত্বপূর্ণ ঘটনা বুঝুন, প্রেক্ষাপট জানুন এবং BCS ও Bank পরীক্ষার জন্য শিখুন।", color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 25.sp)
+    Column(
+        Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(horizontal = 24.dp, vertical = 20.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+            Kicker("EDITORIAL INTELLIGENCE")
+            Text("বাংলা • English", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
         }
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Primary("শুরু করুন") { nav.navigate("onboarding-goals") }
-            OutlinedButton(onClick = { nav.navigate("signin") }, modifier = Modifier.fillMaxWidth()) { Text("সাইন ইন") }
-            Text("নমুনা সংস্করণ • অ্যাকাউন্ট ছাড়াও দেখা যাবে", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(15.dp)) {
+            Surface(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(30.dp), modifier = Modifier.size(112.dp)) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(Icons.Default.MenuBook, null, tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(58.dp))
+                }
+            }
+            Text("Sarangsho+", fontSize = 34.sp, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.ExtraBold)
+            Text("জানুন, শিখুন, এগিয়ে যান", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = MaterialTheme.colorScheme.primary)
+            Text(
+                "বাংলাদেশ ও বিশ্বের গুরুত্বপূর্ণ ঘটনা বুঝুন। নির্ভরযোগ্য উৎস, সহজ ব্যাখ্যা এবং BCS ও Bank প্রস্তুতি এক জায়গায়।",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                lineHeight = 25.sp,
+                textAlign = TextAlign.Center
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                listOf("দৈনিক ব্রিফিং", "শব্দভান্ডার", "পরীক্ষা প্রস্তুতি").forEach {
+                    Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(50.dp)) {
+                        Text(it, Modifier.padding(horizontal = 10.dp, vertical = 7.dp), fontSize = 10.sp, fontWeight = FontWeight.Medium)
+                    }
+                }
+            }
+        }
+        Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Primary("আমার প্রস্তুতি সাজাই") { nav.navigate("onboarding-goals") }
+            OutlinedButton(onClick = { nav.navigate("signin") }, modifier = Modifier.fillMaxWidth()) { Text("আগে থেকেই অ্যাকাউন্ট আছে? সাইন ইন") }
+            Text("অ্যাকাউন্ট ছাড়াও নমুনা সংস্করণ দেখা যাবে", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
         }
     }
 }
 
 @Composable internal fun SignIn(nav: NavHostController) {
-    var email by rememberSaveable { mutableStateOf("") }; var password by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var showPassword by rememberSaveable { mutableStateOf(false) }
     Scroll {
-        Intro("আপনার পড়াশোনা সঙ্গে রাখুন", "অ্যাকাউন্টে প্রবেশ করুন অথবা আপাতত স্থানীয়ভাবে চালিয়ে যান।")
-        OutlinedTextField(email, { email = it }, Modifier.fillMaxWidth(), label = { Text("ইমেইল বা ফোন নম্বর") }, singleLine = true)
-        OutlinedTextField(password, { password = it }, Modifier.fillMaxWidth(), label = { Text("পাসওয়ার্ড") }, visualTransformation = PasswordVisualTransformation(), singleLine = true)
-        Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text("সাইন ইন শিগগিরই চালু হবে") }
-        Text("ডেমো UI: প্রকৃত authentication এখনো সংযুক্ত নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        Kicker("SARANGSHO PLUS")
+        Intro("আবার স্বাগতম", "আপনার পড়া, সংরক্ষিত শব্দ ও শেখার পরিকল্পনায় ফিরে আসুন।")
+        Panel {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Surface(color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(12.dp)) {
+                    Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.padding(11.dp))
+                }
+                Column {
+                    Text("নিরাপদে সাইন ইন", fontWeight = FontWeight.Bold)
+                    Text("ইমেইল বা ফোন নম্বর ব্যবহার করুন", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                }
+            }
+        }
+        OutlinedTextField(
+            value = email, onValueChange = { email = it.trimStart() }, modifier = Modifier.fillMaxWidth(),
+            label = { Text("ইমেইল বা ফোন নম্বর") }, leadingIcon = { Icon(Icons.Default.PersonOutline, null) },
+            singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+        )
+        OutlinedTextField(
+            value = password, onValueChange = { password = it }, modifier = Modifier.fillMaxWidth(),
+            label = { Text("পাসওয়ার্ড") }, leadingIcon = { Icon(Icons.Default.Lock, null) },
+            visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = { IconButton(onClick = { showPassword = !showPassword }) { Icon(if (showPassword) Icons.Default.VisibilityOff else Icons.Default.Visibility, "পাসওয়ার্ড দেখুন") } },
+            singleLine = true
+        )
+        Text(
+            "প্রকৃত অ্যাকাউন্ট-সেবা এখনো যুক্ত হয়নি। তাই এই ফর্ম কোনো লগইন অনুরোধ পাঠায় না।",
+            color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, lineHeight = 17.sp
+        )
+        Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text("সাইন ইন সেবা সংযুক্তির অপেক্ষায়") }
         OutlinedButton(onClick = { nav.navigate("home") }, modifier = Modifier.fillMaxWidth()) { Text("অ্যাকাউন্ট ছাড়া চালিয়ে যান") }
-        Text("নতুন অ্যাকাউন্ট তৈরি করুন", Modifier.clickable { nav.navigate("signup") }, color = MaterialTheme.colorScheme.primary)
-        Text("পাসওয়ার্ড ভুলে গেছেন?", Modifier.clickable { nav.navigate("password-reset") }, color = MaterialTheme.colorScheme.primary)
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            TextButton(onClick = { nav.navigate("signup") }) { Text("নতুন অ্যাকাউন্ট তৈরি") }
+            TextButton(onClick = { nav.navigate("password-reset") }) { Text("পাসওয়ার্ড ভুলে গেছেন?") }
+        }
     }
 }
 
@@ -547,34 +597,85 @@ internal fun Summary(nav: NavHostController) {
 
 @Composable internal fun OnboardingGoals(nav: NavHostController) {
     var goal by rememberSaveable { mutableStateOf("BCS প্রস্তুতি") }
+    val options = listOf(
+        "BCS প্রস্তুতি" to "প্রিলিমিনারি, লিখিত ও সাম্প্রতিক বিষয়",
+        "Bank recruitment" to "ব্যাংক নিয়োগ পরীক্ষা ও সাধারণ জ্ঞান",
+        "বিশ্ববিদ্যালয় ও সাধারণ জ্ঞান" to "একাডেমিক শেখা ও ধারণাভিত্তিক প্রস্তুতি",
+        "প্রতিদিনের খবর বুঝে পড়া" to "বাংলাদেশ, বিশ্ব ও অর্থনীতির প্রেক্ষাপট"
+    )
     Scroll {
-        Intro("আপনি কী অর্জন করতে চান?", "আপনার লক্ষ্য অনুযায়ী পড়ার অভিজ্ঞতা সাজানো হবে।")
-        listOf("BCS প্রস্তুতি", "Bank recruitment", "বিশ্ববিদ্যালয় ও সাধারণ জ্ঞান", "প্রতিদিনের খবর বুঝে পড়া").forEach { option ->
-            Surface(color = if (goal == option) MaterialTheme.colorScheme.secondary.copy(alpha = 0.18f) else MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(12.dp), border = BorderStroke(1.dp, if (goal == option) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline),
-                modifier = Modifier.fillMaxWidth().clickable { goal = option }) {
+        Kicker("আপনার অভিজ্ঞতা সাজান • ১/২")
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Box(Modifier.weight(1f).height(4.dp).background(MaterialTheme.colorScheme.primary, RoundedCornerShape(4.dp)))
+            Box(Modifier.weight(1f).height(4.dp).background(MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(4.dp)))
+        }
+        Intro("আপনার প্রধান লক্ষ্য কী?", "একটি লক্ষ্য বেছে নিন। পরে সেটিংস থেকে পরিবর্তন করা যাবে।")
+        options.forEach { (name, detail) ->
+            Surface(
+                color = if (goal == name) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(15.dp),
+                border = BorderStroke(1.dp, if (goal == name) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant),
+                modifier = Modifier.fillMaxWidth().clickable { goal = name }
+            ) {
                 Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                    RadioButton(selected = goal == option, onClick = { goal = option }); Text(option, fontWeight = FontWeight.SemiBold)
+                    RadioButton(selected = goal == name, onClick = { goal = name })
+                    Spacer(Modifier.width(9.dp))
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                        Text(name, fontWeight = FontWeight.SemiBold)
+                        Text(detail, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                    }
                 }
             }
         }
-        Primary("এগিয়ে যান") { nav.navigate("onboarding-interests") }
-        Text("পছন্দ পরে সেটিংস থেকে বদলানো যাবে।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        Primary("বিষয় বেছে নিন") { nav.navigate("onboarding-interests") }
+        Text("এই পছন্দ এখন ডেমো সেশনে ব্যবহৃত হয়; অ্যাকাউন্টে সংরক্ষিত হয় না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
     }
 }
 
 @Composable internal fun OnboardingInterests(nav: NavHostController) {
-    val interests = listOf("বাংলাদেশ", "আন্তর্জাতিক বিষয়", "অর্থনীতি ও ব্যাংকিং", "আইন ও সংবিধান", "বিজ্ঞান ও প্রযুক্তি", "পরিবেশ ও জলবায়ু", "সমাজ ও উন্নয়ন")
-    val selected = remember { mutableStateListOf("বাংলাদেশ", "অর্থনীতি ও ব্যাংকিং") }
+    val interests = listOf(
+        "বাংলাদেশ" to "রাষ্ট্র, সমাজ, ইতিহাস ও নীতি",
+        "আন্তর্জাতিক বিষয়" to "বিশ্ব রাজনীতি, সংস্থা ও সম্পর্ক",
+        "অর্থনীতি ও ব্যাংকিং" to "অর্থনীতি, বাজার ও আর্থিক প্রতিষ্ঠান",
+        "আইন ও সংবিধান" to "আইনি কাঠামো, অধিকার ও শাসন",
+        "বিজ্ঞান ও প্রযুক্তি" to "আবিষ্কার, উদ্ভাবন ও ডিজিটাল বিষয়",
+        "পরিবেশ ও জলবায়ু" to "পরিবর্তন, ঝুঁকি ও অভিযোজন",
+        "সমাজ ও উন্নয়ন" to "শিক্ষা, স্বাস্থ্য ও উন্নয়ন"
+    )
+    val selected = rememberSaveable { mutableStateListOf("বাংলাদেশ", "অর্থনীতি ও ব্যাংকিং") }
     Scroll {
-        Intro("কোন বিষয়গুলো পড়তে চান?", "শুরুতে কয়েকটি বেছে নিন। পরে যেকোনো সময় পরিবর্তন করতে পারবেন।")
-        interests.forEach { item ->
-            Row(Modifier.fillMaxWidth().clickable { if (item in selected) selected.remove(item) else selected.add(item) }.padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(checked = item in selected, onCheckedChange = { checked -> if (checked) selected.add(item) else selected.remove(item) }); Text(item)
+        Kicker("আপনার অভিজ্ঞতা সাজান • ২/২")
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            repeat(2) { index ->
+                Box(Modifier.weight(1f).height(4.dp).background(MaterialTheme.colorScheme.primary, RoundedCornerShape(4.dp)))
+            }
+        }
+        Intro("কোন বিষয়গুলো পড়তে চান?", "আপনার আগ্রহের বিষয়গুলো বেছে নিন। একাধিক নির্বাচন করা যাবে।")
+        interests.forEach { (name, detail) ->
+            val checked = name in selected
+            Surface(
+                color = if (checked) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(13.dp),
+                border = BorderStroke(1.dp, if (checked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant),
+                modifier = Modifier.fillMaxWidth().clickable {
+                    if (checked) selected.remove(name) else selected.add(name)
+                }
+            ) {
+                Row(Modifier.padding(horizontal = 12.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(checked = checked, onCheckedChange = { value ->
+                        if (value && name !in selected) selected.add(name)
+                        if (!value) selected.remove(name)
+                    })
+                    Spacer(Modifier.width(8.dp))
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Text(name, fontWeight = FontWeight.SemiBold)
+                        Text(detail, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                    }
+                }
             }
         }
         Primary("আমার ব্রিফিং দেখুন") { nav.navigate("home") }
-        Text("এই পছন্দগুলো শুধু ডেমো সেশনে থাকে; অ্যাকাউন্টে সিঙ্ক হয় না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        Text("নির্বাচিত বিষয়: ${selected.size}টি • এই পছন্দ ডেমো সেশনে থাকে, অ্যাকাউন্টে সিঙ্ক হয় না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
     }
 }
 
