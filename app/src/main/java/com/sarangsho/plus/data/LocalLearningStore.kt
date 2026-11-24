@@ -27,6 +27,7 @@ object LocalLearningStore {
     private const val KEY_FEEDBACK_DRAFT = "feedback_draft"
     private const val KEY_ONBOARDING_GOAL = "onboarding_goal"
     private const val KEY_ONBOARDING_INTERESTS = "onboarding_interests"
+    private const val KEY_SELECTED_TOPIC = "selected_topic"
 
     private fun preferences(context: Context) =
         context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -71,6 +72,14 @@ object LocalLearningStore {
     fun setOnboardingInterests(context: Context, interests: Set<String>) {
         val cleaned = interests.map(String::trim).filter(String::isNotBlank).toSet()
         preferences(context).edit().putStringSet(KEY_ONBOARDING_INTERESTS, cleaned).apply()
+    }
+
+    fun getSelectedTopic(context: Context): String =
+        preferences(context).getString(KEY_SELECTED_TOPIC, "").orEmpty()
+
+    fun setSelectedTopic(context: Context, topic: String) {
+        require(topic.isNotBlank())
+        preferences(context).edit().putString(KEY_SELECTED_TOPIC, topic.trim()).apply()
     }
 
     fun getWritingDraft(context: Context): String =
