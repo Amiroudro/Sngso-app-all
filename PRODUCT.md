@@ -40,6 +40,10 @@ The product connects a source-aware daily briefing to a reusable study system: t
 - The client must not publish or approve editorial content.
 - Prefer a free/open-source implementation and avoid paid service dependencies by default.
 
+## First-run preferences
+
+The onboarding flow saves a learner's primary goal and topic interests locally on the device. The Today screen reflects those choices. They are not account-synced and do not yet filter editorial content.
+
 ## Brand Commitments
 
 - Product name: Sarangsho Plus.
