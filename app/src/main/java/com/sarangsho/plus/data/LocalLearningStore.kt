@@ -13,6 +13,10 @@ object LocalLearningStore {
     private const val KEY_COMPLETED_STUDY_TASKS = "completed_study_tasks"
     private const val KEY_WRITING_DRAFT = "writing_draft"
     private const val KEY_SAVED_ARTICLES = "saved_articles"
+    private const val KEY_READING_FONT_SIZE = "reading_font_size"
+    private const val KEY_READING_LINE_SPACING = "reading_line_spacing"
+    private const val KEY_READING_SEPIA = "reading_sepia"
+    private const val KEY_APP_LANGUAGE = "app_language"
 
     private fun preferences(context: Context) =
         context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -57,5 +61,33 @@ object LocalLearningStore {
         val articles = preferences(context).getStringSet(KEY_SAVED_ARTICLES, emptySet()).orEmpty().toMutableSet()
         if (saved) articles.add(articleId) else articles.remove(articleId)
         preferences(context).edit().putStringSet(KEY_SAVED_ARTICLES, articles).apply()
+    }
+
+    fun getReadingFontSize(context: Context): Float =
+        preferences(context).getFloat(KEY_READING_FONT_SIZE, 18f)
+
+    fun setReadingFontSize(context: Context, value: Float) {
+        preferences(context).edit().putFloat(KEY_READING_FONT_SIZE, value.coerceIn(16f, 26f)).apply()
+    }
+
+    fun getReadingLineSpacing(context: Context): Float =
+        preferences(context).getFloat(KEY_READING_LINE_SPACING, 1.5f)
+
+    fun setReadingLineSpacing(context: Context, value: Float) {
+        preferences(context).edit().putFloat(KEY_READING_LINE_SPACING, value.coerceIn(1.2f, 2f)).apply()
+    }
+
+    fun isReadingSepia(context: Context): Boolean =
+        preferences(context).getBoolean(KEY_READING_SEPIA, false)
+
+    fun setReadingSepia(context: Context, enabled: Boolean) {
+        preferences(context).edit().putBoolean(KEY_READING_SEPIA, enabled).apply()
+    }
+
+    fun getAppLanguage(context: Context): String =
+        preferences(context).getString(KEY_APP_LANGUAGE, "বাংলা").orEmpty()
+
+    fun setAppLanguage(context: Context, language: String) {
+        preferences(context).edit().putString(KEY_APP_LANGUAGE, language).apply()
     }
 }
