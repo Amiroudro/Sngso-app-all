@@ -275,6 +275,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 
 @Composable internal fun Article(nav: NavHostController) {
     val context = LocalContext.current
+    SideEffect { LocalLearningStore.recordArticleRead(context, "sample-international-justice") }
     val readerFontSize = LocalLearningStore.getReadingFontSize(context).sp
     val readerLineHeight = (LocalLearningStore.getReadingFontSize(context) * LocalLearningStore.getReadingLineSpacing(context)).sp
     val sepia = LocalLearningStore.isReadingSepia(context)
@@ -781,9 +782,34 @@ internal fun Summary(nav: NavHostController) {
 
 
 @Composable internal fun ReadingHistory() {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val recent = remember { mutableStateListOf<String>().apply { addAll(LocalLearningStore.getRecentArticles(context)) } }
+    DisposableEffect(lifecycleOwner, context) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                recent.clear()
+                recent.addAll(LocalLearningStore.getRecentArticles(context))
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
     Scroll {
         Intro("পড়ার ইতিহাস", "সম্প্রতি খোলা পাঠে ফিরে যান।")
-        Panel { Text("এখনো কোনো পড়ার ইতিহাস নেই", fontWeight = FontWeight.Bold); Text("পড়া শুরু করলে আপনার সাম্প্রতিক পাঠ এখানে দেখা যাবে। এই প্রোটোটাইপে ইতিহাস সংরক্ষণ চালু হয়নি।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        if (recent.isEmpty()) {
+            Panel { Text("এখনো কোনো পড়ার ইতিহাস নেই", fontWeight = FontWeight.Bold); Text("কোনো নিবন্ধ খুললে সেটি এখানে দেখা যাবে।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        } else {
+            recent.asReversed().forEach { id ->
+                Panel {
+                    Kicker("সম্প্রতি পড়া • নমুনা")
+                    Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
+                    TextButton(onClick = { /* navigation is available from the library tab */ }) { Text("পড়া হয়েছে") }
+                }
+            }
+            TextButton(onClick = { LocalLearningStore.clearReadingHistory(context); recent.clear() }) { Text("পড়ার ইতিহাস মুছুন") }
+        }
+        Text("ইতিহাস এই ডিভাইসে সংরক্ষিত হয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
     }
 }
 
