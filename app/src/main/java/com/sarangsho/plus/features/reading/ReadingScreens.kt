@@ -326,43 +326,116 @@ internal fun Summary(nav: NavHostController) {
 }
 
 @Composable internal fun Graph() {
+    val nodes = listOf("আন্তর্জাতিক আদালত" to "প্রতিষ্ঠান", "রাষ্ট্রের দায়বদ্ধতা" to "আইনি ধারণা", "আন্তর্জাতিক চুক্তি" to "আইনি কাঠামো", "মানবাধিকার" to "বিষয়", "আঞ্চলিক প্রেক্ষাপট" to "প্রেক্ষাপট")
     Scroll {
-        Intro("জ্ঞান মানচিত্র", "একটি ঘটনার সঙ্গে যুক্ত প্রতিষ্ঠান, ব্যক্তি, আইন ও ধারণার সম্পর্ক দেখুন।")
+        Intro("জ্ঞান মানচিত্র", "একটি বিষয়কে প্রতিষ্ঠান, আইন, ধারণা ও প্রভাবের সঙ্গে যুক্ত করে বুঝুন।")
         Panel {
-            Box(Modifier.fillMaxWidth().height(190.dp), contentAlignment = Alignment.Center) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Surface(color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(18.dp)) { Text("মূল বিষয়", Modifier.padding(14.dp), color = MaterialTheme.colorScheme.onPrimaryContainer, fontWeight = FontWeight.Bold) }
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("প্রতিষ্ঠান", "আইন", "রাষ্ট্র").forEach { Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(10.dp)) { Text(it, Modifier.padding(10.dp), fontSize = 12.sp) } } }
-                    Surface(color = MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(18.dp)) { Text("প্রভাব ও প্রেক্ষাপট", Modifier.padding(12.dp)) }
-                }
+            Kicker("সম্পর্কের মানচিত্র • নমুনা")
+            Surface(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth()) {
+                Text("আন্তর্জাতিক বিচারিক প্রক্রিয়া", Modifier.padding(16.dp), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold, fontSize = 17.sp)
             }
-            Text("চিত্রটি ইন্টারঅ্যাকটিভ গ্রাফের নমুনা; সম্পর্কের ডেটা এখনো যুক্ত হয়নি।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+            Box(Modifier.fillMaxWidth().height(42.dp), contentAlignment = Alignment.Center) {
+                Icon(Icons.Default.AccountTree, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(26.dp))
+            }
+            nodes.forEachIndexed { index, node ->
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Surface(color = if (index % 2 == 0) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.tertiaryContainer, shape = RoundedCornerShape(10.dp)) {
+                        Icon(Icons.Default.Hub, null, modifier = Modifier.padding(10.dp), tint = MaterialTheme.colorScheme.onSecondaryContainer)
+                    }
+                    Column(Modifier.weight(1f)) {
+                        Text(node.first, fontWeight = FontWeight.SemiBold)
+                        Text(node.second, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Icon(Icons.Default.ArrowForward, null, tint = MaterialTheme.colorScheme.outline)
+                }
+                if (index != nodes.lastIndex) HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            }
+            Text("নমুনা কাঠামো। বিষয়গুলোর মধ্যে প্রমাণিত সম্পর্কের ডেটা এখনো সংযুক্ত নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
         }
-        Text("সম্পর্ক: কারণ • আইনি এখতিয়ার • সদস্যপদ • প্রভাব • সময়গত সম্পর্ক", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text("সম্পর্কের ধরন", fontWeight = FontWeight.Bold, fontSize = 17.sp)
+        listOf("কারণ ও প্রভাব", "আইনি এখতিয়ার", "সদস্যপদ ও প্রতিষ্ঠান", "সময়গত সম্পর্ক", "নীতি ও বাস্তবায়ন").forEach {
+            RowLink(it, "সম্পর্কের ব্যাখ্যা ও উৎস যুক্ত হলে দেখানো হবে", Icons.Default.Share)
+        }
     }
 }
 
 @Composable internal fun DataExplorer(nav: NavHostController) {
     Scroll {
-        Intro("তথ্য ও পরিসংখ্যান", "সংখ্যার সঙ্গে একক, সময়কাল, সংজ্ঞা ও মূল উৎস দেখুন।")
-        Panel { Kicker("ইন্ডিকেটর কার্ড • নমুনা"); Text("মূল্যস্ফীতি", fontSize = 20.sp, fontWeight = FontWeight.Bold); Text("সর্বশেষ মান: লাইভ ডেটা সংযুক্ত নয়", color = MaterialTheme.colorScheme.onSurfaceVariant); HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant); Text("সময়কাল: উল্লেখ করতে হবে"); Text("একক: শতাংশ"); Text("উৎস: সংশ্লিষ্ট সরকারি পরিসংখ্যান সংস্থা") }
+        Intro("তথ্য ও পরিসংখ্যান", "সংখ্যার সঙ্গে সংজ্ঞা, একক, সময়কাল ও মূল উৎস মিলিয়ে পড়ুন।")
         Panel {
-            RowLink("সূচকের বিস্তারিত", "সংজ্ঞা, সময়কাল ও সংশোধন", Icons.Default.Insights) { nav.navigate("indicator-detail") }
-        Text("তথ্য পড়ার নিয়ম", fontWeight = FontWeight.Bold)
-            listOf("স্টক ও প্রবাহ আলাদা করুন", "নামমাত্র ও প্রকৃত মান গুলিয়ে ফেলবেন না", "পূর্বাভাস ও পর্যবেক্ষণ আলাদা রাখুন", "প্রাথমিক ও সংশোধিত উপাত্ত চিহ্নিত করুন").forEach { Row(verticalAlignment = Alignment.CenterVertically) { Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.tertiary); Spacer(Modifier.width(8.dp)); Text(it) } }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.Insights, null, tint = MaterialTheme.colorScheme.primary)
+                Spacer(Modifier.width(8.dp))
+                Text("ডেটা ক্যাটালগ", fontWeight = FontWeight.Bold)
+                Spacer(Modifier.weight(1f))
+                AssistChip(onClick = {}, enabled = false, label = { Text("ডেমো") })
+            }
+            Text("যাচাইকৃত উপাত্ত সংযুক্ত না হওয়ায় এখানে কোনো মান বা চার্ট দেখানো হচ্ছে না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        }
+        listOf(
+            Triple("মূল্যস্ফীতি", "শতাংশ • সময়কাল ও ভিত্তিবছর প্রয়োজন", "উৎস: বাংলাদেশ পরিসংখ্যান ব্যুরো / বাংলাদেশ ব্যাংক"),
+            Triple("জিডিপি প্রবৃদ্ধি", "বার্ষিক হার • চলতি/স্থির মূল্য আলাদা করুন", "উৎস: সরকারি জাতীয় হিসাব"),
+            Triple("বৈদেশিক মুদ্রার রিজার্ভ", "মার্কিন ডলার • সংজ্ঞা ও গণনাপদ্ধতি প্রয়োজন", "উৎস: বাংলাদেশ ব্যাংক")
+        ).forEach { item ->
+            Panel {
+                Kicker("সূচক • ডেটা অপেক্ষমাণ")
+                Text(item.first, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(item.second, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                Text(item.third, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                TextButton(onClick = { nav.navigate("indicator-detail") }) { Text("সংজ্ঞা ও যাচাইয়ের নিয়ম") }
+            }
+        }
+        Text("ডেটা যাচাইয়ের চেকলিস্ট", fontSize = 17.sp, fontWeight = FontWeight.Bold)
+        listOf("একক ও সময়কাল", "মূল্য বা পরিমাণের সংজ্ঞা", "প্রাথমিক নাকি সংশোধিত উপাত্ত", "পর্যবেক্ষণ নাকি পূর্বাভাস", "মূল প্রকাশনা ও প্রকাশের তারিখ").forEach {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.CheckCircleOutline, null, tint = MaterialTheme.colorScheme.tertiary)
+                Spacer(Modifier.width(8.dp))
+                Text(it, fontSize = 13.sp)
+            }
         }
     }
 }
 
 @Composable internal fun Search(nav: NavHostController) {
-    var query by rememberSaveable { mutableStateOf("") }; var searched by rememberSaveable { mutableStateOf(false) }
+    var query by rememberSaveable { mutableStateOf("") }
+    var scope by rememberSaveable { mutableStateOf("সব") }
+    var searched by rememberSaveable { mutableStateOf(false) }
+    val suggestions = listOf("বাংলাদেশ ব্যাংক", "সংবিধান", "জাতিসংঘ", "জলবায়ু অর্থায়ন", "Resilience")
     Scroll {
-        Intro("এক জায়গায় খুঁজুন", "সংবাদ, বিষয়, শব্দ, প্রতিষ্ঠান ও প্রকাশনার নাম লিখুন।")
-        OutlinedTextField(query, { query = it; searched = false }, Modifier.fillMaxWidth(), placeholder = { Text("যেমন: মূল্যস্ফীতি, ICJ, resilience") }, leadingIcon = { Icon(Icons.Default.Search, null) }, singleLine = true)
+        Intro("অনুসন্ধান ও উৎস", "সংবাদ, বিষয়, শব্দ, প্রতিষ্ঠান এবং প্রকাশনার নাম খুঁজুন।")
+        OutlinedTextField(
+            query, { query = it; searched = false }, Modifier.fillMaxWidth(),
+            placeholder = { Text("কী খুঁজছেন?") },
+            leadingIcon = { Icon(Icons.Default.Search, null) },
+            trailingIcon = { if (query.isNotBlank()) IconButton(onClick = { query = ""; searched = false }) { Icon(Icons.Default.Close, "মুছুন") } },
+            singleLine = true
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            listOf("সব", "সংবাদ", "শব্দ", "বিষয়").forEach {
+                FilterChip(selected = scope == it, onClick = { scope = it; searched = false }, label = { Text(it) })
+            }
+        }
         Primary("খুঁজুন") { searched = query.isNotBlank() }
-        if (searched) { Text("অনুসন্ধানের নমুনা ফলাফল", fontWeight = FontWeight.Bold); RowLink("বিষয়ভিত্তিক নোট", "প্রকৃত সূচি যুক্ত হলে ফলাফল আসবে", Icons.Default.Article) { nav.navigate("feed") } }
-        else { Text("জনপ্রিয় অনুসন্ধান", fontWeight = FontWeight.Bold); listOf("বাংলাদেশ ব্যাংক", "সংবিধান", "জাতিসংঘ", "জলবায়ু অর্থায়ন").forEach { Text(it, Modifier.fillMaxWidth().clickable { query = it }.padding(vertical = 8.dp), color = MaterialTheme.colorScheme.primary) } }
-        Text("প্রতিটি ফলাফলে প্রকাশক, মূল লিংক, প্রকাশের সময় ও প্রবেশযোগ্যতার অবস্থা দেখানো হবে।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        if (!searched) {
+            Text("জনপ্রিয় অনুসন্ধান", fontWeight = FontWeight.Bold, fontSize = 17.sp)
+            suggestions.forEach { item ->
+                Row(Modifier.fillMaxWidth().clickable { query = item; searched = false }.padding(vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.TrendingUp, null, tint = MaterialTheme.colorScheme.primary)
+                    Spacer(Modifier.width(10.dp))
+                    Text(item, Modifier.weight(1f))
+                    Icon(Icons.Default.NorthWest, null, tint = MaterialTheme.colorScheme.outline, modifier = Modifier.size(16.dp))
+                }
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            }
+        } else {
+            Panel {
+                Icon(Icons.Default.SearchOff, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
+                Text("অনুসন্ধান সূচি সংযুক্ত নয়", fontWeight = FontWeight.Bold)
+                Text("“$query” এর প্রকৃত ফলাফল দেখাতে সংবাদ, শব্দ ও উৎসের সূচি সংযুক্ত করতে হবে। এই স্ক্রিনে ফলাফল বানিয়ে দেখানো হচ্ছে না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, lineHeight = 20.sp)
+            }
+        }
+        Text("প্রকৃত ফলাফলে প্রকাশক, মূল লিংক, প্রকাশের সময় ও প্রবেশযোগ্যতার অবস্থা দেখানো হবে।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
     }
 }
 
