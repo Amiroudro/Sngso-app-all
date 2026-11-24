@@ -3,6 +3,7 @@ package com.sarangsho.plus
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.sarangsho.plus.data.LocalLearningStore
+import com.sarangsho.plus.features.learning.searchVocabulary
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -24,6 +25,14 @@ class LocalLearningStoreTest {
     @After
     fun cleanUpLearningPreferences() {
         context.getSharedPreferences("sarangsho_learning", 0).edit().clear().commit()
+    }
+
+    @Test
+    fun localVocabularySearchMatchesTermsAndBanglaMeanings() {
+        assertTrue(searchVocabulary("resilience").any { it.first == "Resilience" })
+        assertTrue(searchVocabulary("জবাবদিহিতা").any { it.first == "Accountability" })
+        assertTrue(searchVocabulary("no matching term").isEmpty())
+        assertTrue(searchVocabulary(" ").isEmpty())
     }
 
     @Test
