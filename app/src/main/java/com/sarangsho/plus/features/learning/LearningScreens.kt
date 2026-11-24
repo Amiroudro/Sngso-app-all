@@ -243,6 +243,15 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
                         Text(if (bookmarked) "সংরক্ষিত" else "সংরক্ষণ")
                     }
                 }
+                OutlinedButton(
+                    onClick = {
+                        nav.currentBackStackEntry?.savedStateHandle?.set("selected_word", entry.term)
+                        nav.navigate("word-detail")
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("পূর্ণাঙ্গ পাঠ খুলুন")
+                }
             }
         }
         Text(
@@ -490,18 +499,34 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
     }
 }
 
-@Composable internal fun WordDetail() {
+@Composable internal @Composable internal fun WordDetail(nav: NavHostController) {
+    val selectedTerm = nav.previousBackStackEntry
+        ?.savedStateHandle
+        ?.get<String>("selected_word")
+    val entry = vocabularyEntries.firstOrNull { it.term == selectedTerm }
     Scroll {
-        Intro("শব্দের ব্যবহার", "শব্দের অর্থের পাশাপাশি বাক্যে ব্যবহার ও পরীক্ষায় প্রয়োগ বুঝুন।")
-        Panel {
-            Text("Resilience", fontSize = 28.sp, fontWeight = FontWeight.Bold); Text("/rɪˈzɪliəns/ • noun", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text("বাংলা অর্থ: প্রতিকূলতা কাটিয়ে ওঠার সক্ষমতা")
-            Text("Definition: The ability to recover quickly from difficulty.")
-            Text("Synonyms: toughness, adaptability"); Text("Antonym: fragility")
-            Text("Collocation: community resilience, economic resilience")
-            Text("Example: Resilience helps communities recover after disasters.")
+        Intro("শব্দের বিস্তারিত", "অর্থ, সংজ্ঞা, সমার্থক শব্দ ও বাস্তব বাক্যে প্রয়োগ এক জায়গায় দেখুন।")
+        if (entry == null) {
+            Panel {
+                Text("কোনো শব্দ নির্বাচন করা হয়নি", fontWeight = FontWeight.SemiBold)
+                Text("Vocabulary Lab থেকে একটি শব্দ বেছে পূর্ণাঙ্গ পাঠ খুলুন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                OutlinedButton(onClick = { nav.popBackStack() }, modifier = Modifier.fillMaxWidth()) {
+                    Text("Vocabulary Lab-এ ফিরুন")
+                }
+            }
+        } else {
+            Panel {
+                Kicker(entry.partOfSpeech.uppercase())
+                Text(entry.term, fontSize = 28.sp, fontWeight = FontWeight.Bold)
+                Text(entry.pronunciation, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("বাংলা অর্থ: ${entry.banglaMeaning}", fontWeight = FontWeight.SemiBold)
+                Text("Definition: ${entry.definition}")
+                Text("Synonyms: ${entry.synonyms}", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("Antonym: ${entry.antonym}", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("Example: ${entry.example}")
+            }
+            Text("শব্দটি প্রাথমিক শেখার নমুনা; অভিধান-উৎস ও পরীক্ষার রেফারেন্স যুক্ত করা এখনো বাকি।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
         }
-        Text("এই শব্দের ডেটা নমুনা; অভিধান-উৎস যুক্ত হলে উৎসের তথ্য দেখানো হবে।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
     }
 }
 
