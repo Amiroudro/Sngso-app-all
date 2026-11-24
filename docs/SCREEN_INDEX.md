@@ -1,6 +1,6 @@
 # Screen index
 
-Current prototype route inventory: **47 destinations**. This count is descriptive, not a product requirement. Screens are grouped by user task; a new route is added only when it gives the user a distinct place to complete a task or understand a state.
+Current prototype route inventory: **48 destinations**. This count is descriptive, not a product requirement. Screens are grouped by user task; a new route is added only when it gives the user a distinct place to complete a task or understand a state.
 
 | # | Route | Screen | Group |
 |---:|---|---|---|
@@ -51,16 +51,18 @@ Current prototype route inventory: **47 destinations**. This count is descriptiv
 | 45 | help | Help centre | Support |
 | 46 | feedback | Feedback | Support |
 | 47 | about | About Sarangsho Plus | Support |
+| 48 | learn | Learn hub | Learn |
 
 ## Primary navigation
 
-The five persistent destinations are Home, Discover, Practice, Saved and Profile. The other routes are opened from a relevant context and return to their parent.
+The four persistent destinations are Today, Learn, Library and Explore. Profile, notifications and settings are reached from the top bar. Other routes are opened from a relevant context and return to their parent.
 
 ## Implementation status
 
 The route shell and first-pass layouts exist. This does not mean every feature is connected:
-- Some routes are honest empty/unavailable states pending engine, account, persistence or download services.
-- Authentication, local persistence, real search, edition API integration, publication comparisons and analytics are not yet implemented.
-- The quiz and study interactions are prototypes; no user result is saved.
+- Some routes are honest empty/unavailable states pending engine, account or download services.
+- Authentication, cloud sync, real editorial search, edition API integration, publication comparisons and production analytics are not yet implemented.
+- Saved items, reading preferences, onboarding choices, notification preferences, drafts, reading history, practice history and the daily study checklist use device-local SharedPreferences.
+- The quiz and study interactions remain prototypes with sample content; local practice history is not a verified measure of exam readiness.
 - The source and correction screens are UI shells; they do not send data.
-- Build and device-level visual verification are still pending.
+- Routine CI has passed build and test-source compilation. Emulator execution and real-device visual verification are still pending.
