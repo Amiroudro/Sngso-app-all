@@ -106,4 +106,30 @@ class HomeScreenTest {
         composeRule.onNodeWithText("Resilience").assertIsDisplayed()
     }
 
+    @Test
+    fun learnHubPracticeFlowRecordsAndDisplaysACompletedAttempt() {
+        completeOnboarding()
+
+        composeRule.onNodeWithText("শিখুন").performClick()
+        composeRule.onNodeWithText("আপনার শেখার হিসাব • এই ডিভাইস").assertIsDisplayed()
+        composeRule.onNodeWithText("সংরক্ষিত শব্দ").assertIsDisplayed()
+        composeRule.onNodeWithText("সম্পন্ন পড়ার কাজ").assertIsDisplayed()
+        composeRule.onNodeWithText("অনুশীলন সেশন").assertIsDisplayed()
+
+        composeRule.onNodeWithText("অনুশীলন সাজান").performClick()
+        composeRule.onNodeWithText("নমুনা প্রশ্ন দেখুন").performClick()
+        composeRule.onNodeWithText("বাংলাদেশের সংবিধান কবে গণপরিষদে গৃহীত হয়?")
+            .assertIsDisplayed()
+        composeRule.onNodeWithText("৪ নভেম্বর ১৯৭২").performClick()
+        composeRule.onNodeWithText("উত্তর জমা দিন").performClick()
+        composeRule.onNodeWithText("আপনার উত্তর সঠিক").assertIsDisplayed()
+        composeRule.onNodeWithText("সেশন শেষ করুন").performClick()
+
+        composeRule.onNodeWithText("অনুশীলন সম্পন্ন").assertIsDisplayed()
+        composeRule.onNodeWithText("1 / 1").assertIsDisplayed()
+        composeRule.onNodeWithText("অনুশীলনের ইতিহাস দেখুন").performClick()
+        composeRule.onNodeWithText("অনুশীলনের ইতিহাস").assertIsDisplayed()
+        composeRule.onNodeWithText("1 / 1 সঠিক").assertIsDisplayed()
+    }
+
 }
