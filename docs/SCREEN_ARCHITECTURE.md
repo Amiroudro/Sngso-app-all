@@ -13,6 +13,13 @@ The app keeps four top-level destinations, matching the most frequent jobs:
 
 Profile, notifications and settings are reached from the top bar.
 
+## Topic study guides
+
+- Bangladesh and World Affairs lists store the selected topic locally before opening the shared topic-detail route.
+- The detail screen resolves the selected topic into a locally authored guide with an overview, core concepts, exam-reading cautions, and a written reflection prompt.
+- The prototype includes guides for all twelve listed topics. The guides are conceptual study scaffolds, not current-affairs reporting or source-verified legal/statistical reference material.
+- The detail screen links to the sample feed, knowledge map, data explorer and general practice flow. Topic-specific live news and topic-filtered question banks are not yet connected.
+
 ## Local search behavior
 
 - The search screen currently indexes the prototype's one sample article, the explicitly listed topic terms, and the five vocabulary entries bundled in the learning module.
