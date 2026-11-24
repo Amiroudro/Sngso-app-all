@@ -168,16 +168,35 @@ class HomeScreenTest {
     }
 
     @Test
-    fun vocabularySearchMatchesSynonymsAndExamples() {
+    fun vocabularySearchMatchesSynonymsAndTrimsWhitespace() {
         completeOnboarding()
 
         composeRule.onNodeWithText("শিখুন").performClick()
         composeRule.onNodeWithText("শব্দ শেখা শুরু করুন").performClick()
-        composeRule.onNodeWithText("শব্দ বা বাংলা অর্থ খুঁজুন")
-            .performTextInput("adaptability")
+        composeRule.onNodeWithText("শব্দ, অর্থ, সমার্থক বা উদাহরণ খুঁজুন")
+            .performTextInput(" adaptability ")
 
         composeRule.onNodeWithText("Resilience").assertIsDisplayed()
         composeRule.onNodeWithText("Mitigate").assertDoesNotExist()
+    }
+
+    @Test
+    fun selectedWordCanBeBookmarkedFromItsDetailScreen() {
+        completeOnboarding()
+
+        composeRule.onNodeWithText("শিখুন").performClick()
+        composeRule.onNodeWithText("শব্দ শেখা শুরু করুন").performClick()
+        composeRule.onAllNodesWithText("পূর্ণাঙ্গ পাঠ খুলুন")[0].performClick()
+        composeRule.onNodeWithText("Resilience").assertIsDisplayed()
+
+        composeRule.onNodeWithText("সংরক্ষণ").performClick()
+        composeRule.onNodeWithText("সংরক্ষিত").assertIsDisplayed()
+
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+        composeRule.onNodeWithText("লাইব্রেরি").performClick()
+        composeRule.onNodeWithText("সংরক্ষিত শব্দ • 1").assertIsDisplayed()
+        composeRule.onNodeWithText("Resilience").assertIsDisplayed()
     }
 
     @Test
