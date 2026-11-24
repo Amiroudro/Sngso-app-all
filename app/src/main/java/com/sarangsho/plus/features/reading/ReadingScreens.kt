@@ -781,7 +781,7 @@ internal fun Summary(nav: NavHostController) {
 }
 
 
-@Composable internal fun ReadingHistory() {
+@Composable internal fun ReadingHistory(nav: NavHostController) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val recent = remember { mutableStateListOf<String>().apply { addAll(LocalLearningStore.getRecentArticles(context)) } }
@@ -804,7 +804,11 @@ internal fun Summary(nav: NavHostController) {
                 Panel {
                     Kicker("সম্প্রতি পড়া • নমুনা")
                     Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
-                    TextButton(onClick = { /* this screen is a history view; article routing is added with multi-article content */ }) { Text("সম্প্রতি খোলা") }
+                    if (id == "sample-international-justice") {
+                        TextButton(onClick = { nav.navigate("article") }) { Text("নিবন্ধটি খুলুন") }
+                    } else {
+                        Text("এই পাঠের বিস্তারিত এখন আর উপলভ্য নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                    }
                 }
             }
             TextButton(onClick = { LocalLearningStore.clearReadingHistory(context); recent.clear() }) { Text("পড়ার ইতিহাস মুছুন") }
