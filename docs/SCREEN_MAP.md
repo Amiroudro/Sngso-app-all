@@ -1,7 +1,7 @@
 # Sarangsho Plus — Screen map and interaction contract
 
 ## Navigation model
-Five persistent destinations form the primary navigation: Home, Explore, Practice, Saved, Profile. Detail experiences are pushed onto the navigation stack and retain a clear back path. Search is reachable from Home and Explore. Do not place every feature in the bottom bar.
+Four persistent destinations form the primary navigation: Today, Learn, Library and Explore. Profile, notifications and settings are reached from the top bar. Detail experiences are pushed onto the navigation stack and retain a clear back path. Search is reachable from primary surfaces. Do not place every feature in the bottom bar.
 
 ## Twenty primary screens
 | ID | Screen | Entry | Primary action | Essential states |
