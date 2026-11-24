@@ -14,7 +14,7 @@
 - Emulator instrumentation is gated to the PR's ready-for-review event after the routine build job succeeds, with manual dispatch retained for use after the workflow reaches the default branch.
 - Vocabulary Lab has a searchable five-entry sample word list with per-word bookmark controls. Saved words and articles, reader and language preferences, onboarding choices, notification preferences, writing and feedback drafts, reading history, practice history, and the study checklist are stored locally with Android SharedPreferences. The study checklist resets by local calendar date. These features are device-only and do not sync.
 - Vocabulary definitions and examples are prototype learning content; dictionary/source references and a maintained exam vocabulary feed are not connected.
-- Authentication, saved articles, downloads, feedback submission and user analytics are not represented as working services.
+- Authentication, downloads, feedback submission and production user analytics are not connected. Saved articles are stored locally on-device; they are not account-synced.
 - Empty and unavailable states explain when their data/service is not connected.
 - Sample stories and sample vocabulary are labelled as such.
 
@@ -22,7 +22,7 @@
 
 | Priority | Finding | Required evidence to close |
 |---|---|---|
-| P0 | No release blocker remains for basic Android buildability | Keep the routine unit-test, instrumentation-APK compilation and debug-assembly workflow green on every source change |
+| P0 | Basic Android buildability is verified, but must remain stable | Keep the routine unit-test, instrumentation-APK compilation and debug-assembly workflow green on every source change |
 | P0 | No successful emulator instrumentation or real-device visual verification | Emulator workflow passes; screenshots from a small phone, large phone and tablet |
 | P1 | Gradle Wrapper has completed a fresh CI build, but local developer setup is not yet documented end-to-end | Verify wrapper download, Gradle startup and APK assembly on a clean developer machine |
 | P1 | Editorial engine contract is not connected | Contract tests against approved edition fixtures |
@@ -51,7 +51,7 @@
 - The repeated icon-card row pattern was replaced with editorial list rows.
 - Reading screens use headline and metadata hierarchy rather than dashboard metrics.
 - Shared colors come from semantic theme tokens.
-- Primary navigation is limited to five destinations.
+- Primary navigation is limited to four destinations: Today, Learn, Library and Explore.
 - Unsupported actions are disabled with explanatory copy rather than appearing functional.
 - No live story count, source comparison, score, progress metric or download state is fabricated.
 
@@ -68,17 +68,17 @@ This checks string consistency only. It does not prove that every screen renders
 
 ## Test coverage inventory (updated 2026-11-24)
 
-A source review of the test files found 22 authored Android instrumentation test methods:
+A source review of the test files found 23 authored Android instrumentation test methods:
 
 | Test file | Test methods | What they cover |
 |---|---:|---|
-| `HomeScreenTest.kt` | 3 | Welcome screen text, first-run onboarding to Home, and the sample Feed category filter |
-| `LocalLearningStoreTest.kt` | 2 | Adding/reading/removing bookmarked words and completing/removing study tasks |
+| `HomeScreenTest.kt` | 8 | Welcome, onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, Learn-hub shortcuts, and the sample quiz-to-history journey |
+| `LocalLearningStoreTest.kt` | 15 | Topic, vocabulary search, bookmarks, drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration, practice history, and daily study-task persistence/reset |
 
 Coverage limits:
 
 - These are Android instrumentation tests, not JVM unit tests.
-- The two local-store tests clear their test preferences before and after each test.
+- All 15 local-store tests clear their test preferences before and after each test.
 - The test source uses Compose UI test APIs and AndroidX instrumentation APIs declared in the app module.
 - No test currently verifies all 48 routes, article/summary navigation comprehensively, Saved-screen removal, process recreation, or accessibility behavior.
 - The tests are authored only. CI has compiled the instrumentation APK successfully, but the tests have not yet been executed on an emulator. Compilation is not a passing runtime test.
