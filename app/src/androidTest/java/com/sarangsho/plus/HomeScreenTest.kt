@@ -101,6 +101,7 @@ class HomeScreenTest {
         composeRule.onNodeWithText("Resilience").assertIsDisplayed()
         composeRule.onAllNodesWithText("সংরক্ষণ").onFirst().performClick()
 
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
         composeRule.onNodeWithText("লাইব্রেরি").performClick()
         composeRule.onNodeWithText("সংরক্ষিত শব্দ • 1").assertIsDisplayed()
         composeRule.onNodeWithText("Resilience").assertIsDisplayed()
