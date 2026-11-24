@@ -1,16 +1,29 @@
 package com.sarangsho.plus
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.test.platform.app.InstrumentationRegistry
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 class HomeScreenTest {
     @get:Rule
     val composeRule = createAndroidComposeRule<MainActivity>()
+
+    @Before
+    fun clearLocalLearningState() {
+        InstrumentationRegistry.getInstrumentation().targetContext
+            .getSharedPreferences("sarangsho_learning", android.content.Context.MODE_PRIVATE)
+            .edit()
+            .clear()
+            .commit()
+    }
 
     private fun completeOnboarding() {
         composeRule.onNodeWithText("আমার প্রস্তুতি সাজাই").performClick()
@@ -62,4 +75,35 @@ class HomeScreenTest {
         composeRule.onNodeWithText("কোনো সংরক্ষিত বিষয় মেলেনি").assertIsDisplayed()
         composeRule.onNodeWithText("আপনার লাইব্রেরি এখনো খালি").assertDoesNotExist()
     }
+    @Test
+    fun todayFeaturedArticleCanBeBookmarkedIntoLibrary() {
+        completeOnboarding()
+
+        composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performClick()
+        composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
+            .assertIsDisplayed()
+        composeRule.onNodeWithContentDescription("সংরক্ষণ করুন").performClick()
+        composeRule.onNodeWithContentDescription("সংরক্ষিত").assertIsDisplayed()
+
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+        composeRule.onNodeWithText("লাইব্রেরি").performClick()
+        composeRule.onNodeWithText("সংরক্ষিত নিবন্ধ • 1").assertIsDisplayed()
+        composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun learnVocabularyBookmarkAppearsInLibrary() {
+        completeOnboarding()
+
+        composeRule.onNodeWithText("শিখুন").performClick()
+        composeRule.onNodeWithText("শব্দ শেখা শুরু করুন").performClick()
+        composeRule.onNodeWithText("Resilience").assertIsDisplayed()
+        composeRule.onAllNodesWithText("সংরক্ষণ").onFirst().performClick()
+
+        composeRule.onNodeWithText("লাইব্রেরি").performClick()
+        composeRule.onNodeWithText("সংরক্ষিত শব্দ • 1").assertIsDisplayed()
+        composeRule.onNodeWithText("Resilience").assertIsDisplayed()
+    }
+
 }
