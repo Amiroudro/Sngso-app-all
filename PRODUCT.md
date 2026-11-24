@@ -27,7 +27,7 @@ The product connects a source-aware daily briefing to a reusable study system: t
 - Primarily used on Android phones in Bangladesh, often in short reading sessions and sometimes with unreliable connectivity.
 - Bangla is the primary explanatory language; standard English terms, abbreviations and official names remain visible with explanations.
 - The home surface prioritizes the current daily edition and a clear next learning action.
-- Reading, search, practice, saved items and profile/settings are the five primary navigation destinations.
+- Reading, search, practice, saved items and profile/settings are the four primary navigation destinations (Today, Learn, Library, Explore), with Profile/settings available from the top bar.
 - Deep links should open a specific edition, story, topic, word or practice set.
 
 ## Capabilities and Constraints
