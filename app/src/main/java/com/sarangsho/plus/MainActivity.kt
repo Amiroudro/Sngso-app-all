@@ -27,7 +27,7 @@ import androidx.navigation.compose.*
 
 private data class Page(val route: String, val title: String)
 private val pages = listOf(
-    Page("welcome", "স্বাগতম"), Page("signin", "সাইন ইন"), Page("home", "আজকের ব্রিফিং"),
+    Page("welcome", "স্বাগতম"), Page("signin", "সাইন ইন"), Page("home", "আজকের ব্রিফিং"), Page("learn", "শিখুন"),
     Page("feed", "সব সংবাদ"), Page("article", "সংবাদের বিস্তারিত"), Page("summary", "তিন-স্তরের সারাংশ"),
     Page("timeline", "ঘটনার টাইমলাইন"), Page("perspectives", "পত্রিকার দৃষ্টিভঙ্গি"),
     Page("bangladesh", "বাংলাদেশ বিষয়াবলি"), Page("world", "বিশ্ব বিষয়াবলি"), Page("graph", "জ্ঞান মানচিত্র"),
@@ -48,9 +48,9 @@ private val pages = listOf(
     Page("indicator-detail", "সূচকের বিস্তারিত"), Page("signup", "নতুন অ্যাকাউন্ট"),
     Page("password-reset", "পাসওয়ার্ড পুনরুদ্ধার"), Page("report-story", "তথ্য সংশোধনের অনুরোধ")
 )
-private val tabs = listOf("home", "feed", "challenge", "saved", "profile")
-private val labels = listOf("হোম", "অনুসন্ধান", "প্র্যাকটিস", "সংরক্ষিত", "প্রোফাইল")
-private val icons = listOf(Icons.Default.Home, Icons.Default.Explore, Icons.Default.EditNote, Icons.Default.Bookmark, Icons.Default.Person)
+private val tabs = listOf("home", "learn", "saved", "feed")
+private val labels = listOf("আজ", "শিখুন", "লাইব্রেরি", "এক্সপ্লোর")
+private val icons = listOf(Icons.Default.Home, Icons.Default.School, Icons.Default.Bookmark, Icons.Default.Explore)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -107,6 +107,7 @@ private fun Screen(route: String, nav: NavHostController) {
         "welcome" -> Welcome(nav)
         "signin" -> SignIn(nav)
         "home" -> Home(nav)
+        "learn" -> LearningHub(nav)
         "feed" -> Feed(nav)
         "article" -> Article(nav)
         "summary" -> Summary(nav)
