@@ -119,6 +119,9 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 }
 
 @Composable internal fun Home(nav: NavHostController) {
+    val context = LocalContext.current
+    val learningGoal = LocalLearningStore.getOnboardingGoal(context)
+    val learningInterests = LocalLearningStore.getOnboardingInterests(context).sorted()
     Scroll {
         Row(
             Modifier.fillMaxWidth(),
@@ -150,9 +153,10 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
         ) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Kicker("আপনার প্রস্তুতি")
-                Text("আজকের পড়ার লক্ষ্য ঠিক করুন", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(learningGoal, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 Text(
-                    "লক্ষ্য নির্ধারণ করলে আপনার দৈনিক পড়ার পরিকল্পনা এখানে দেখা যাবে।",
+                    if (learningInterests.isEmpty()) "আপনার আগ্রহের বিষয় বেছে নিন।"
+                    else "আপনার বিষয়: ${learningInterests.joinToString(" • ")}",
                     color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.82f),
                     fontSize = 12.sp,
                     lineHeight = 19.sp
@@ -164,7 +168,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
                         contentColor = MaterialTheme.colorScheme.onSecondary
                     )
                 ) {
-                    Text("লক্ষ্য নির্ধারণ করুন")
+                    Text("পছন্দ পরিবর্তন করুন")
                     Spacer(Modifier.width(6.dp))
                     Icon(Icons.Default.ArrowForward, null, modifier = Modifier.size(16.dp))
                 }
@@ -727,7 +731,7 @@ internal fun Summary(nav: NavHostController) {
         Primary("আমার ব্রিফিং দেখুন") {
             LocalLearningStore.setOnboardingInterests(context, selected.toSet())
             nav.navigate("home") {
-                popUpTo("welcome") { inclusive = true }
+                popUpTo("onboarding-goals") { inclusive = true }
                 launchSingleTop = true
             }
         }
