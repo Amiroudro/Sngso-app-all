@@ -77,6 +77,42 @@ private val vocabularyEntries = listOf(
     )
 )
 
+@Composable internal fun LearningHub(nav: NavHostController) {
+    Scroll {
+        Intro("শিখুন", "সংবাদ থেকে পাওয়া জ্ঞানকে শব্দভান্ডার, অনুশীলন ও রিভিশনের মাধ্যমে স্থায়ী করুন।")
+        Panel {
+            Kicker("VOCABULARY LAB")
+            Text("শব্দভান্ডার গড়ে তুলুন", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text("বাংলা অর্থ, ইংরেজি সংজ্ঞা, সমার্থক শব্দ, collocation এবং বাস্তব বাক্যে ব্যবহার শিখুন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Primary("শব্দ শেখা শুরু করুন") { nav.navigate("vocabulary") }
+        }
+        Panel {
+            Kicker("BCS • BANK")
+            Text("পরীক্ষার অনুশীলন", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text("বিষয় ও সময় বেছে MCQ অনুশীলন করুন। প্রকৃত প্রশ্নব্যাংক সংযুক্ত না হওয়া পর্যন্ত নমুনা প্রশ্ন স্পষ্টভাবে চিহ্নিত থাকবে।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Primary("অনুশীলন সাজান") { nav.navigate("quiz-setup") }
+        }
+        Panel {
+            Kicker("WRITTEN PRACTICE")
+            Text("লিখিত উত্তরের চর্চা", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+            Text("বিশ্লেষণী প্রশ্নে নিজের ভাষায় উত্তর লিখুন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            OutlinedButton(onClick = { nav.navigate("writing") }, modifier = Modifier.fillMaxWidth()) { Text("লিখিত অনুশীলন খুলুন") }
+        }
+        Panel {
+            Kicker("ACTIVE RECALL")
+            Text("রিভিশন ডেক", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+            Text("ফ্ল্যাশকার্ডের মাধ্যমে শেখা তথ্য মনে করার অনুশীলন করুন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            OutlinedButton(onClick = { nav.navigate("revision") }, modifier = Modifier.fillMaxWidth()) { Text("রিভিশন শুরু করুন") }
+        }
+        Panel {
+            Kicker("STUDY PLAN")
+            Text("পড়ার পরিকল্পনা", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+            Text("আজকের পড়া ও অনুশীলন নিজের সুবিধামতো সাজান।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            OutlinedButton(onClick = { nav.navigate("study-plan") }, modifier = Modifier.fillMaxWidth()) { Text("পরিকল্পনা দেখুন") }
+        }
+    }
+}
+
 @Composable internal fun Vocabulary(nav: NavHostController) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
