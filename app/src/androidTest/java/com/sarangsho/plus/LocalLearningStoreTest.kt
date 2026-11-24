@@ -65,6 +65,19 @@ class LocalLearningStoreTest {
     }
 
     @Test
+    fun readerPreferencesPersistAndClampToSupportedRanges() {
+        LocalLearningStore.setReadingFontSize(context, 99f)
+        LocalLearningStore.setReadingLineSpacing(context, 0.5f)
+        LocalLearningStore.setReadingSepia(context, true)
+        LocalLearningStore.setAppLanguage(context, "English")
+
+        assertEquals(26f, LocalLearningStore.getReadingFontSize(context))
+        assertEquals(1.2f, LocalLearningStore.getReadingLineSpacing(context))
+        assertTrue(LocalLearningStore.isReadingSepia(context))
+        assertEquals("English", LocalLearningStore.getAppLanguage(context))
+    }
+
+    @Test
     fun completedStudyTasksCanBeAddedAndRemoved() {
         LocalLearningStore.setStudyTaskCompleted(context, "Read today's briefing", true)
         LocalLearningStore.setStudyTaskCompleted(context, "Revise vocabulary", true)
