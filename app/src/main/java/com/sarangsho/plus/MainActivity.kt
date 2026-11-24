@@ -165,7 +165,7 @@ private fun Screen(route: String, nav: NavHostController) {
         "sources" -> Sources(nav)
         "quiz-setup" -> QuizSetup(nav)
         "quiz-results" -> QuizResults(nav)
-        "word-detail" -> WordDetail()
+        "word-detail" -> WordDetail(nav)
         "study-plan" -> StudyPlan()
         "notifications" -> Notifications()
         "settings" -> Settings(nav)
