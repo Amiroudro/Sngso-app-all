@@ -145,18 +145,15 @@ class LocalLearningStoreTest {
     }
 
     @Test
-    fun legacyReadingHistoryStringSetMigratesToOrderedJson() {
+    fun legacyReadingHistoryStringSetMigratesToOrderedJsonAndRespectsTheHistoryLimit() {
         val prefs = context.getSharedPreferences("sarangsho_learning", 0)
-        prefs.edit()
-            .putStringSet("recent_articles", setOf("story-z", "story-a", "story-m"))
-            .commit()
+        val legacyArticles = (0 until 60).map { String.format("story-%02d", it) }.toSet()
+        val expected = (0 until 50).map { String.format("story-%02d", it) }
+        prefs.edit().putStringSet("recent_articles", legacyArticles).commit()
 
+        assertEquals(expected, LocalLearningStore.getRecentArticles(context))
         assertEquals(
-            listOf("story-a", "story-m", "story-z"),
-            LocalLearningStore.getRecentArticles(context)
-        )
-        assertEquals(
-            """["story-a","story-m","story-z"]""",
+            expected.joinToString(prefix = "[", postfix = "]") { "\"" + it + "\"" },
             prefs.getString("recent_articles", null)
         )
         assertTrue(prefs.all["recent_articles"] is String)
