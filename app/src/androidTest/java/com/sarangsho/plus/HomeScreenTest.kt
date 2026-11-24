@@ -55,7 +55,7 @@ class HomeScreenTest {
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .assertIsDisplayed()
 
-        composeRule.onAllNodesWithText("বিশ্ব").onFirst().performClick()
+        composeRule.onAllNodesWithText("বিশ্ব")[0].performClick()
         composeRule.onNodeWithText("জাতিসংঘ ও জলবায়ু আলোচনার প্রেক্ষাপট").assertIsDisplayed()
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .assertDoesNotExist()
@@ -99,7 +99,7 @@ class HomeScreenTest {
         composeRule.onNodeWithText("শিখুন").performClick()
         composeRule.onNodeWithText("শব্দ শেখা শুরু করুন").performClick()
         composeRule.onNodeWithText("Resilience").assertIsDisplayed()
-        composeRule.onAllNodesWithText("সংরক্ষণ").onFirst().performClick()
+        composeRule.onAllNodesWithText("সংরক্ষণ")[0].performClick()
 
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
         composeRule.onNodeWithText("লাইব্রেরি").performClick()
@@ -129,7 +129,7 @@ class HomeScreenTest {
         composeRule.onNodeWithText("অনুশীলন সম্পন্ন").assertIsDisplayed()
         composeRule.onNodeWithText("1 / 1").assertIsDisplayed()
         composeRule.onNodeWithText("অনুশীলনের ইতিহাস দেখুন").performClick()
-        composeRule.onAllNodesWithText("অনুশীলনের ইতিহাস").onFirst().assertIsDisplayed()
+        composeRule.onAllNodesWithText("অনুশীলনের ইতিহাস")[0].assertIsDisplayed()
         composeRule.onNodeWithText("1 / 1 সঠিক").assertIsDisplayed()
     }
 
