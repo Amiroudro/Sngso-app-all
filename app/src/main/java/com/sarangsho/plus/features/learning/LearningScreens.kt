@@ -499,7 +499,7 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
     }
 }
 
-@Composable internal @Composable internal fun WordDetail(nav: NavHostController) {
+@Composable internal fun WordDetail(nav: NavHostController) {
     val selectedTerm = nav.previousBackStackEntry
         ?.savedStateHandle
         ?.get<String>("selected_word")
