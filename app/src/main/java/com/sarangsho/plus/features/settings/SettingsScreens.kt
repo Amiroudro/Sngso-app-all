@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.sarangsho.plus.ui.theme.SarangshoPalette
+import com.sarangsho.plus.data.LocalLearningStore
+import androidx.compose.ui.platform.LocalContext
 
 
 @Composable internal fun Settings(nav: NavHostController) {
@@ -36,16 +38,30 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 }
 
 @Composable internal fun ReadingSettings() {
-    var fontSize by rememberSaveable { mutableFloatStateOf(18f) }; var lineSpacing by rememberSaveable { mutableFloatStateOf(1.5f) }
-    var sepia by rememberSaveable { mutableStateOf(false) }
+    val context = LocalContext.current
+    var fontSize by rememberSaveable { mutableFloatStateOf(LocalLearningStore.getReadingFontSize(context)) }
+    var lineSpacing by rememberSaveable { mutableFloatStateOf(LocalLearningStore.getReadingLineSpacing(context)) }
+    var sepia by rememberSaveable { mutableStateOf(LocalLearningStore.isReadingSepia(context)) }
     Scroll {
         Intro("পড়ার পছন্দ", "দীর্ঘ লেখা আরাম করে পড়ার জন্য নিজের মতো সাজান।")
         Panel {
-            Text("লেখার আকার: " + fontSize.toInt().toString() + " sp", fontWeight = FontWeight.SemiBold)
-            Slider(value = fontSize, onValueChange = { fontSize = it }, valueRange = 16f..26f)
+            Text("লেখার আকার: ${fontSize.toInt()} sp", fontWeight = FontWeight.SemiBold)
+            Slider(value = fontSize, onValueChange = {
+                fontSize = it
+                LocalLearningStore.setReadingFontSize(context, it)
+            }, valueRange = 16f..26f)
             Text("লাইন স্পেসিং: " + "%.1f".format(lineSpacing), fontWeight = FontWeight.SemiBold)
-            Slider(value = lineSpacing, onValueChange = { lineSpacing = it }, valueRange = 1.2f..2.0f)
-            Row(verticalAlignment = Alignment.CenterVertically) { Text("উষ্ণ কাগজের নমুনা", Modifier.weight(1f)); Switch(checked = sepia, onCheckedChange = { sepia = it }) }
+            Slider(value = lineSpacing, onValueChange = {
+                lineSpacing = it
+                LocalLearningStore.setReadingLineSpacing(context, it)
+            }, valueRange = 1.2f..2.0f)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("উষ্ণ কাগজের নমুনা", Modifier.weight(1f))
+                Switch(checked = sepia, onCheckedChange = {
+                    sepia = it
+                    LocalLearningStore.setReadingSepia(context, it)
+                })
+            }
         }
         Surface(color = if (sepia) SarangshoPalette.Paper else MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(12.dp), border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline), modifier = Modifier.fillMaxWidth()) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -53,7 +69,7 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
                 Text("বাংলা ও ইংরেজি একসঙ্গে পড়ার সময় অক্ষরের গঠন এবং লাইনের ফাঁক যেন পরিষ্কার থাকে।", fontSize = fontSize.sp, lineHeight = (fontSize * lineSpacing).sp, color = SarangshoPalette.Ink)
             }
         }
-        Text("এই নিয়ন্ত্রণগুলো শুধু নমুনা পাঠে প্রযোজ্য; স্থায়ীভাবে সংরক্ষিত হয় না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        Text("এই পছন্দগুলো এই ডিভাইসে সংরক্ষিত থাকে। বর্তমান নমুনা পাঠেই প্রিভিউ দেখা যায়; সব নিবন্ধে প্রয়োগের সংযোগ বাকি।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
     }
 }
 
@@ -106,15 +122,23 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 }
 
 @Composable internal fun LanguageSettings() {
-    var language by rememberSaveable { mutableStateOf("বাংলা") }
+    val context = LocalContext.current
+    var language by rememberSaveable { mutableStateOf(LocalLearningStore.getAppLanguage(context)) }
     Scroll {
         Intro("অ্যাপের ভাষা", "প্রধান ব্যাখ্যার ভাষা বেছে নিন। ইংরেজি পরিভাষা প্রয়োজন অনুযায়ী পাশে থাকবে।")
         listOf("বাংলা", "English", "বাংলা + English").forEach {
-            Row(Modifier.fillMaxWidth().clickable { language = it }.padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                RadioButton(selected = language == it, onClick = { language = it }); Text(it)
+            Row(Modifier.fillMaxWidth().clickable {
+                language = it
+                LocalLearningStore.setAppLanguage(context, it)
+            }.padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                RadioButton(selected = language == it, onClick = {
+                    language = it
+                    LocalLearningStore.setAppLanguage(context, it)
+                })
+                Text(it)
             }
         }
-        Text("নির্বাচন: " + language + " • এই পছন্দ এখনো স্থায়ীভাবে সংরক্ষিত নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        Text("নির্বাচন: $language • এই পছন্দ এই ডিভাইসে সংরক্ষিত। সব স্ক্রিনের ভাষা পরিবর্তনের সংযোগ এখনো বাকি।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
     }
 }
 
