@@ -16,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -111,15 +112,15 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Column(Modifier.weight(1f).clickable { nav.navigate("saved") }, verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Column(Modifier.weight(1f).heightIn(min = 64.dp).clickable(role = Role.Button) { nav.navigate("saved") }.padding(vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                     Text(savedWordCount.toString(), fontSize = 23.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                     Text("সংরক্ষিত শব্দ", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                Column(Modifier.weight(1f).clickable { nav.navigate("study-plan") }, verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Column(Modifier.weight(1f).heightIn(min = 64.dp).clickable(role = Role.Button) { nav.navigate("study-plan") }.padding(vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                     Text(completedTaskCount.toString(), fontSize = 23.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                     Text("সম্পন্ন পড়ার কাজ", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                Column(Modifier.weight(1f).clickable { nav.navigate("practice-history") }, verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Column(Modifier.weight(1f).heightIn(min = 64.dp).clickable(role = Role.Button) { nav.navigate("practice-history") }.padding(vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                     Text(practiceSessionCount.toString(), fontSize = 23.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                     Text("অনুশীলন সেশন", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
