@@ -187,7 +187,13 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
     val filteredWords = vocabularyEntries.filter { entry ->
         query.isBlank() ||
             entry.term.contains(query, ignoreCase = true) ||
-            entry.banglaMeaning.contains(query, ignoreCase = true)
+            entry.partOfSpeech.contains(query, ignoreCase = true) ||
+            entry.pronunciation.contains(query, ignoreCase = true) ||
+            entry.banglaMeaning.contains(query, ignoreCase = true) ||
+            entry.definition.contains(query, ignoreCase = true) ||
+            entry.synonyms.contains(query, ignoreCase = true) ||
+            entry.antonym.contains(query, ignoreCase = true) ||
+            entry.example.contains(query, ignoreCase = true)
     }
     Scroll {
         Intro("Vocabulary Lab", "অর্থ, ব্যবহার ও পরীক্ষায় প্রয়োগ শিখুন। শব্দ বুকমার্ক করলে Saved-এ পাবেন।")
