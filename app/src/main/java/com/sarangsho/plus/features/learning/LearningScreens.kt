@@ -282,14 +282,42 @@ private val vocabularyEntries = listOf(
     var flipped by rememberSaveable { mutableStateOf(false) }
     Scroll {
         Intro("রিভিশন ডেক", "সক্রিয় স্মরণ দিয়ে শেখা বিষয় মনে রাখুন।")
-        LinearProgressIndicator(progress = { 0.35f }, modifier = Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.primary, trackColor = MaterialTheme.colorScheme.outlineVariant)
-        Text("কার্ড ৭ / ২০ • নমুনা সেশন", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
         Panel {
-            Text(if (flipped) "উত্তর" else "প্রশ্ন", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
-            Text(if (flipped) "জাতিসংঘ প্রতিষ্ঠিত হয় ১৯৪৫ সালের ২৪ অক্টোবর।" else "জাতিসংঘ কবে প্রতিষ্ঠিত হয়?", fontSize = 21.sp, fontWeight = FontWeight.Bold, lineHeight = 31.sp)
-            Text(if (flipped) "২৪ অক্টোবর, United Nations Day." else "উত্তর দেখতে কার্ডে চাপ দিন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            OutlinedButton(onClick = { flipped = !flipped }, modifier = Modifier.fillMaxWidth()) { Text(if (flipped) "প্রশ্ন দেখুন" else "উত্তর দেখুন") }
+            Kicker("নমুনা কার্ড")
+            Text("এই ডেমো সেশনে ব্যক্তিগত অগ্রগতি গণনা বা সংরক্ষণ করা হচ্ছে না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, lineHeight = 19.sp)
         }
+        Surface(
+            color = MaterialTheme.colorScheme.surface,
+            shape = RoundedCornerShape(18.dp),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                Text(if (flipped) "উত্তর" else "প্রশ্ন", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                Text(
+                    if (flipped) "জাতিসংঘ প্রতিষ্ঠিত হয় ১৯৪৫ সালের ২৪ অক্টোবর।" else "জাতিসংঘ কবে প্রতিষ্ঠিত হয়?",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 32.sp
+                )
+                Text(
+                    if (flipped) "২৪ অক্টোবর, United Nations Day." else "মনে করার চেষ্টা করুন, তারপর উত্তর দেখুন।",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 13.sp
+                )
+                OutlinedButton(onClick = { flipped = !flipped }, modifier = Modifier.fillMaxWidth()) {
+                    Icon(if (flipped) Icons.Default.Refresh else Icons.Default.Visibility, null)
+                    Spacer(Modifier.width(8.dp))
+                    Text(if (flipped) "আবার প্রশ্ন দেখুন" else "উত্তর দেখুন")
+                }
+            }
+        }
+        Text(
+            "সম্পূর্ণ রিভিশন সেশন, কার্ডের সংখ্যা ও শেখার অগ্রগতি ব্যক্তিগত স্টাডি ডেটা সংযুক্ত হলে দেখানো হবে।",
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 11.sp,
+            lineHeight = 17.sp
+        )
     }
 }
 
