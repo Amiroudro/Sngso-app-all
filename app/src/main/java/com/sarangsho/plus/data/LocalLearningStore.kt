@@ -17,6 +17,9 @@ object LocalLearningStore {
     private const val KEY_READING_LINE_SPACING = "reading_line_spacing"
     private const val KEY_READING_SEPIA = "reading_sepia"
     private const val KEY_APP_LANGUAGE = "app_language"
+    private const val KEY_NOTIFY_DAILY_BRIEFING = "notify_daily_briefing"
+    private const val KEY_NOTIFY_WORD = "notify_word"
+    private const val KEY_NOTIFY_EXAM = "notify_exam"
 
     private fun preferences(context: Context) =
         context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -90,4 +93,19 @@ object LocalLearningStore {
     fun setAppLanguage(context: Context, language: String) {
         preferences(context).edit().putString(KEY_APP_LANGUAGE, language).apply()
     }
+
+    fun getNotificationPreference(context: Context, key: String): Boolean =
+        preferences(context).getBoolean(key, true)
+
+    fun setNotificationPreference(context: Context, key: String, enabled: Boolean) {
+        require(key in setOf(KEY_NOTIFY_DAILY_BRIEFING, KEY_NOTIFY_WORD, KEY_NOTIFY_EXAM))
+        preferences(context).edit().putBoolean(key, enabled).apply()
+    }
+
+    fun getDailyBriefingNotifications(context: Context) = getNotificationPreference(context, KEY_NOTIFY_DAILY_BRIEFING)
+    fun setDailyBriefingNotifications(context: Context, enabled: Boolean) = setNotificationPreference(context, KEY_NOTIFY_DAILY_BRIEFING, enabled)
+    fun getWordNotifications(context: Context) = getNotificationPreference(context, KEY_NOTIFY_WORD)
+    fun setWordNotifications(context: Context, enabled: Boolean) = setNotificationPreference(context, KEY_NOTIFY_WORD, enabled)
+    fun getExamNotifications(context: Context) = getNotificationPreference(context, KEY_NOTIFY_EXAM)
+    fun setExamNotifications(context: Context, enabled: Boolean) = setNotificationPreference(context, KEY_NOTIFY_EXAM, enabled)
 }
