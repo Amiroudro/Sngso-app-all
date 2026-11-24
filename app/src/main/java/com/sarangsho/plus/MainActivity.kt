@@ -177,7 +177,7 @@ private fun Screen(route: String, nav: NavHostController) {
         "privacy" -> Privacy()
         "language" -> LanguageSettings()
         "practice-history" -> PracticeHistory()
-        "reading-history" -> ReadingHistory()
+        "reading-history" -> ReadingHistory(nav)
         "saved-collections" -> SavedCollections()
         "source-detail" -> SourceDetail()
         "indicator-detail" -> IndicatorDetail()
