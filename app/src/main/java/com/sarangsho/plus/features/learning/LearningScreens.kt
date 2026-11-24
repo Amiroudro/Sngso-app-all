@@ -79,11 +79,19 @@ private val vocabularyEntries = listOf(
 )
 
 internal fun searchVocabulary(query: String): List<Pair<String, String>> {
-    if (query.isBlank()) return emptyList()
+    val normalizedQuery = query.trim()
+    if (normalizedQuery.isBlank()) return emptyList()
     return vocabularyEntries.filter { entry ->
-        entry.term.contains(query, ignoreCase = true) ||
-            entry.banglaMeaning.contains(query, ignoreCase = true) ||
-            entry.definition.contains(query, ignoreCase = true)
+        listOf(
+            entry.term,
+            entry.partOfSpeech,
+            entry.pronunciation,
+            entry.banglaMeaning,
+            entry.definition,
+            entry.synonyms,
+            entry.antonym,
+            entry.example
+        ).any { it.contains(normalizedQuery, ignoreCase = true) }
     }.map { it.term to it.banglaMeaning }
 }
 
@@ -184,16 +192,19 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
     var query by rememberSaveable { mutableStateOf("") }
+    val normalizedQuery = query.trim()
     val filteredWords = vocabularyEntries.filter { entry ->
-        query.isBlank() ||
-            entry.term.contains(query, ignoreCase = true) ||
-            entry.partOfSpeech.contains(query, ignoreCase = true) ||
-            entry.pronunciation.contains(query, ignoreCase = true) ||
-            entry.banglaMeaning.contains(query, ignoreCase = true) ||
-            entry.definition.contains(query, ignoreCase = true) ||
-            entry.synonyms.contains(query, ignoreCase = true) ||
-            entry.antonym.contains(query, ignoreCase = true) ||
-            entry.example.contains(query, ignoreCase = true)
+        normalizedQuery.isBlank() ||
+            listOf(
+                entry.term,
+                entry.partOfSpeech,
+                entry.pronunciation,
+                entry.banglaMeaning,
+                entry.definition,
+                entry.synonyms,
+                entry.antonym,
+                entry.example
+            ).any { it.contains(normalizedQuery, ignoreCase = true) }
     }
     Scroll {
         Intro("Vocabulary Lab", "অর্থ, ব্যবহার ও পরীক্ষায় প্রয়োগ শিখুন। শব্দ বুকমার্ক করলে Saved-এ পাবেন।")
@@ -202,7 +213,7 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
             onValueChange = { query = it },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            label = { Text("শব্দ বা বাংলা অর্থ খুঁজুন") },
+            label = { Text("শব্দ, অর্থ, সমার্থক বা উদাহরণ খুঁজুন") },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) }
         )
         Text("${filteredWords.size}টি শব্দ", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
@@ -506,10 +517,14 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
 }
 
 @Composable internal fun WordDetail(nav: NavHostController) {
+    val context = LocalContext.current
     val selectedTerm = nav.previousBackStackEntry
         ?.savedStateHandle
         ?.get<String>("selected_word")
     val entry = vocabularyEntries.firstOrNull { it.term == selectedTerm }
+    var bookmarked by rememberSaveable(selectedTerm) {
+        mutableStateOf(selectedTerm?.let { LocalLearningStore.isWordBookmarked(context, it) } ?: false)
+    }
     Scroll {
         Intro("শব্দের বিস্তারিত", "অর্থ, সংজ্ঞা, সমার্থক শব্দ ও বাস্তব বাক্যে প্রয়োগ এক জায়গায় দেখুন।")
         if (entry == null) {
@@ -530,6 +545,20 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
                 Text("Synonyms: ${entry.synonyms}", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text("Antonym: ${entry.antonym}", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text("Example: ${entry.example}")
+                OutlinedButton(
+                    onClick = {
+                        val shouldBookmark = !bookmarked
+                        LocalLearningStore.setWordBookmarked(context, entry.term, shouldBookmark)
+                        bookmarked = shouldBookmark
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        if (bookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                        contentDescription = if (bookmarked) "বুকমার্ক করা" else "বুকমার্ক করুন"
+                    )
+                    Text(if (bookmarked) "সংরক্ষিত" else "সংরক্ষণ")
+                }
             }
             Text("শব্দটি প্রাথমিক শেখার নমুনা; অভিধান-উৎস ও পরীক্ষার রেফারেন্স যুক্ত করা এখনো বাকি।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
         }
