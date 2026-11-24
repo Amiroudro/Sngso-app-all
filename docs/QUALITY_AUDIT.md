@@ -68,17 +68,17 @@ This checks string consistency only. It does not prove that every screen renders
 
 ## Test coverage inventory (updated 2026-11-24)
 
-A source review of the test files found 23 authored Android instrumentation test methods:
+A source review of the test files found 26 authored Android instrumentation test methods:
 
 | Test file | Test methods | What they cover |
 |---|---:|---|
 | `HomeScreenTest.kt` | 8 | Welcome, onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, Learn-hub shortcuts, and the sample quiz-to-history journey |
-| `LocalLearningStoreTest.kt` | 15 | Topic, vocabulary search, bookmarks, drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration, practice history, and daily study-task persistence/reset |
+| `LocalLearningStoreTest.kt` | 15 | Topic, vocabulary search, bookmarks, drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration/bounds, practice-history validation/bounds, and daily study-task persistence/reset |
 
 Coverage limits:
 
 - These are Android instrumentation tests, not JVM unit tests.
-- All 15 local-store tests clear their test preferences before and after each test.
+- All 18 local-store tests clear their test preferences before and after each test.
 - The test source uses Compose UI test APIs and AndroidX instrumentation APIs declared in the app module.
 - No test currently verifies all 48 routes, article/summary navigation comprehensively, Saved-screen removal, process recreation, or accessibility behavior.
 - The tests are authored only. CI has compiled the instrumentation APK successfully, but the tests have not yet been executed on an emulator. Compilation is not a passing runtime test.
