@@ -564,7 +564,7 @@ internal fun Summary(nav: NavHostController) {
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             }
         } else {
-            Text("$resultCountি ফলাফল", fontWeight = FontWeight.Bold, fontSize = 17.sp)
+            Text("$resultCount টি ফলাফল", fontWeight = FontWeight.Bold, fontSize = 17.sp)
             if (resultCount == 0) {
                 Panel {
                     Icon(Icons.Default.SearchOff, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
