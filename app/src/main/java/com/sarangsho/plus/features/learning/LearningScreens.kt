@@ -280,6 +280,8 @@ private val vocabularyEntries = listOf(
             onClick = {
                 nav.currentBackStackEntry?.savedStateHandle?.set("correctCount", if (isCorrect) 1 else 0)
                 nav.currentBackStackEntry?.savedStateHandle?.set("questionCount", 1)
+                // Reset the guard for every attempt, including a reused answer destination.
+                nav.currentBackStackEntry?.savedStateHandle?.set("practiceAttemptRecorded", false)
                 nav.navigate("quiz-results")
             },
             modifier = Modifier.fillMaxWidth()
