@@ -33,10 +33,10 @@ The product connects a source-aware daily briefing to a reusable study system: t
 ## Capabilities and Constraints
 
 - The current branch contains an early Compose screen prototype, not a complete verified application.
-- The repository requires a real Gradle Android project scaffold before build status can be claimed.
+- The repository now has a working Gradle Android project scaffold; routine CI has successfully run unit tests, compiled the instrumentation-test APK and assembled a debug APK.
 - The separate editorial engine and its rights/verification rules remain authoritative for news content.
 - Sample content must be labelled as sample. Never fabricate live stories, source comparisons, user activity, progress, scores or data values.
-- Authentication, persistence, synchronization, offline editions, push notifications, analytics and engine APIs are not yet connected unless separately implemented and verified.
+- Authentication, cloud persistence/synchronization, offline editions, push delivery, analytics and engine APIs are not connected unless separately implemented and verified. Several prototype features persist locally with SharedPreferences; local storage must not be mistaken for account sync or a production data layer.
 - The client must not publish or approve editorial content.
 - Prefer a free/open-source implementation and avoid paid service dependencies by default.
 
