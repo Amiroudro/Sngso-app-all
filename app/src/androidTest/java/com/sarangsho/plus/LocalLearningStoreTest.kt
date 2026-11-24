@@ -37,9 +37,13 @@ class LocalLearningStoreTest {
     }
 
     @Test
-    fun localVocabularySearchMatchesTermsAndBanglaMeanings() {
+    fun localVocabularySearchMatchesAllEntryFieldsAndTrimsWhitespace() {
         assertTrue(searchVocabulary("resilience").any { it.first == "Resilience" })
         assertTrue(searchVocabulary("জবাবদিহিতা").any { it.first == "Accountability" })
+        assertTrue(searchVocabulary("adaptability").any { it.first == "Resilience" })
+        assertTrue(searchVocabulary("natural disaster").any { it.first == "Resilience" })
+        assertTrue(searchVocabulary("fragility").any { it.first == "Resilience" })
+        assertTrue(searchVocabulary(" adaptability ").any { it.first == "Resilience" })
         assertTrue(searchVocabulary("no matching term").isEmpty())
         assertTrue(searchVocabulary(" ").isEmpty())
     }
