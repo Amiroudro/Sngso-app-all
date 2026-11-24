@@ -1,6 +1,7 @@
 package com.sarangsho.plus
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -114,16 +115,16 @@ class HomeScreenTest {
         composeRule.onNodeWithText("শিখুন").performClick()
         composeRule.onNodeWithText("আপনার শেখার হিসাব • এই ডিভাইস").assertIsDisplayed()
 
-        composeRule.onNodeWithText("সম্পন্ন পড়ার কাজ").performClick()
+        composeRule.onNodeWithText("সম্পন্ন পড়ার কাজ").assertHasClickAction().performClick()
         composeRule.onNodeWithText("আপনার পড়ার পরিকল্পনা").assertIsDisplayed()
 
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
-        composeRule.onNodeWithText("অনুশীলন সেশন").performClick()
+        composeRule.onNodeWithText("অনুশীলন সেশন").assertHasClickAction().performClick()
         composeRule.onNodeWithText("অনুশীলনের ইতিহাস").assertIsDisplayed()
         composeRule.onNodeWithText("এখনো কোনো সেশন সংরক্ষিত নেই").assertIsDisplayed()
 
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
-        composeRule.onNodeWithText("সংরক্ষিত শব্দ").performClick()
+        composeRule.onNodeWithText("সংরক্ষিত শব্দ").assertHasClickAction().performClick()
         composeRule.onNodeWithText("আপনার সংরক্ষিত বিষয়").assertIsDisplayed()
     }
 
