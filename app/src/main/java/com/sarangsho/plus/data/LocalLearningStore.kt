@@ -12,6 +12,7 @@ object LocalLearningStore {
     private const val KEY_BOOKMARKED_WORDS = "bookmarked_words"
     private const val KEY_COMPLETED_STUDY_TASKS = "completed_study_tasks"
     private const val KEY_WRITING_DRAFT = "writing_draft"
+    private const val KEY_SAVED_ARTICLES = "saved_articles"
 
     private fun preferences(context: Context) =
         context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -44,5 +45,17 @@ object LocalLearningStore {
 
     fun setWritingDraft(context: Context, draft: String) {
         preferences(context).edit().putString(KEY_WRITING_DRAFT, draft).apply()
+    }
+
+    fun getSavedArticles(context: Context): Set<String> =
+        preferences(context).getStringSet(KEY_SAVED_ARTICLES, emptySet()).orEmpty().toSet()
+
+    fun isArticleSaved(context: Context, articleId: String): Boolean =
+        articleId in getSavedArticles(context)
+
+    fun setArticleSaved(context: Context, articleId: String, saved: Boolean) {
+        val articles = preferences(context).getStringSet(KEY_SAVED_ARTICLES, emptySet()).orEmpty().toMutableSet()
+        if (saved) articles.add(articleId) else articles.remove(articleId)
+        preferences(context).edit().putStringSet(KEY_SAVED_ARTICLES, articles).apply()
     }
 }
