@@ -88,9 +88,21 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
 
 @Composable internal fun LearningHub(nav: NavHostController) {
     val context = LocalContext.current
-    val savedWordCount = LocalLearningStore.getBookmarkedWords(context).size
-    val completedTaskCount = LocalLearningStore.getCompletedStudyTasks(context).size
-    val practiceSessionCount = LocalLearningStore.getPracticeHistory(context).size
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var savedWordCount by remember { mutableIntStateOf(LocalLearningStore.getBookmarkedWords(context).size) }
+    var completedTaskCount by remember { mutableIntStateOf(LocalLearningStore.getCompletedStudyTasks(context).size) }
+    var practiceSessionCount by remember { mutableIntStateOf(LocalLearningStore.getPracticeHistory(context).size) }
+    DisposableEffect(lifecycleOwner, context) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                savedWordCount = LocalLearningStore.getBookmarkedWords(context).size
+                completedTaskCount = LocalLearningStore.getCompletedStudyTasks(context).size
+                practiceSessionCount = LocalLearningStore.getPracticeHistory(context).size
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
     Scroll {
         Intro("শিখুন", "সংবাদ থেকে পাওয়া জ্ঞানকে শব্দভান্ডার, অনুশীলন ও রিভিশনের মাধ্যমে স্থায়ী করুন।")
         Panel {
@@ -99,15 +111,15 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Column(Modifier.weight(1f).clickable { nav.navigate("library") }, verticalArrangement = Arrangement.spacedBy(3.dp)) {
                     Text(savedWordCount.toString(), fontSize = 23.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                     Text("সংরক্ষিত শব্দ", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Column(Modifier.weight(1f).clickable { nav.navigate("study-plan") }, verticalArrangement = Arrangement.spacedBy(3.dp)) {
                     Text(completedTaskCount.toString(), fontSize = 23.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                     Text("সম্পন্ন পড়ার কাজ", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Column(Modifier.weight(1f).clickable { nav.navigate("practice-history") }, verticalArrangement = Arrangement.spacedBy(3.dp)) {
                     Text(practiceSessionCount.toString(), fontSize = 23.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                     Text("অনুশীলন সেশন", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
@@ -528,7 +540,7 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
             }
             Text(done.size.toString() + " / " + tasks.size + " সম্পন্ন", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        Text("কাজের অগ্রগতি এই ডিভাইসে সংরক্ষিত থাকে। প্রতিদিনের স্বয়ংক্রিয় রিসেট ও অ্যাকাউন্ট সিঙ্ক এখনো নেই।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        Text("কাজের অগ্রগতি এই ডিভাইসে সংরক্ষিত থাকে এবং নতুন স্থানীয় তারিখে তালিকা স্বয়ংক্রিয়ভাবে রিসেট হয়। অ্যাকাউন্ট সিঙ্ক এখনো নেই।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
     }
 }
 
