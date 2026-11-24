@@ -80,6 +80,49 @@ import androidx.compose.ui.platform.LocalContext
     }
 }
 
+@Composable internal fun Notifications() {
+    val context = LocalContext.current
+    var briefing by rememberSaveable { mutableStateOf(LocalLearningStore.getDailyBriefingNotifications(context)) }
+    var words by rememberSaveable { mutableStateOf(LocalLearningStore.getWordNotifications(context)) }
+    var exams by rememberSaveable { mutableStateOf(LocalLearningStore.getExamNotifications(context)) }
+    Scroll {
+        Intro("নোটিফিকেশন", "কোন ধরনের আপডেট পেতে চান, তা বেছে নিন।")
+        Panel {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) { Text("দৈনিক ব্রিফিং", fontWeight = FontWeight.SemiBold); Text("নতুন দিনের প্রধান খবর ও সারাংশ", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                Switch(checked = briefing, onCheckedChange = { briefing = it; LocalLearningStore.setDailyBriefingNotifications(context, it) })
+            }
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) { Text("শব্দভান্ডার", fontWeight = FontWeight.SemiBold); Text("নতুন শব্দ ও পুনরাবৃত্তির মনে করানো", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                Switch(checked = words, onCheckedChange = { words = it; LocalLearningStore.setWordNotifications(context, it) })
+            }
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) { Text("BCS ও Bank প্রস্তুতি", fontWeight = FontWeight.SemiBold); Text("অনুশীলন ও পড়ার পরিকল্পনার মনে করানো", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                Switch(checked = exams, onCheckedChange = { exams = it; LocalLearningStore.setExamNotifications(context, it) })
+            }
+        }
+        Text("এই পছন্দগুলো এই ডিভাইসে সংরক্ষিত হয়। বাস্তব push notification পাঠানোর ব্যবস্থা এখনো সংযুক্ত নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+    }
+}
+
+@Composable internal fun About() {
+    Scroll {
+        Intro("Sarangsho Plus", "বাংলাদেশ ও বিশ্বের খবর বুঝে পড়া এবং BCS ও Bank প্রস্তুতির জন্য একটি সম্পাদকীয়-শিক্ষণ প্ল্যাটফর্ম।")
+        Panel {
+            Text("আমাদের নীতি", fontWeight = FontWeight.Bold)
+            Text("তথ্য, বিশ্লেষণ ও মতামত আলাদা রাখা; উৎস ও তারিখ স্পষ্ট করা; নমুনা কনটেন্টকে যাচাইকৃত সংবাদ হিসেবে না দেখানো।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Panel {
+            Text("বর্তমান সংস্করণ", fontWeight = FontWeight.SemiBold)
+            Text("Android UI prototype • Development build")
+            Text("এই সংস্করণে কিছু ফিচার স্থানীয়ভাবে কাজ করে; authentication, live news feed, cloud sync ও push notifications এখনো সংযুক্ত নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        }
+        Text("Designed for careful reading and consistent preparation.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+    }
+}
+
 @Composable internal fun Help() {
     val questions = listOf(
         "সংবাদ কীভাবে যাচাই করা হয়?" to "প্রতিটি গল্পে উৎস, তারিখ এবং যাচাইয়ের অবস্থা দেখানো হবে।",
