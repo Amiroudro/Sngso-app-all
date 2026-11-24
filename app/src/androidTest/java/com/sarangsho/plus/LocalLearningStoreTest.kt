@@ -187,6 +187,43 @@ class LocalLearningStoreTest {
     }
 
     @Test
+    fun readingHistoryIsBoundedToFiftyUniqueArticles() {
+        repeat(60) { index ->
+            LocalLearningStore.recordArticleRead(context, "story-$index")
+        }
+
+        val history = LocalLearningStore.getRecentArticles(context)
+        assertEquals(50, history.size)
+        assertEquals("story-59", history.first())
+        assertEquals("story-10", history.last())
+    }
+
+    @Test
+    fun practiceHistoryIsBoundedToOneHundredAttempts() {
+        repeat(105) { index ->
+            LocalLearningStore.recordPracticeAttempt(context, index % 6, 5)
+        }
+
+        val history = LocalLearningStore.getPracticeHistory(context)
+        assertEquals(100, history.size)
+        assertEquals(2, history.first().correct)
+        assertEquals(5, history.last().correct)
+    }
+
+    @Test
+    fun invalidPracticeHistoryEntriesAreIgnored() {
+        val prefs = context.getSharedPreferences("sarangsho_learning", 0)
+        prefs.edit().putString(
+            "practice_history",
+            """[{"correct":5,"total":3,"timestamp":1},{"correct":1,"total":2,"timestamp":2},{"correct":2,"total":2,"timestamp":3}]"""
+        ).commit()
+
+        val history = LocalLearningStore.getPracticeHistory(context)
+        assertEquals(2, history.size)
+        assertEquals(listOf(1, 2), history.map { it.correct })
+    }
+
+    @Test
     fun completedStudyTasksCanBeAddedAndRemoved() {
         LocalLearningStore.setStudyTaskCompleted(context, "Read today's briefing", true)
         LocalLearningStore.setStudyTaskCompleted(context, "Revise vocabulary", true)
