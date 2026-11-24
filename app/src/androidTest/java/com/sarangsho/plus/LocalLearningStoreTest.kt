@@ -41,6 +41,17 @@ class LocalLearningStoreTest {
     }
 
     @Test
+    fun writingDraftCanBeSavedReadAndCleared() {
+        LocalLearningStore.setWritingDraft(context, "বাংলাদেশের জলবায়ু ঝুঁকি")
+
+        assertEquals("বাংলাদেশের জলবায়ু ঝুঁকি", LocalLearningStore.getWritingDraft(context))
+
+        LocalLearningStore.setWritingDraft(context, "")
+
+        assertEquals("", LocalLearningStore.getWritingDraft(context))
+    }
+
+    @Test
     fun completedStudyTasksCanBeAddedAndRemoved() {
         LocalLearningStore.setStudyTaskCompleted(context, "Read today's briefing", true)
         LocalLearningStore.setStudyTaskCompleted(context, "Revise vocabulary", true)
