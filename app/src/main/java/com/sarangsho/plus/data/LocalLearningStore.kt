@@ -20,6 +20,7 @@ object LocalLearningStore {
     private const val KEY_NOTIFY_DAILY_BRIEFING = "notify_daily_briefing"
     private const val KEY_NOTIFY_WORD = "notify_word"
     private const val KEY_NOTIFY_EXAM = "notify_exam"
+    private const val KEY_RECENT_ARTICLES = "recent_articles"
 
     private fun preferences(context: Context) =
         context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -64,6 +65,20 @@ object LocalLearningStore {
         val articles = preferences(context).getStringSet(KEY_SAVED_ARTICLES, emptySet()).orEmpty().toMutableSet()
         if (saved) articles.add(articleId) else articles.remove(articleId)
         preferences(context).edit().putStringSet(KEY_SAVED_ARTICLES, articles).apply()
+    }
+
+    fun getRecentArticles(context: Context): List<String> =
+        preferences(context).getStringSet(KEY_RECENT_ARTICLES, emptySet()).orEmpty().toList()
+
+    fun recordArticleRead(context: Context, articleId: String) {
+        val articles = preferences(context).getStringSet(KEY_RECENT_ARTICLES, emptySet()).orEmpty().toMutableSet()
+        articles.remove(articleId)
+        articles.add(articleId)
+        preferences(context).edit().putStringSet(KEY_RECENT_ARTICLES, articles).apply()
+    }
+
+    fun clearReadingHistory(context: Context) {
+        preferences(context).edit().remove(KEY_RECENT_ARTICLES).apply()
     }
 
     fun getReadingFontSize(context: Context): Float =
