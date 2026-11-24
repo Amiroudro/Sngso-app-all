@@ -800,11 +800,11 @@ internal fun Summary(nav: NavHostController) {
         if (recent.isEmpty()) {
             Panel { Text("এখনো কোনো পড়ার ইতিহাস নেই", fontWeight = FontWeight.Bold); Text("কোনো নিবন্ধ খুললে সেটি এখানে দেখা যাবে।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
         } else {
-            recent.asReversed().forEach { id ->
+            recent.forEach { id ->
                 Panel {
                     Kicker("সম্প্রতি পড়া • নমুনা")
                     Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
-                    TextButton(onClick = { /* navigation is available from the library tab */ }) { Text("পড়া হয়েছে") }
+                    TextButton(onClick = { /* this screen is a history view; article routing is added with multi-article content */ }) { Text("সম্প্রতি খোলা") }
                 }
             }
             TextButton(onClick = { LocalLearningStore.clearReadingHistory(context); recent.clear() }) { Text("পড়ার ইতিহাস মুছুন") }
