@@ -89,6 +89,20 @@ class LocalLearningStoreTest {
     }
 
     @Test
+    fun recentReadingHistoryCanBeRecordedAndCleared() {
+        LocalLearningStore.recordArticleRead(context, "story-one")
+        LocalLearningStore.recordArticleRead(context, "story-two")
+        LocalLearningStore.recordArticleRead(context, "story-one")
+
+        assertEquals(2, LocalLearningStore.getRecentArticles(context).size)
+        assertTrue(LocalLearningStore.getRecentArticles(context).containsAll(listOf("story-one", "story-two")))
+
+        LocalLearningStore.clearReadingHistory(context)
+
+        assertTrue(LocalLearningStore.getRecentArticles(context).isEmpty())
+    }
+
+    @Test
     fun completedStudyTasksCanBeAddedAndRemoved() {
         LocalLearningStore.setStudyTaskCompleted(context, "Read today's briefing", true)
         LocalLearningStore.setStudyTaskCompleted(context, "Revise vocabulary", true)
