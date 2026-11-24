@@ -52,6 +52,19 @@ class LocalLearningStoreTest {
     }
 
     @Test
+    fun savedArticlesCanBeAddedReadAndRemoved() {
+        LocalLearningStore.setArticleSaved(context, "sample-story", true)
+
+        assertTrue(LocalLearningStore.isArticleSaved(context, "sample-story"))
+        assertEquals(setOf("sample-story"), LocalLearningStore.getSavedArticles(context))
+
+        LocalLearningStore.setArticleSaved(context, "sample-story", false)
+
+        assertFalse(LocalLearningStore.isArticleSaved(context, "sample-story"))
+        assertEquals(emptySet<String>(), LocalLearningStore.getSavedArticles(context))
+    }
+
+    @Test
     fun completedStudyTasksCanBeAddedAndRemoved() {
         LocalLearningStore.setStudyTaskCompleted(context, "Read today's briefing", true)
         LocalLearningStore.setStudyTaskCompleted(context, "Revise vocabulary", true)
