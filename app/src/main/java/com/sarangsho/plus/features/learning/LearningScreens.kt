@@ -111,7 +111,7 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Column(Modifier.weight(1f).clickable { nav.navigate("library") }, verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Column(Modifier.weight(1f).clickable { nav.navigate("saved") }, verticalArrangement = Arrangement.spacedBy(3.dp)) {
                     Text(savedWordCount.toString(), fontSize = 23.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                     Text("সংরক্ষিত শব্দ", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
