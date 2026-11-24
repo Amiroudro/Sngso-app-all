@@ -814,9 +814,37 @@ internal fun Summary(nav: NavHostController) {
 }
 
 @Composable internal fun SavedCollections() {
+    val context = LocalContext.current
+    val articles = remember { mutableStateListOf<String>().apply { addAll(LocalLearningStore.getSavedArticles(context).sorted()) } }
+    val words = remember { mutableStateListOf<String>().apply { addAll(LocalLearningStore.getBookmarkedWords(context).sorted()) } }
     Scroll {
-        Intro("সংরক্ষিত সংগ্রহ", "সংবাদ, শব্দ ও প্রশ্ন নিজের মতো গুছিয়ে রাখুন।")
-        Panel { Text("কোনো সংগ্রহ তৈরি হয়নি", fontWeight = FontWeight.Bold); Text("সংগ্রহ ও ফোল্ডার তৈরি করার সুবিধা স্থানীয় ডেটাবেস যুক্ত হলে চালু হবে।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        Intro("সংরক্ষিত সংগ্রহ", "সংবাদ ও শব্দের বুকমার্ক এখানে একসঙ্গে গুছিয়ে রাখা হয়েছে।")
+        Text("সংরক্ষিত নিবন্ধ • ${articles.size}", fontWeight = FontWeight.Bold, fontSize = 17.sp)
+        if (articles.isEmpty()) Panel { Text("কোনো নিবন্ধ সংরক্ষিত নেই", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        articles.forEach { id ->
+            Panel {
+                Kicker("নিবন্ধ • নমুনা")
+                Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
+                TextButton(onClick = {
+                    LocalLearningStore.setArticleSaved(context, id, false)
+                    articles.remove(id)
+                }) { Text("সংরক্ষণ সরান") }
+            }
+        }
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        Text("বুকমার্ক করা শব্দ • ${words.size}", fontWeight = FontWeight.Bold, fontSize = 17.sp)
+        if (words.isEmpty()) Panel { Text("কোনো শব্দ বুকমার্ক করা নেই", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        words.forEach { word ->
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text(word, Modifier.weight(1f), fontWeight = FontWeight.SemiBold)
+                TextButton(onClick = {
+                    LocalLearningStore.setWordBookmarked(context, word, false)
+                    words.remove(word)
+                }) { Text("সরান") }
+            }
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        }
+        Text("সংগ্রহগুলো এই ডিভাইসে সংরক্ষিত। কাস্টম ফোল্ডার ও ক্লাউড সিঙ্ক এখনো যুক্ত হয়নি।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
     }
 }
 
