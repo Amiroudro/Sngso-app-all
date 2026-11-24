@@ -145,13 +145,30 @@ import androidx.compose.ui.platform.LocalContext
 }
 
 @Composable internal fun Feedback() {
-    var message by rememberSaveable { mutableStateOf("") }; var category by rememberSaveable { mutableStateOf("সাধারণ মতামত") }
+    val context = LocalContext.current
+    var message by rememberSaveable { mutableStateOf(LocalLearningStore.getFeedbackDraft(context)) }
+    var category by rememberSaveable { mutableStateOf("সাধারণ মতামত") }
+    var saved by rememberSaveable { mutableStateOf(false) }
     Scroll {
         Intro("আপনার মতামত", "কোন জায়গাটি কাজ করছে না বা কী উন্নত করা দরকার, লিখে জানান।")
-        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { listOf("সাধারণ মতামত", "সমস্যা", "ভুল তথ্য").forEach { FilterChip(selected = category == it, onClick = { category = it }, label = { Text(it) }) } }
-        OutlinedTextField(message, { message = it }, Modifier.fillMaxWidth().height(180.dp), label = { Text("বিস্তারিত লিখুন") }, placeholder = { Text("কী ঘটেছে, কোন স্ক্রিনে, কী আশা করেছিলেন...") })
-        Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text("পাঠানো শিগগিরই চালু হবে") }
-        Text("মতামত পাঠানোর সার্ভিস এখনো সংযুক্ত নয়; এই খসড়া কোথাও পাঠানো হবে না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { listOf("সাধারণ মতামত", "সমস্যা", "ভুল তথ্য").forEach { FilterChip(selected = category == it, onClick = { category = it; saved = false }, label = { Text(it) }) } }
+        OutlinedTextField(
+            value = message,
+            onValueChange = { message = it; saved = false },
+            modifier = Modifier.fillMaxWidth().height(180.dp),
+            label = { Text("বিস্তারিত লিখুন") },
+            placeholder = { Text("কী ঘটেছে, কোন স্ক্রিনে, কী আশা করেছিলেন...") }
+        )
+        Button(
+            onClick = {
+                LocalLearningStore.setFeedbackDraft(context, "[$category] $message")
+                saved = true
+            },
+            enabled = message.isNotBlank(),
+            modifier = Modifier.fillMaxWidth()
+        ) { Text("খসড়া এই ডিভাইসে সংরক্ষণ করুন") }
+        if (saved) Text("খসড়া সংরক্ষিত হয়েছে। এটি সার্ভারে পাঠানো হয়নি।", color = MaterialTheme.colorScheme.primary, fontSize = 12.sp)
+        else Text("মতামত পাঠানোর সার্ভিস এখনো সংযুক্ত নয়। আপনার লেখা শুধু সংরক্ষণ করলে এই ডিভাইসে থাকবে।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
     }
 }
 
