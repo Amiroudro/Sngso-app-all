@@ -4,7 +4,7 @@ This is a product inventory, not a target screen count. The current prototype ex
 
 ## Primary navigation
 
-The app keeps five top-level destinations, matching the most frequent jobs:
+The app keeps four top-level destinations, matching the most frequent jobs:
 
 1. **Today** — today's edition, reading continuation and the next useful learning action.
 2. **Learn** — vocabulary, exam practice, written practice, revision and study planning.
@@ -12,6 +12,13 @@ The app keeps five top-level destinations, matching the most frequent jobs:
 4. **Explore** — news feed, topics, publications and search.
 
 Profile, notifications and settings are reached from the top bar.
+
+## First-run preference behavior
+
+- The learning goal and selected topic interests are stored on-device using the local learning preference store.
+- Returning to onboarding preselects the saved values; completing the flow returns to Today and the briefing surfaces the chosen goal and topics.
+- These preferences are device-local. They are not attached to an account or synchronized.
+- The prototype does not yet use these preferences to filter live editorial content.
 
 ## Screen families
 
