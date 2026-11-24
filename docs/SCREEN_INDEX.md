@@ -11,7 +11,7 @@ Current prototype route inventory: **48 destinations**. This count is descriptiv
 | 5 | signup | Create account | Account |
 | 6 | password-reset | Password recovery | Account |
 | 7 | home | Daily briefing | Read |
-| 9 | learn | Learn hub | Learn |
+| 8 | learn | Learn hub | Learn |
 | 9 | archive | Edition archive | Read |
 | 10 | edition | Edition overview | Read |
 | 11 | feed | Discover / news feed | Discover |
