@@ -666,7 +666,7 @@ internal fun Summary(nav: NavHostController) {
         )
         if (filter != "শব্দ") {
             Text("সংরক্ষিত নিবন্ধ • ${visibleArticles.size}", fontWeight = FontWeight.Bold, fontSize = 17.sp)
-            if (visibleArticles.isEmpty() && (filter == "নিবন্ধ" || normalizedQuery.isNotBlank())) {
+            if (visibleArticles.isEmpty() && normalizedQuery.isBlank() && savedArticles.isEmpty() && (filter == "নিবন্ধ" || bookmarkedWords.isEmpty())) {
                 Panel {
                     Text(if (savedArticles.isEmpty()) "এখনো কোনো নিবন্ধ সংরক্ষণ করা হয়নি" else "এই অনুসন্ধানে কোনো নিবন্ধ পাওয়া যায়নি", fontWeight = FontWeight.SemiBold)
                     Text("নিবন্ধের বুকমার্ক আইকন ব্যবহার করে পরে পড়ার জন্য সংরক্ষণ করুন.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
@@ -689,7 +689,7 @@ internal fun Summary(nav: NavHostController) {
         if (filter != "নিবন্ধ") {
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             Text("সংরক্ষিত শব্দ • ${visibleWords.size}", fontWeight = FontWeight.Bold, fontSize = 17.sp)
-            if (visibleWords.isEmpty() && (filter == "শব্দ" || normalizedQuery.isNotBlank())) {
+            if (visibleWords.isEmpty() && normalizedQuery.isBlank() && bookmarkedWords.isEmpty() && (filter == "শব্দ" || savedArticles.isEmpty())) {
                 Panel {
                     Text(if (bookmarkedWords.isEmpty()) "এখনো কোনো শব্দ বুকমার্ক করা হয়নি" else "এই অনুসন্ধানে কোনো শব্দ পাওয়া যায়নি", fontWeight = FontWeight.SemiBold)
                     Text("Vocabulary Lab-এ গিয়ে কোনো শব্দ বুকমার্ক করলে সেটি এখানে দেখা যাবে।", color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -710,7 +710,7 @@ internal fun Summary(nav: NavHostController) {
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             }
         }
-        if (savedArticles.isEmpty() && bookmarkedWords.isEmpty()) {
+        if (savedArticles.isEmpty() && bookmarkedWords.isEmpty() && normalizedQuery.isBlank()) {
             Panel {
                 Text("আপনার লাইব্রেরি এখনো খালি", fontWeight = FontWeight.SemiBold)
                 Text("নিবন্ধ ও শব্দ বুকমার্ক করলে সেগুলো এখানে একসঙ্গে পাবেন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
