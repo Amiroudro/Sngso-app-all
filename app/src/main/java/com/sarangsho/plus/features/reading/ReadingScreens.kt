@@ -468,7 +468,7 @@ internal fun Summary(nav: NavHostController) {
         }
         Text("সম্পর্কের ধরন", fontWeight = FontWeight.Bold, fontSize = 17.sp)
         listOf("কারণ ও প্রভাব", "আইনি এখতিয়ার", "সদস্যপদ ও প্রতিষ্ঠান", "সময়গত সম্পর্ক", "নীতি ও বাস্তবায়ন").forEach {
-            RowLink(it, "সম্পর্কের ব্যাখ্যা ও উৎস যুক্ত হলে দেখানো হবে", Icons.Default.Share)
+            RowLink(it, "সম্পর্কের ব্যাখ্যা ও উৎস যুক্ত হলে দেখানো হবে", Icons.Default.Share) { }
         }
     }
 }
@@ -564,7 +564,7 @@ internal fun Summary(nav: NavHostController) {
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             }
         } else {
-            Text("$resultCountটি ফলাফল", fontWeight = FontWeight.Bold, fontSize = 17.sp)
+            Text("$resultCountি ফলাফল", fontWeight = FontWeight.Bold, fontSize = 17.sp)
             if (resultCount == 0) {
                 Panel {
                     Icon(Icons.Default.SearchOff, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
@@ -982,22 +982,6 @@ private fun topicGuide(topic: String): TopicGuide {
         }
     }
 }
-
-@Composable internal fun Notifications() {
-    Scroll {
-        Intro("নোটিফিকেশন", "নতুন সংস্করণ, ডাউনলোড ও রিভিশনের আপডেট এখানে দেখা যাবে।")
-        Panel { Icon(Icons.Default.NotificationsNone, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(30.dp)); Text("এখনো কোনো নোটিফিকেশন নেই", fontWeight = FontWeight.Bold, fontSize = 18.sp); Text("নতুন আপডেট এলে এখানে তারিখ ও প্রয়োজনীয় পদক্ষেপসহ দেখানো হবে।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
-    }
-}
-
-@Composable internal fun About() {
-    Scroll {
-        Intro("Sarangsho Plus", "সংবাদকে বোঝা, শেখা ও মনে রাখার একটি বাংলা-প্রথম প্ল্যাটফর্ম।")
-        Panel { Text("সংস্করণ 0.1.0 • প্রোটোটাইপ", fontWeight = FontWeight.Bold); Text("এই অ্যাপের লক্ষ্য হলো যাচাইকৃত বর্তমান ঘটনাকে প্রেক্ষাপট, ধারণা, তথ্যসূত্র ও পরীক্ষার অনুশীলনের সঙ্গে যুক্ত করা।") }
-        Text("স্বাধীনভাবে যাচাই না করা পর্যন্ত কোনো সংবাদ, সংখ্যা বা উৎসকে লাইভ বলে উপস্থাপন করা হবে না।", color = MaterialTheme.colorScheme.onSurfaceVariant)
-    }
-}
-
 
 @Composable internal fun ReadingHistory(nav: NavHostController) {
     val context = LocalContext.current
