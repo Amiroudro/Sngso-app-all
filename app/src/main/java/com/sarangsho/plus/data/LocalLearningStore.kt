@@ -11,6 +11,7 @@ object LocalLearningStore {
     private const val PREFS_NAME = "sarangsho_learning"
     private const val KEY_BOOKMARKED_WORDS = "bookmarked_words"
     private const val KEY_COMPLETED_STUDY_TASKS = "completed_study_tasks"
+    private const val KEY_WRITING_DRAFT = "writing_draft"
 
     private fun preferences(context: Context) =
         context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -36,5 +37,12 @@ object LocalLearningStore {
         val tasks = prefs.getStringSet(KEY_COMPLETED_STUDY_TASKS, emptySet()).orEmpty().toMutableSet()
         if (completed) tasks.add(task) else tasks.remove(task)
         prefs.edit().putStringSet(KEY_COMPLETED_STUDY_TASKS, tasks).apply()
+    }
+
+    fun getWritingDraft(context: Context): String =
+        preferences(context).getString(KEY_WRITING_DRAFT, "").orEmpty()
+
+    fun setWritingDraft(context: Context, draft: String) {
+        preferences(context).edit().putString(KEY_WRITING_DRAFT, draft).apply()
     }
 }
