@@ -145,6 +145,24 @@ class LocalLearningStoreTest {
     }
 
     @Test
+    fun legacyReadingHistoryStringSetMigratesToOrderedJson() {
+        val prefs = context.getSharedPreferences("sarangsho_learning", 0)
+        prefs.edit()
+            .putStringSet("recent_articles", setOf("story-z", "story-a", "story-m"))
+            .commit()
+
+        assertEquals(
+            listOf("story-a", "story-m", "story-z"),
+            LocalLearningStore.getRecentArticles(context)
+        )
+        assertEquals(
+            """["story-a","story-m","story-z"]""",
+            prefs.getString("recent_articles", null)
+        )
+        assertTrue(prefs.getStringSet("recent_articles", null) == null)
+    }
+
+    @Test
     fun readingHistoryPreservesNewestFirstOrderAndMovesReopenedArticleToTop() {
         LocalLearningStore.recordArticleRead(context, "story-one")
         LocalLearningStore.recordArticleRead(context, "story-two")
