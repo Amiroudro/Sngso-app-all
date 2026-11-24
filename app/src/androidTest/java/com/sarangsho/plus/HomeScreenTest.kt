@@ -129,6 +129,16 @@ class HomeScreenTest {
     }
 
     @Test
+    fun todayBriefingOpensTheEditionArchive() {
+        completeOnboarding()
+
+        composeRule.onNodeWithText("পুরোনো সংস্করণ").assertHasClickAction().performClick()
+        composeRule.onNodeWithText("দৈনিক সংস্করণ").assertIsDisplayed()
+        composeRule.onNodeWithText("গতকালের সংস্করণ").assertHasClickAction().performClick()
+        composeRule.onNodeWithText("দৈনিক ব্রিফিং").assertIsDisplayed()
+    }
+
+    @Test
     fun settingsExposeLanguageSelectionAndPersistIt() {
         completeOnboarding()
 
