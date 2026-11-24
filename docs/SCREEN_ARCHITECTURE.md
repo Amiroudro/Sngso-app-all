@@ -6,11 +6,12 @@ This is a product inventory, not a target screen count. The current prototype ex
 
 The app keeps five top-level destinations, matching the most frequent jobs:
 
-1. **Home** — today's edition, reading continuation, study plan and key learning shortcuts.
-2. **Discover** — news feed, topics, publications and search.
-3. **Practice** — BCS/Bank question sets, timed sessions, written practice and results.
-4. **Saved** — saved stories, vocabulary, revision cards and downloaded editions.
-5. **Profile** — learning preferences, progress, notifications, settings and help.
+1. **Today** — today's edition, reading continuation and the next useful learning action.
+2. **Learn** — vocabulary, exam practice, written practice, revision and study planning.
+3. **Library** — saved stories, vocabulary, revision cards and downloaded editions.
+4. **Explore** — news feed, topics, publications and search.
+
+Profile, notifications and settings are reached from the top bar.
 
 ## Screen families
 
