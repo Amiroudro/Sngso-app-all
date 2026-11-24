@@ -77,6 +77,15 @@ private val vocabularyEntries = listOf(
     )
 )
 
+internal fun searchVocabulary(query: String): List<Pair<String, String>> {
+    if (query.isBlank()) return emptyList()
+    return vocabularyEntries.filter { entry ->
+        entry.term.contains(query, ignoreCase = true) ||
+            entry.banglaMeaning.contains(query, ignoreCase = true) ||
+            entry.definition.contains(query, ignoreCase = true)
+    }.map { it.term to it.banglaMeaning }
+}
+
 @Composable internal fun LearningHub(nav: NavHostController) {
     Scroll {
         Intro("শিখুন", "সংবাদ থেকে পাওয়া জ্ঞানকে শব্দভান্ডার, অনুশীলন ও রিভিশনের মাধ্যমে স্থায়ী করুন।")
