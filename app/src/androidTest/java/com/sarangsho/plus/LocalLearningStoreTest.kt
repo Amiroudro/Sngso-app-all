@@ -41,6 +41,15 @@ class LocalLearningStoreTest {
     }
 
     @Test
+    fun feedbackDraftPersistsAndCanBeReplaced() {
+        LocalLearningStore.setFeedbackDraft(context, "[সমস্যা] নিবন্ধ খুলছে না")
+        assertEquals("[সমস্যা] নিবন্ধ খুলছে না", LocalLearningStore.getFeedbackDraft(context))
+
+        LocalLearningStore.setFeedbackDraft(context, "[ভুল তথ্য] তারিখটি ভুল")
+        assertEquals("[ভুল তথ্য] তারিখটি ভুল", LocalLearningStore.getFeedbackDraft(context))
+    }
+
+    @Test
     fun writingDraftCanBeSavedReadAndCleared() {
         LocalLearningStore.setWritingDraft(context, "বাংলাদেশের জলবায়ু ঝুঁকি")
 
