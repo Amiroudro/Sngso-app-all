@@ -24,6 +24,8 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 import com.sarangsho.plus.data.LocalLearningStore
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 
 
 @Composable internal fun Settings(nav: NavHostController) {
@@ -48,18 +50,18 @@ import androidx.compose.ui.platform.testTag
         Intro("পড়ার পছন্দ", "দীর্ঘ লেখা আরাম করে পড়ার জন্য নিজের মতো সাজান।")
         Panel {
             Text("লেখার আকার: ${fontSize.toInt()} sp", fontWeight = FontWeight.SemiBold)
-            Slider(value = fontSize, modifier = Modifier.testTag("reader-font-size-slider"), onValueChange = {
+            Slider(value = fontSize, modifier = Modifier.testTag("reader-font-size-slider").semantics { contentDescription = "লেখার আকার" }, onValueChange = {
                 fontSize = it
                 LocalLearningStore.setReadingFontSize(context, it)
             }, valueRange = 16f..26f)
             Text("লাইন স্পেসিং: " + "%.1f".format(lineSpacing), fontWeight = FontWeight.SemiBold)
-            Slider(value = lineSpacing, modifier = Modifier.testTag("reader-line-spacing-slider"), onValueChange = {
+            Slider(value = lineSpacing, modifier = Modifier.testTag("reader-line-spacing-slider").semantics { contentDescription = "লাইন স্পেসিং" }, onValueChange = {
                 lineSpacing = it
                 LocalLearningStore.setReadingLineSpacing(context, it)
             }, valueRange = 1.2f..2.0f)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("উষ্ণ কাগজের নমুনা", Modifier.weight(1f))
-                Switch(checked = sepia, modifier = Modifier.testTag("reader-sepia-switch"), onCheckedChange = {
+                Switch(checked = sepia, modifier = Modifier.testTag("reader-sepia-switch").semantics { contentDescription = "উষ্ণ কাগজের নমুনা" }, onCheckedChange = {
                     sepia = it
                     LocalLearningStore.setReadingSepia(context, it)
                 })
@@ -68,7 +70,7 @@ import androidx.compose.ui.platform.testTag
         Surface(color = if (sepia) SarangshoPalette.Paper else MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(12.dp), border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline), modifier = Modifier.fillMaxWidth()) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("নমুনা পাঠ", fontSize = fontSize.sp, lineHeight = (fontSize * lineSpacing).sp, color = if (sepia) SarangshoPalette.Ink else MaterialTheme.colorScheme.onSurface)
-                Text("বাংলা ও ইংরেজি একসঙ্গে পড়ার সময় অক্ষরের গঠন এবং লাইনের ফাঁক যেন পরিষ্কার থাকে।", fontSize = fontSize.sp, lineHeight = (fontSize * lineSpacing).sp, color = SarangshoPalette.Ink)
+                Text("বাংলা ও ইংরেজি একসঙ্গে পড়ার সময় অক্ষরের গঠন এবং লাইনের ফাঁক যেন পরিষ্কার থাকে।", fontSize = fontSize.sp, lineHeight = (fontSize * lineSpacing).sp, color = if (sepia) SarangshoPalette.Ink else MaterialTheme.colorScheme.onSurface)
             }
         }
         Text("এই পছন্দগুলো এই ডিভাইসে সংরক্ষিত থাকে এবং নমুনা নিবন্ধ ও তিন-স্তরের সারাংশে প্রয়োগ হয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
