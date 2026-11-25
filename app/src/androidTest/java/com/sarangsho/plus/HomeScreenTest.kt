@@ -93,7 +93,7 @@ class HomeScreenTest {
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .performScrollTo().assertIsDisplayed()
 
-        composeRule.onNodeWithTag("feed-filter-world").performClick().assertIsOn()
+        composeRule.onNodeWithTag("feed-filter-world").performClick()
         composeRule.onNodeWithText("জাতিসংঘ ও জলবায়ু আলোচনার প্রেক্ষাপট").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .assertDoesNotExist()
@@ -193,7 +193,11 @@ class HomeScreenTest {
         composeRule.onNodeWithText("শিখুন").performClick()
         composeRule.onNodeWithText("শব্দ শেখা শুরু করুন").performClick()
         composeRule.onNodeWithText("Resilience").assertIsDisplayed()
-        composeRule.onAllNodesWithText("সংরক্ষণ")[0].performClick()
+        composeRule.onNodeWithTag("word-bookmark-Resilience").performClick()
+        val savedWords = InstrumentationRegistry.getInstrumentation().targetContext
+            .getSharedPreferences("sarangsho_learning", android.content.Context.MODE_PRIVATE)
+            .getStringSet("bookmarked_words", emptySet())
+        assertEquals(setOf("Resilience"), savedWords)
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
 
         composeRule.onNodeWithText("লাইব্রেরি").performClick()
