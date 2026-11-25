@@ -237,7 +237,7 @@ import androidx.compose.ui.semantics.semantics
         OutlinedTextField(
             details,
             { details = it; saved = false },
-            Modifier.fillMaxWidth().height(180.dp),
+            Modifier.fillMaxWidth().height(180.dp).testTag("report-story-details"),
             label = { Text("কী ভুল হয়েছে?") },
             placeholder = { Text("দাবি, সংশোধনের প্রস্তাব এবং প্রাসঙ্গিক উৎসের লিংক লিখুন।") }
         )
