@@ -203,13 +203,13 @@ class HomeScreenTest {
         composeRule.onNodeWithText("লাইব্রেরি").performClick()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .assertIsDisplayed()
-        composeRule.onNodeWithText("Resilience").assertIsDisplayed()
+        composeRule.onNodeWithText("Resilience").performScrollTo().assertIsDisplayed()
 
         composeRule.onNodeWithText("পড়ুন").performClick()
         composeRule.onNodeWithText("উৎস যাচাইয়ের অবস্থা").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
 
-        composeRule.onNodeWithText("খুলুন").performClick()
+        composeRule.onNodeWithText("খুলুন").performScrollTo().performClick()
         composeRule.onNodeWithText("শব্দের বিস্তারিত").assertIsDisplayed()
         composeRule.onNodeWithText("Resilience").assertIsDisplayed()
         composeRule.onNodeWithText("সংরক্ষিত").performClick()
