@@ -2,15 +2,14 @@ package com.sarangsho.plus
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertHasClickAction
-import androidx.compose.ui.test.onAllNodes
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextClearance
-import androidx.compose.ui.test.hasSetProgressAction
 import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.test.platform.app.InstrumentationRegistry
@@ -165,7 +164,7 @@ class HomeScreenTest {
         composeRule.onNodeWithText("পড়ার পছন্দ").performClick()
         composeRule.onNodeWithText("লেখার আকার: 18 sp").assertIsDisplayed()
 
-        composeRule.onAllNodes(hasSetProgressAction())[0]
+        composeRule.onNodeWithTag("reader-font-size-slider")
             .performSemanticsAction(SemanticsActions.SetProgress) { setProgress -> setProgress(22f) }
 
         val preferences = InstrumentationRegistry.getInstrumentation().targetContext
