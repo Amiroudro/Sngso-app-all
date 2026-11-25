@@ -226,7 +226,7 @@ class LocalLearningStoreTest {
     @Test
     fun oversizedStoredPracticeHistoryIsCappedWhenLoaded() {
         val prefs = context.getSharedPreferences("sarangsho_learning", 0)
-        val stored = (1..105).joinToString(",", "[", "]") {
+        val stored = (105 downTo 1).joinToString(",", "[", "]") {
             """{"correct":1,"total":2,"timestamp":$it}"""
         }
         prefs.edit().putString("practice_history", stored).commit()
