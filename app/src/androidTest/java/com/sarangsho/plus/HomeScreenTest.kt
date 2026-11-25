@@ -1,6 +1,7 @@
 package com.sarangsho.plus
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.assertHasClickAction
@@ -93,7 +94,8 @@ class HomeScreenTest {
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .performScrollTo().assertIsDisplayed()
 
-        composeRule.onNodeWithTag("feed-filter-world").performClick()
+        composeRule.onNodeWithTag("feed-filter-world").performClick().assertIsSelected()
+        composeRule.waitForIdle()
         composeRule.onNodeWithText("জাতিসংঘ ও জলবায়ু আলোচনার প্রেক্ষাপট").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .assertDoesNotExist()
@@ -210,7 +212,8 @@ class HomeScreenTest {
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
 
         composeRule.onNodeWithText("খুলুন").performScrollTo().performClick()
-        composeRule.onNodeWithText("শব্দের বিস্তারিত").assertIsDisplayed()
+        composeRule.onNodeWithText("Definition: The ability to recover or adapt after difficulty.")
+            .assertIsDisplayed()
         composeRule.onNodeWithText("Resilience").assertIsDisplayed()
         composeRule.onNodeWithText("সংরক্ষিত").performClick()
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
