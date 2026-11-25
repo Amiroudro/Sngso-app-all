@@ -193,6 +193,9 @@ class HomeScreenTest {
         composeRule.onNodeWithText("সংরক্ষিত").assertIsDisplayed()
 
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
+        // Returning from Word Detail must refresh the Vocabulary list from local persistence.
+        composeRule.onNodeWithText("সংরক্ষিত").assertIsDisplayed()
+
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
         composeRule.onNodeWithText("লাইব্রেরি").performClick()
         composeRule.onNodeWithText("সংরক্ষিত শব্দ • 1").assertIsDisplayed()
