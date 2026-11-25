@@ -9,7 +9,7 @@
 - Shared screen components are separated from reading, learning and settings feature files.
 - Semantic light and dark color schemes are centralized.
 - Search and category filters work against explicitly labelled local sample stories.
-- Compose instrumentation tests cover onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, the Learn-hub activity shortcuts, language settings persistence, the quiz-to-history journey, reader font preference persistence through Article settings, and local learning-store persistence. Their APK compiles in CI, but the instrumentation tests have not been executed on an emulator.
+- Compose instrumentation tests cover onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, the Learn-hub activity shortcuts, language settings persistence, the quiz-to-history journey, reader font, line-spacing and sepia preference persistence through Article settings, and local learning-store persistence. Their APK compiles in CI, but the instrumentation tests have not been executed on an emulator.
 - The routine pull-request workflow is configured to compile and package the instrumentation test APK using `:app:assembleDebugAndroidTest`. This checks that test sources compile; it does not execute the instrumentation tests.
 - Emulator instrumentation is gated to the PR's ready-for-review event after the routine build job succeeds, with manual dispatch retained for use after the workflow reaches the default branch.
 - Vocabulary Lab has a searchable five-entry sample word list with per-word bookmark controls; search matches the term, part of speech, pronunciation, Bengali meaning, definition, synonyms, antonym and example, trims surrounding whitespace, and supports bookmarking from the selected-word detail screen. Saved words and articles, reader and language preferences, onboarding choices, notification preferences, writing and feedback drafts, reading history, practice history, and the study checklist are stored locally with Android SharedPreferences. The study checklist resets by local calendar date. These features are device-only and do not sync.
@@ -69,11 +69,11 @@ This checks string consistency only. It does not prove that every screen renders
 
 ## Test coverage inventory (updated 2026-11-25)
 
-A source review of the test files found 33 authored Android instrumentation test methods:
+A source review of the test files found 34 authored Android instrumentation test methods:
 
 | Test file | Test methods | What they cover |
 |---|---:|---|
-| `HomeScreenTest.kt` | 15 | Welcome, onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, accessible Learn-hub shortcuts, language settings navigation/persistence, Today-to-archive navigation, selected-word detail navigation, bookmarking from Word Detail with list refresh on return, opening a saved word from Library, profile self-navigation prevention, whitespace-trimmed synonym and example-sentence search, reader font preference persistence through Article settings, and the sample quiz-to-history journey |
+| `HomeScreenTest.kt` | 16 | Welcome, onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, accessible Learn-hub shortcuts, language settings navigation/persistence, Today-to-archive navigation, selected-word detail navigation, bookmarking from Word Detail with list refresh on return, opening a saved word from Library, profile self-navigation prevention, whitespace-trimmed synonym and example-sentence search, reader font preference persistence, line-spacing and sepia preference persistence through Article settings, and the sample quiz-to-history journey |
 | `LocalLearningStoreTest.kt` | 18 | Topic, vocabulary search, bookmarks, drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration/bounds, practice-history validation/bounds, and daily study-task persistence/reset |
 
 Coverage limits:
