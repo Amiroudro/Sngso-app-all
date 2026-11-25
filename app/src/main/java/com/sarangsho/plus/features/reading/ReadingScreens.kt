@@ -1113,10 +1113,27 @@ private fun topicGuide(topic: String): TopicGuide {
     }
 }
 
-@Composable internal fun SavedCollections() {
+@Composable internal fun SavedCollections(nav: NavHostController) {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val articles = remember { mutableStateListOf<String>().apply { addAll(LocalLearningStore.getSavedArticles(context).sorted()) } }
     val words = remember { mutableStateListOf<String>().apply { addAll(LocalLearningStore.getBookmarkedWords(context).sorted()) } }
+
+    // This destination can remain on the back stack while bookmarks change elsewhere.
+    // Refresh on return so the collection never presents a stale snapshot.
+    DisposableEffect(lifecycleOwner, context) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                articles.clear()
+                articles.addAll(LocalLearningStore.getSavedArticles(context).sorted())
+                words.clear()
+                words.addAll(LocalLearningStore.getBookmarkedWords(context).sorted())
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
     Scroll {
         Intro("সংরক্ষিত সংগ্রহ", "সংবাদ ও শব্দের বুকমার্ক এখানে একসঙ্গে গুছিয়ে রাখা হয়েছে।")
         Text("সংরক্ষিত নিবন্ধ • ${articles.size}", fontWeight = FontWeight.Bold, fontSize = 17.sp)
@@ -1125,10 +1142,17 @@ private fun topicGuide(topic: String): TopicGuide {
             Panel {
                 Kicker("নিবন্ধ • নমুনা")
                 Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
-                TextButton(onClick = {
-                    LocalLearningStore.setArticleSaved(context, id, false)
-                    articles.remove(id)
-                }) { Text("সংরক্ষণ সরান") }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (id == "sample-international-justice") {
+                        TextButton(onClick = { nav.navigate("article") }) { Text("নিবন্ধটি খুলুন") }
+                    } else {
+                        Text("এই নিবন্ধের বিস্তারিত এখনো উপলভ্য নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                    }
+                    TextButton(onClick = {
+                        LocalLearningStore.setArticleSaved(context, id, false)
+                        articles.remove(id)
+                    }) { Text("সংরক্ষণ সরান") }
+                }
             }
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -1138,12 +1162,17 @@ private fun topicGuide(topic: String): TopicGuide {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Text(word, Modifier.weight(1f), fontWeight = FontWeight.SemiBold)
                 TextButton(onClick = {
+                    nav.currentBackStackEntry?.savedStateHandle?.set("selected_word", word)
+                    nav.navigate("word-detail")
+                }) { Text("শব্দটি খুলুন") }
+                TextButton(onClick = {
                     LocalLearningStore.setWordBookmarked(context, word, false)
                     words.remove(word)
                 }) { Text("সরান") }
             }
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         }
+        TextButton(onClick = { nav.navigate("vocabulary") }) { Text("Vocabulary Lab খুলুন") }
         Text("সংগ্রহগুলো এই ডিভাইসে সংরক্ষিত। কাস্টম ফোল্ডার ও ক্লাউড সিঙ্ক এখনো যুক্ত হয়নি।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
     }
 }
