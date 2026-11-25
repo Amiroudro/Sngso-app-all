@@ -61,20 +61,20 @@ class HomeScreenTest {
         composeRule.onNodeWithText("এক্সপ্লোর").performClick()
         composeRule.onNodeWithText("সকল সংবাদ").assertIsDisplayed()
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
-            .assertIsDisplayed()
+            .performScrollTo().assertIsDisplayed()
 
         composeRule.onAllNodesWithText("বিশ্ব")[0].performClick()
-        composeRule.onNodeWithText("জাতিসংঘ ও জলবায়ু আলোচনার প্রেক্ষাপট").assertIsDisplayed()
+        composeRule.onNodeWithText("জাতিসংঘ ও জলবায়ু আলোচনার প্রেক্ষাপট").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .assertDoesNotExist()
 
         composeRule.onAllNodesWithText("সব")[0].performClick()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
-            .assertIsDisplayed()
+            .performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("বিস্তারিত পড়ুন").performScrollTo().performClick()
         composeRule.onNodeWithText("উৎস যাচাইয়ের অবস্থা").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
-            .assertIsDisplayed()
+            .performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
 
         composeRule.onAllNodesWithText("অর্থনীতি")[0].performClick()
@@ -94,7 +94,7 @@ class HomeScreenTest {
         composeRule.onNodeWithText("এখনো কোনো নিবন্ধ সংরক্ষণ করা হয়নি").assertDoesNotExist()
         composeRule.onNodeWithText("এখনো কোনো শব্দ বুকমার্ক করা হয়নি").assertDoesNotExist()
 
-        composeRule.onNodeWithText("নিবন্ধ বা শব্দ লিখুন").performTextInput("no-such-saved-item")
+        composeRule.onNodeWithText("নিবন্ধ বা শব্দ লিখুন").performScrollTo().performTextInput("no-such-saved-item")
         composeRule.onNodeWithText("কোনো সংরক্ষিত বিষয় মেলেনি").assertIsDisplayed()
         composeRule.onNodeWithText("আপনার লাইব্রেরি এখনো খালি").assertDoesNotExist()
     }
@@ -104,7 +104,7 @@ class HomeScreenTest {
 
         composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performScrollTo().performClick()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
-            .assertIsDisplayed()
+            .performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithContentDescription("সংরক্ষণ করুন").performClick()
         composeRule.onNodeWithContentDescription("সংরক্ষিত").assertIsDisplayed()
 
@@ -112,7 +112,7 @@ class HomeScreenTest {
         composeRule.onNodeWithText("লাইব্রেরি").performClick()
         composeRule.onNodeWithText("সংরক্ষিত নিবন্ধ • 1").assertIsDisplayed()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
-            .assertIsDisplayed()
+            .performScrollTo().assertIsDisplayed()
     }
 
     @Test
@@ -156,7 +156,7 @@ class HomeScreenTest {
     fun savedCollectionsOpenSavedArticlesAndBookmarkedWords() {
         completeOnboarding()
 
-        composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performClick()
+        composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performScrollTo().performClick()
         composeRule.onNodeWithContentDescription("সংরক্ষণ করুন").performClick()
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
 
@@ -169,12 +169,12 @@ class HomeScreenTest {
         composeRule.onNodeWithText("লাইব্রেরি").performClick()
         composeRule.onNodeWithText("সংরক্ষিত সংগ্রহ").performClick()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
-            .assertIsDisplayed()
+            .performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("Resilience").assertIsDisplayed()
 
         composeRule.onNodeWithText("নিবন্ধটি খুলুন").performClick()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
-            .assertIsDisplayed()
+            .performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
 
         composeRule.onNodeWithText("শব্দটি খুলুন").performClick()
@@ -211,7 +211,7 @@ class HomeScreenTest {
 
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
         composeRule.onNodeWithText("অনুশীলন সেশন").assertHasClickAction().performClick()
-        composeRule.onNodeWithText("অনুশীলনের ইতিহাস").assertIsDisplayed()
+        composeRule.onAllNodesWithText("অনুশীলনের ইতিহাস")[0].assertIsDisplayed()
         composeRule.onNodeWithText("এখনো কোনো সেশন সংরক্ষিত নেই").assertIsDisplayed()
 
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
@@ -249,8 +249,8 @@ class HomeScreenTest {
     fun readerFontPreferenceCanBeChangedAndPersistsWhenReturningToArticle() {
         completeOnboarding()
 
-        composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performClick()
-        composeRule.onNodeWithText("পড়ার পছন্দ").performClick()
+        composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performScrollTo().performClick()
+        composeRule.onNodeWithText("পড়ার পছন্দ").performScrollTo().performClick()
         composeRule.onNodeWithText("লেখার আকার: 18 sp").assertIsDisplayed()
 
         composeRule.onNodeWithTag("reader-font-size-slider")
@@ -263,8 +263,8 @@ class HomeScreenTest {
 
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
-            .assertIsDisplayed()
-        composeRule.onNodeWithText("পড়ার পছন্দ").performClick()
+            .performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText("পড়ার পছন্দ").performScrollTo().performClick()
         composeRule.onNodeWithText("লেখার আকার: 22 sp").assertIsDisplayed()
     }
 
@@ -272,8 +272,8 @@ class HomeScreenTest {
     fun readerLineSpacingAndSepiaPreferencesPersistWhenReturningToArticle() {
         completeOnboarding()
 
-        composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performClick()
-        composeRule.onNodeWithText("পড়ার পছন্দ").performClick()
+        composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performScrollTo().performClick()
+        composeRule.onNodeWithText("পড়ার পছন্দ").performScrollTo().performClick()
 
         composeRule.onNodeWithTag("reader-line-spacing-slider")
             .performSemanticsAction(SemanticsActions.SetProgress) { setProgress -> setProgress(1.8f) }
@@ -287,8 +287,8 @@ class HomeScreenTest {
 
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
-            .assertIsDisplayed()
-        composeRule.onNodeWithText("পড়ার পছন্দ").performClick()
+            .performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText("পড়ার পছন্দ").performScrollTo().performClick()
         composeRule.onNodeWithText("লাইন স্পেসিং: 1.8").assertIsDisplayed()
         composeRule.onNodeWithTag("reader-sepia-switch").assertIsOn()
 
@@ -383,7 +383,7 @@ class HomeScreenTest {
         composeRule.onNodeWithText("অনুশীলন সেশন").assertIsDisplayed()
 
         composeRule.onNodeWithText("অনুশীলন সাজান").performClick()
-        composeRule.onNodeWithText("নমুনা প্রশ্ন দেখুন").performClick()
+        composeRule.onNodeWithText("নমুনা প্রশ্ন দেখুন").performScrollTo().performClick()
         composeRule.onNodeWithText("বাংলাদেশের সংবিধান কবে গণপরিষদে গৃহীত হয়?")
             .assertIsDisplayed()
         composeRule.onNodeWithText("৪ নভেম্বর ১৯৭২").performClick()
