@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import com.sarangsho.plus.ui.theme.SarangshoPalette
 import com.sarangsho.plus.data.LocalLearningStore
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 
 
 @Composable internal fun Settings(nav: NavHostController) {
@@ -47,7 +48,7 @@ import androidx.compose.ui.platform.LocalContext
         Intro("পড়ার পছন্দ", "দীর্ঘ লেখা আরাম করে পড়ার জন্য নিজের মতো সাজান।")
         Panel {
             Text("লেখার আকার: ${fontSize.toInt()} sp", fontWeight = FontWeight.SemiBold)
-            Slider(value = fontSize, onValueChange = {
+            Slider(value = fontSize, modifier = Modifier.testTag("reader-font-size-slider"), onValueChange = {
                 fontSize = it
                 LocalLearningStore.setReadingFontSize(context, it)
             }, valueRange = 16f..26f)
