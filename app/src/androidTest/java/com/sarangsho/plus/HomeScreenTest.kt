@@ -141,6 +141,15 @@ class HomeScreenTest {
         composeRule.onNodeWithText("শব্দটি খুলুন").performClick()
         composeRule.onNodeWithText("শব্দের বিস্তারিত").assertIsDisplayed()
         composeRule.onNodeWithText("Resilience").assertIsDisplayed()
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+
+        composeRule.onNodeWithText("Vocabulary Lab খুলুন").performClick()
+        composeRule.onNodeWithText("শব্দ, অর্থ, সমার্থক বা উদাহরণ খুঁজুন")
+            .performTextInput("Mitigate")
+        composeRule.onNodeWithText("Mitigate").assertIsDisplayed()
+        composeRule.onNodeWithText("সংরক্ষণ").performClick()
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+        composeRule.onNodeWithText("Mitigate").assertIsDisplayed()
     }
 
     @Test
