@@ -1,6 +1,7 @@
 package com.sarangsho.plus.features.reading
 import com.sarangsho.plus.ui.components.*
 
+import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,6 +35,40 @@ import androidx.navigation.compose.rememberNavController
 import com.sarangsho.plus.ui.theme.SarangshoTheme
 import androidx.navigation.NavHostController
 import com.sarangsho.plus.ui.theme.SarangshoPalette
+
+
+private data class ReaderPreferences(
+    val fontSize: androidx.compose.ui.unit.TextUnit,
+    val lineHeight: androidx.compose.ui.unit.TextUnit,
+    val sepia: Boolean
+)
+
+/** Refresh reader controls when returning from Reading Settings. */
+@Composable
+private fun rememberReaderPreferences(context: Context): ReaderPreferences {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var fontSize by remember(context) { mutableFloatStateOf(LocalLearningStore.getReadingFontSize(context)) }
+    var lineSpacing by remember(context) { mutableFloatStateOf(LocalLearningStore.getReadingLineSpacing(context)) }
+    var sepia by remember(context) { mutableStateOf(LocalLearningStore.isReadingSepia(context)) }
+
+    DisposableEffect(lifecycleOwner, context) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                fontSize = LocalLearningStore.getReadingFontSize(context)
+                lineSpacing = LocalLearningStore.getReadingLineSpacing(context)
+                sepia = LocalLearningStore.isReadingSepia(context)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    return ReaderPreferences(
+        fontSize = fontSize.sp,
+        lineHeight = (fontSize * lineSpacing).sp,
+        sepia = sepia
+    )
+}
 
 
 @Composable internal fun Welcome(nav: NavHostController) {
@@ -282,9 +317,10 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 @Composable internal fun Article(nav: NavHostController) {
     val context = LocalContext.current
     SideEffect { LocalLearningStore.recordArticleRead(context, "sample-international-justice") }
-    val readerFontSize = LocalLearningStore.getReadingFontSize(context).sp
-    val readerLineHeight = (LocalLearningStore.getReadingFontSize(context) * LocalLearningStore.getReadingLineSpacing(context)).sp
-    val sepia = LocalLearningStore.isReadingSepia(context)
+    val readerPreferences = rememberReaderPreferences(context)
+    val readerFontSize = readerPreferences.fontSize
+    val readerLineHeight = readerPreferences.lineHeight
+    val sepia = readerPreferences.sepia
     var saved by rememberSaveable { mutableStateOf(LocalLearningStore.isArticleSaved(context, "sample-international-justice")) }
     Scroll {
         Surface(color = if (sepia) SarangshoPalette.Paper else MaterialTheme.colorScheme.background, shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth()) {
@@ -333,9 +369,10 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 @Composable @OptIn(ExperimentalMaterial3Api::class)
 internal fun Summary(nav: NavHostController) {
     val context = LocalContext.current
-    val readerFontSize = LocalLearningStore.getReadingFontSize(context).sp
-    val readerLineHeight = (LocalLearningStore.getReadingFontSize(context) * LocalLearningStore.getReadingLineSpacing(context)).sp
-    val sepia = LocalLearningStore.isReadingSepia(context)
+    val readerPreferences = rememberReaderPreferences(context)
+    val readerFontSize = readerPreferences.fontSize
+    val readerLineHeight = readerPreferences.lineHeight
+    val sepia = readerPreferences.sepia
     var level by rememberSaveable { mutableIntStateOf(0) }
     val labels = listOf("৩০ সেকেন্ড", "২ মিনিট", "বিস্তারিত")
     val texts = listOf("ঘটনাটির মূল বিষয় এক বাক্যে বুঝুন।", "মূল সিদ্ধান্ত, সংশ্লিষ্ট প্রতিষ্ঠান এবং বাংলাদেশের জন্য সম্ভাব্য তাৎপর্য সংক্ষেপে পড়ুন।", "বিস্তারিত সংস্করণে পটভূমি, প্রক্রিয়া, মূল তথ্য, সংশ্লিষ্ট পক্ষের অবস্থান, অনিশ্চয়তা এবং পরীক্ষায় প্রাসঙ্গিক ধারণা থাকবে।")
