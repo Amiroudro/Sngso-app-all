@@ -65,6 +65,20 @@ class HomeScreenTest {
         composeRule.onNodeWithText("জাতিসংঘ ও জলবায়ু আলোচনার প্রেক্ষাপট").assertIsDisplayed()
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .assertDoesNotExist()
+
+        composeRule.onAllNodesWithText("সব")[0].performClick()
+        composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
+            .assertIsDisplayed()
+        composeRule.onNodeWithText("বিস্তারিত পড়ুন").performClick()
+        composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
+            .assertIsDisplayed()
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+
+        composeRule.onAllNodesWithText("অর্থনীতি")[0].performClick()
+        composeRule.onNodeWithText("এই বিষয়ের পূর্ণ পাঠ ও সারাংশ এখনো যুক্ত হয়নি।")
+            .assertIsDisplayed()
+        composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
+            .assertDoesNotExist()
     }
 
     @Test

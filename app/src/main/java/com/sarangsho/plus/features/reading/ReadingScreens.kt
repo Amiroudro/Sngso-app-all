@@ -37,6 +37,13 @@ import androidx.navigation.NavHostController
 import com.sarangsho.plus.ui.theme.SarangshoPalette
 
 
+private data class FeedStory(
+    val title: String,
+    val category: String,
+    val detail: String,
+    val hasFullArticle: Boolean = false
+)
+
 private data class ReaderPreferences(
     val fontSize: androidx.compose.ui.unit.TextUnit,
     val lineHeight: androidx.compose.ui.unit.TextUnit,
@@ -259,17 +266,18 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
     var filter by rememberSaveable { mutableStateOf("সব") }
     var query by rememberSaveable { mutableStateOf("") }
     val stories = listOf(
-        Triple("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি", "অর্থনীতি", "নমুনা পাঠ • ৬ মিনিট"),
-        Triple("জাতিসংঘ ও জলবায়ু আলোচনার প্রেক্ষাপট", "বিশ্ব", "নমুনা পাঠ • ৫ মিনিট"),
-        Triple("আন্তর্জাতিক আদালতের এখতিয়ার ও বিচারিক প্রক্রিয়া", "আইন ও বিচার", "নমুনা পাঠ • ৭ মিনিট"),
-        Triple("সংবিধান, সংসদ ও রাষ্ট্রীয় প্রতিষ্ঠান", "বাংলাদেশ", "নমুনা পাঠ • ৪ মিনিট")
+        FeedStory("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন", "আন্তর্জাতিক আইন", "নমুনা পাঠ • ৮ মিনিট", hasFullArticle = true),
+        FeedStory("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি", "অর্থনীতি", "নমুনা পাঠ • ৬ মিনিট"),
+        FeedStory("জাতিসংঘ ও জলবায়ু আলোচনার প্রেক্ষাপট", "বিশ্ব", "নমুনা পাঠ • ৫ মিনিট"),
+        FeedStory("আন্তর্জাতিক আদালতের এখতিয়ার ও বিচারিক প্রক্রিয়া", "আইন ও বিচার", "নমুনা পাঠ • ৭ মিনিট"),
+        FeedStory("সংবিধান, সংসদ ও রাষ্ট্রীয় প্রতিষ্ঠান", "বাংলাদেশ", "নমুনা পাঠ • ৪ মিনিট")
     )
     val filtered = stories.filter { story ->
         val categoryMatches = filter == "সব" ||
-            (filter == "বাংলাদেশ" && story.second in listOf("বাংলাদেশ", "অর্থনীতি", "আইন ও বিচার")) ||
-            (filter == "বিশ্ব" && story.second == "বিশ্ব") ||
-            (filter == "অর্থনীতি" && story.second == "অর্থনীতি")
-        val queryMatches = query.isBlank() || story.first.contains(query, ignoreCase = true)
+            (filter == "বাংলাদেশ" && story.category in listOf("বাংলাদেশ", "অর্থনীতি", "আইন ও বিচার")) ||
+            (filter == "বিশ্ব" && story.category == "বিশ্ব") ||
+            (filter == "অর্থনীতি" && story.category == "অর্থনীতি")
+        val queryMatches = query.isBlank() || story.title.contains(query, ignoreCase = true)
         categoryMatches && queryMatches
     }
     Scroll {
@@ -297,15 +305,23 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
                         Surface(color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(8.dp)) {
                             Text("০${index + 1}", Modifier.padding(horizontal = 9.dp, vertical = 7.dp), color = MaterialTheme.colorScheme.onPrimaryContainer, fontWeight = FontWeight.Bold)
                         }
-                        Kicker(story.second)
+                        Kicker(story.category)
                         Spacer(Modifier.weight(1f))
                         AssistChip(onClick = {}, enabled = false, label = { Text("নমুনা", fontSize = 10.sp) })
                     }
-                    Text(story.first, fontSize = 18.sp, fontWeight = FontWeight.Bold, lineHeight = 26.sp)
-                    Text(story.third, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        TextButton(onClick = { nav.navigate("article") }) { Text("বিস্তারিত পড়ুন") }
-                        TextButton(onClick = { nav.navigate("summary") }) { Text("সারাংশ") }
+                    Text(story.title, fontSize = 18.sp, fontWeight = FontWeight.Bold, lineHeight = 26.sp)
+                    Text(story.detail, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                    if (story.hasFullArticle) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            TextButton(onClick = { nav.navigate("article") }) { Text("বিস্তারিত পড়ুন") }
+                            TextButton(onClick = { nav.navigate("summary") }) { Text("সারাংশ") }
+                        }
+                    } else {
+                        Text(
+                            "এই বিষয়ের পূর্ণ পাঠ ও সারাংশ এখনো যুক্ত হয়নি।",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 12.sp
+                        )
                     }
                 }
             }

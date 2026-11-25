@@ -188,6 +188,18 @@ class LocalLearningStoreTest {
     }
 
     @Test
+    fun oversizedStoredReadingHistoryIsCappedWhenLoaded() {
+        val prefs = context.getSharedPreferences("sarangsho_learning", 0)
+        val stored = (0 until 60).joinToString(",", "[", "]") { "\"story-$it\"" }
+        prefs.edit().putString("recent_articles", stored).commit()
+
+        val history = LocalLearningStore.getRecentArticles(context)
+        assertEquals(50, history.size)
+        assertEquals("story-0", history.first())
+        assertEquals("story-49", history.last())
+    }
+
+    @Test
     fun readingHistoryIsBoundedToFiftyUniqueArticles() {
         repeat(60) { index ->
             LocalLearningStore.recordArticleRead(context, "story-$index")
@@ -209,6 +221,20 @@ class LocalLearningStoreTest {
         assertEquals(100, history.size)
         assertEquals(2, history.first().correct)
         assertEquals(5, history.last().correct)
+    }
+
+    @Test
+    fun oversizedStoredPracticeHistoryIsCappedWhenLoaded() {
+        val prefs = context.getSharedPreferences("sarangsho_learning", 0)
+        val stored = (1..105).joinToString(",", "[", "]") {
+            """{"correct":1,"total":2,"timestamp":$it}"""
+        }
+        prefs.edit().putString("practice_history", stored).commit()
+
+        val history = LocalLearningStore.getPracticeHistory(context)
+        assertEquals(100, history.size)
+        assertEquals(105L, history.first().timestamp)
+        assertEquals(6L, history.last().timestamp)
     }
 
     @Test

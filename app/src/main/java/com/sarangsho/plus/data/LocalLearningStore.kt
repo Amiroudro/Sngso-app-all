@@ -135,7 +135,7 @@ object LocalLearningStore {
         return when (val stored = prefs.all[KEY_RECENT_ARTICLES]) {
             is String -> try {
                 val json = JSONArray(stored)
-                (0 until json.length()).mapNotNull { json.optString(it).takeIf(String::isNotBlank) }.distinct()
+                (0 until json.length()).mapNotNull { json.optString(it).takeIf(String::isNotBlank) }.distinct().take(50)
             } catch (_: Exception) { emptyList() }
             // Older builds stored this as a StringSet. Its original order was not retained,
             // but migrate its contents rather than discarding a user's saved history.
@@ -178,7 +178,7 @@ object LocalLearningStore {
                 val correct = item.optInt("correct")
                 val timestamp = item.optLong("timestamp")
                 if (total > 0 && correct in 0..total && timestamp > 0) PracticeAttempt(correct, total, timestamp) else null
-            }
+            }.take(100)
         } catch (_: Exception) { emptyList() }
     }
 
