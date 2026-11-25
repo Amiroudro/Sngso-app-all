@@ -288,4 +288,19 @@ class LocalLearningStoreTest {
         )
     }
 
+    @Test
+    fun reportStoryDraftCanBeSavedReplacedAndCleared() {
+        assertEquals("", LocalLearningStore.getReportStoryDraft(context))
+
+        LocalLearningStore.setReportStoryDraft(context, "ভুল তারিখ, উৎসের লিংকসহ")
+        assertEquals("ভুল তারিখ, উৎসের লিংকসহ", LocalLearningStore.getReportStoryDraft(context))
+
+        LocalLearningStore.setReportStoryDraft(context, "সংশোধিত খসড়া")
+        assertEquals("সংশোধিত খসড়া", LocalLearningStore.getReportStoryDraft(context))
+
+        LocalLearningStore.clearReportStoryDraft(context)
+        assertEquals("", LocalLearningStore.getReportStoryDraft(context))
+    }
+
+
 }

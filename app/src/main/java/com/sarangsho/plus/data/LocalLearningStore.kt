@@ -27,6 +27,7 @@ object LocalLearningStore {
     private const val KEY_RECENT_ARTICLES = "recent_articles"
     private const val KEY_PRACTICE_HISTORY = "practice_history"
     private const val KEY_FEEDBACK_DRAFT = "feedback_draft"
+    private const val KEY_REPORT_STORY_DRAFT = "report_story_draft"
     private const val KEY_ONBOARDING_GOAL = "onboarding_goal"
     private const val KEY_ONBOARDING_INTERESTS = "onboarding_interests"
     private const val KEY_SELECTED_TOPIC = "selected_topic"
@@ -194,6 +195,17 @@ object LocalLearningStore {
 
     fun clearPracticeHistory(context: Context) {
         preferences(context).edit().remove(KEY_PRACTICE_HISTORY).apply()
+    }
+
+    fun getReportStoryDraft(context: Context): String =
+        preferences(context).getString(KEY_REPORT_STORY_DRAFT, "").orEmpty()
+
+    fun setReportStoryDraft(context: Context, draft: String) {
+        preferences(context).edit().putString(KEY_REPORT_STORY_DRAFT, draft).apply()
+    }
+
+    fun clearReportStoryDraft(context: Context) {
+        preferences(context).edit().remove(KEY_REPORT_STORY_DRAFT).apply()
     }
 
     fun getReadingFontSize(context: Context): Float =

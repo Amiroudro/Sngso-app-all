@@ -229,11 +229,24 @@ import androidx.compose.ui.semantics.semantics
 }
 
 @Composable internal fun ReportStory() {
-    var details by rememberSaveable { mutableStateOf("") }
+    val context = LocalContext.current
+    var details by rememberSaveable { mutableStateOf(LocalLearningStore.getReportStoryDraft(context)) }
+    var saved by rememberSaveable { mutableStateOf(false) }
     Scroll {
         Intro("তথ্য সংশোধনের অনুরোধ", "ভুল তারিখ, সংখ্যা, উদ্ধৃতি বা প্রসঙ্গ চোখে পড়লে নির্দিষ্ট করে জানান।")
-        OutlinedTextField(details, { details = it }, Modifier.fillMaxWidth().height(180.dp), label = { Text("কী ভুল হয়েছে?") }, placeholder = { Text("দাবি, সংশোধনের প্রস্তাব এবং প্রাসঙ্গিক উৎসের লিংক লিখুন।") })
-        Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text("অনুরোধ পাঠানো শিগগিরই চালু হবে") }
-        Text("রিপোর্টিং সার্ভিস সংযুক্ত না হওয়া পর্যন্ত এই খসড়া পাঠানো হবে না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        OutlinedTextField(
+            details,
+            { details = it; saved = false },
+            Modifier.fillMaxWidth().height(180.dp),
+            label = { Text("কী ভুল হয়েছে?") },
+            placeholder = { Text("দাবি, সংশোধনের প্রস্তাব এবং প্রাসঙ্গিক উৎসের লিংক লিখুন।") }
+        )
+        Button(
+            onClick = { LocalLearningStore.setReportStoryDraft(context, details); saved = true },
+            enabled = details.isNotBlank(),
+            modifier = Modifier.fillMaxWidth()
+        ) { Text("খসড়া এই ডিভাইসে সংরক্ষণ করুন") }
+        if (saved) Text("খসড়া সংরক্ষিত হয়েছে। এটি সার্ভারে পাঠানো হয়নি।", color = MaterialTheme.colorScheme.primary, fontSize = 12.sp)
+        Text("খসড়া এই ডিভাইসেই থাকবে। প্রতিবেদন পাঠানোর সার্ভিস এখনো সংযুক্ত নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
     }
 }
