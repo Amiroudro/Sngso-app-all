@@ -223,7 +223,7 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
             val bookmarked = entry.term in bookmarkedWords
             Panel {
                 Kicker(entry.partOfSpeech.uppercase())
-                Text(entry.term, fontSize = 25.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                Text(entry.term, modifier = Modifier.testTag("vocabulary-result-${entry.term}"), fontSize = 25.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                 Text(entry.pronunciation, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
                 if (reveal) {
                     Text("বাংলা অর্থ: ${entry.banglaMeaning}", fontWeight = FontWeight.SemiBold)
