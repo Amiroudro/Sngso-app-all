@@ -59,12 +59,12 @@ The wrapper verifies the downloaded Gradle distribution against the pinned SHA-2
 
 Latest completed emulator verification:
 
-- Workflow run: [45655470935](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45655470935)
-- Tested commit: `cdcb28ac682f071b2bafa85bea175bed25ac8e4a`
+- Workflow run: [45658108951](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45658108951)
+- Tested commit: `e8d960f2e23f96f27722168b0a87ee9036721b31`
 - Routine job: **success**. Toolchain verification, JVM unit tests, compilation/package of all 39 authored Android instrumentation tests, debug APK assembly and artifact upload passed.
-- Debug APK: 17,024,591 bytes; SHA-256 `05bb40614620f8d2dfc933e99e4d6dd85a96509abd08d4cdae344dd540cfe6fd`. Artifact ZIP: 16,548,380 bytes, retained for one day.
-- Emulator: API 28 AOSP booted and executed the complete 39-test instrumentation suite. **21 passed, 18 failed.** The privacy-manifest test and 19 of 20 local-store tests passed. Seventeen HomeScreen tests failed because the shared onboarding test helper attempted to tap the final button without scrolling it into view; this left tests on the onboarding screen. The profile test also matched two identical profile headings. One local-store migration test expected spaces in a JSON string, while `JSONArray.toString()` emits compact JSON.
-- No instrumentation process crash prevented test execution. The failures are now reproducible test interaction/assertion issues, not emulator boot failures.
-- Commit `7617b21` adds scroll-to-visible actions to onboarding and Home test targets, disambiguates the profile assertion, fixes the compact JSON expectation, and makes the unloaded Edition screen show an explicit placeholder instead of opening an unrelated sample article. A new workflow run will verify these changes.
+- Debug APK: 17,024,591 bytes; SHA-256 `bbf159d7ecb56aa74e4cd5d2dd5f6918b2b047a350152c78bd5cae5ef08abd54`. Artifact ZIP: 16,548,605 bytes, retained for one day.
+- Emulator: API 28 AOSP executed all 39 instrumentation tests. **32 passed, 7 failed.** The remaining failures are UI test interaction/selector issues: Explore's first story title was off-screen; Saved Collections and both reader-preference tests tapped the off-screen Home article button without scrolling; the Learn practice button and Library search field also needed scrolling; one test matched two identical practice-history headings.
+- The privacy-manifest test and all 20 local-store tests passed. No emulator startup failure prevented test execution.
+- Commit `43ec7e8` adds scroll-to-visible behavior to the remaining off-screen test targets and selects one of the duplicate practice-history headings. Commit `a337143` also replaces the unloaded Edition screen's unrelated sample-article link with an explicit placeholder. The next workflow run will verify these changes.
 
-The debug APK is suitable for local UI exploration, but the app is not release-signed and the instrumentation suite is not yet green. No physical-device or visual-accessibility result is claimed.
+The debug APK is suitable for local UI exploration, but it is not release-signed and the instrumentation suite is not yet green. No physical-device or visual-accessibility result is claimed.

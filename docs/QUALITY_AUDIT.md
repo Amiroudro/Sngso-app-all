@@ -40,7 +40,7 @@
 ## Next engineering sequence
 
 1. Get the routine Android unit/build and instrumentation-test compilation workflow green; fix compiler/test-source failures before adding more UI.
-2. Re-run the API 28 AOSP suite after the onboarding scroll, profile selector, compact JSON and unloaded-Edition fixes. Require all 39 test methods to complete and inspect any remaining per-test failures.
+2. Re-run the API 28 AOSP suite after the remaining Explore/Home/Learn/Library scroll and duplicate-heading fixes. Require all 39 test methods to pass and inspect any remaining per-test failures.
 3. Replace string routes with typed destinations and add deep-link contracts.
 4. Introduce screen-level ViewModels and immutable UI state.
 5. Connect approved edition fixtures, then the real engine API.
@@ -84,7 +84,7 @@ Coverage limits:
 - All 20 local-store tests clear their test preferences before and after each test.
 - The test source uses Compose UI test APIs and AndroidX instrumentation APIs declared in the app module.
 - No test currently verifies all 48 routes, all article/summary navigation paths, process recreation, or accessibility behavior.
-- The tests are authored and compile successfully. API 28 AOSP executed all 39 instrumentation tests: 21 passed and 18 failed. The privacy test and 19 local-store tests passed. Most HomeScreen failures occurred because the onboarding test helper did not scroll its final button into view, so tests did not reach Home; the profile test matched two headings. One migration test expected spaced JSON, unlike compact `JSONArray.toString()` output. Commit `7617b21` fixes these test interactions/assertions. Runtime verification remains incomplete until the next run confirms the fixes.
+- The tests are authored and compile successfully. API 28 AOSP executed all 39 instrumentation tests: 32 passed and 7 failed. The privacy-manifest test and all 20 local-store tests passed. The remaining failures are confined to HomeScreen UI interactions: some article/story/search/practice targets were below the viewport and one practice-history heading matched twice. Commit `43ec7e8` adds scroll-to-visible actions and disambiguates that heading. Runtime verification remains incomplete until the next run confirms the fixes.
 - The routine CI step `:app:assembleDebugAndroidTest` only compiles/packages the instrumentation APK. It is not a substitute for `:app:connectedDebugAndroidTest`.
 
 The next test expansion should follow actual user journeys and stable data contracts, not attempt to create one shallow test for every screen.
