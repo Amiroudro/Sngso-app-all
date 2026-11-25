@@ -242,12 +242,15 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
                     OutlinedButton(onClick = { reveal = !reveal }, modifier = Modifier.weight(1f)) {
                         Text(if (reveal) "সংক্ষিপ্ত করুন" else "বিস্তারিত দেখুন")
                     }
-                    OutlinedButton(onClick = {
-                        val shouldBookmark = !bookmarked
-                        LocalLearningStore.setWordBookmarked(context, entry.term, shouldBookmark)
-                        if (shouldBookmark) bookmarkedWords.add(entry.term)
-                        else bookmarkedWords.remove(entry.term)
-                    }) {
+                    OutlinedButton(
+                        onClick = {
+                            val shouldBookmark = !bookmarked
+                            LocalLearningStore.setWordBookmarked(context, entry.term, shouldBookmark)
+                            if (shouldBookmark) bookmarkedWords.add(entry.term)
+                            else bookmarkedWords.remove(entry.term)
+                        },
+                        modifier = Modifier.testTag("word-bookmark-${entry.term}")
+                    ) {
                         Icon(
                             if (bookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
                             contentDescription = if (bookmarked) "বুকমার্ক করা" else "বুকমার্ক করুন"
