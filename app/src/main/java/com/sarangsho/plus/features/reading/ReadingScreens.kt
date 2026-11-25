@@ -264,7 +264,7 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
     }
 }
 @Composable internal fun Feed(nav: NavHostController) {
-    var filter by rememberSaveable { mutableStateOf("সব") }
+    var selectedFilter by remember { mutableStateOf("সব") }
     var query by rememberSaveable { mutableStateOf("") }
     val stories = listOf(
         FeedStory("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন", "আন্তর্জাতিক আইন", "নমুনা পাঠ • ৮ মিনিট", hasFullArticle = true),
@@ -274,10 +274,10 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
         FeedStory("সংবিধান, সংসদ ও রাষ্ট্রীয় প্রতিষ্ঠান", "বাংলাদেশ", "নমুনা পাঠ • ৪ মিনিট")
     )
     val filtered = stories.filter { story ->
-        val categoryMatches = filter == "সব" ||
-            (filter == "বাংলাদেশ" && story.category in listOf("বাংলাদেশ", "অর্থনীতি", "আইন ও বিচার")) ||
-            (filter == "বিশ্ব" && story.category == "বিশ্ব") ||
-            (filter == "অর্থনীতি" && story.category == "অর্থনীতি")
+        val categoryMatches = selectedFilter == "সব" ||
+            (selectedFilter == "বাংলাদেশ" && story.category in listOf("বাংলাদেশ", "অর্থনীতি", "আইন ও বিচার")) ||
+            (selectedFilter == "বিশ্ব" && story.category == "বিশ্ব") ||
+            (selectedFilter == "অর্থনীতি" && story.category == "অর্থনীতি")
         val queryMatches = query.isBlank() || story.title.contains(query, ignoreCase = true)
         categoryMatches && queryMatches
     }
@@ -294,8 +294,8 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     filterRow.forEach { (label, tag) ->
                         FilterChip(
-                            selected = filter == label,
-                            onClick = { filter = label },
+                            selected = selectedFilter == label,
+                            onClick = { selectedFilter = label },
                             modifier = Modifier.testTag(tag),
                             label = { Text(label) }
                         )
@@ -303,6 +303,12 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
                 }
             }
         }
+        Text(
+            "ফিল্টার: $selectedFilter",
+            modifier = Modifier.testTag("feed-active-filter"),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 12.sp
+        )
         Panel {
             Kicker("সম্পাদকীয় নির্দেশনা")
             Text("প্রতিটি প্রতিবেদনে প্রকাশের সময়, মূল উৎস, যাচাইয়ের অবস্থা ও প্রাসঙ্গিকতা আলাদা করে দেখানো হবে।", fontSize = 13.sp, lineHeight = 21.sp)
