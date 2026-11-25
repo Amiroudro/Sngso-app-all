@@ -95,6 +95,7 @@ class HomeScreenTest {
 
         composeRule.onNodeWithTag("feed-filter-world").performClick()
         composeRule.waitForIdle()
+        composeRule.onNodeWithTag("feed-active-filter").assertTextEquals("ফিল্টার: বিশ্ব")
         composeRule.onNodeWithText("জাতিসংঘ ও জলবায়ু আলোচনার প্রেক্ষাপট").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .assertDoesNotExist()
