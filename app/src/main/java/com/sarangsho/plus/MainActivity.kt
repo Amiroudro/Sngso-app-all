@@ -180,7 +180,7 @@ private fun Screen(route: String, nav: NavHostController) {
         "language" -> LanguageSettings()
         "practice-history" -> PracticeHistory()
         "reading-history" -> ReadingHistory(nav)
-        "saved-collections" -> SavedCollections()
+        "saved-collections" -> SavedCollections(nav)
         "source-detail" -> SourceDetail()
         "indicator-detail" -> IndicatorDetail()
         "signup" -> SignUp(nav)
