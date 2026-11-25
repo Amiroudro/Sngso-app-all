@@ -70,6 +70,7 @@ class HomeScreenTest {
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .assertIsDisplayed()
         composeRule.onNodeWithText("বিস্তারিত পড়ুন").performClick()
+        composeRule.onNodeWithText("উৎস যাচাইয়ের অবস্থা").assertIsDisplayed()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .assertIsDisplayed()
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
