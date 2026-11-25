@@ -62,7 +62,7 @@ class HomeScreenTest {
 
         composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performScrollTo().performClick()
         composeRule.onNodeWithText("তথ্য সংশোধনের অনুরোধ").performScrollTo().performClick()
-        composeRule.onNodeWithText("তথ্য সংশোধনের অনুরোধ").assertIsDisplayed()
+        composeRule.onNodeWithTag("report-story-details").assertIsDisplayed()
 
         val draft = "প্রকাশের তারিখটি মূল উৎসের সঙ্গে মিলিয়ে দেখুন।"
         composeRule.onNodeWithTag("report-story-details").performTextInput(draft)
