@@ -52,10 +52,9 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  # Emulator boot is comparatively expensive. For an unmerged PR, this job
-  # runs only when the draft is marked ready for review, and only after the
-  # routine unit/build job succeeds. After merge, workflow_dispatch is also
-  # available from the default branch for deliberate manual reruns.
+  # Emulator boot is comparatively expensive. For an unmerged PR this job
+  # runs only for non-draft PRs and only after the routine build succeeds.
+  # workflow_dispatch is also available for deliberate manual reruns.
   compose-instrumentation:
     needs: unit-and-build
     if: >-
@@ -91,4 +90,24 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           emulator-boot-timeout: 900
           disable-animations: true
-          script: ./gradlew --no-daemon --stacktrace :app:connectedDebugAndroidTest
+          script: |
+            adb logcat -c
+            adb logcat -v threadtime > emulator-logcat.txt &
+            LOGCAT_PID=$!
+            set +e
+            ./gradlew --no-daemon --stacktrace :app:connectedDebugAndroidTest
+            TEST_EXIT=$?
+            kill "$LOGCAT_PID" || true
+            wait "$LOGCAT_PID" 2>/dev/null || true
+            exit "$TEST_EXIT"
+      - name: Upload emulator diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compose-instrumentation-diagnostics
+          path: |
+            emulator-logcat.txt
+            app/build/reports/androidTests/connected/debug/
+            app/build/outputs/androidTest-results/connected/
+          if-no-files-found: warn
+          retention-days: 7
