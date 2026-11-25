@@ -3,6 +3,7 @@ package com.sarangsho.plus
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.assertIsSelected
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -53,6 +54,29 @@ class HomeScreenTest {
         completeOnboarding()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .performScrollTo().assertIsDisplayed()
+    }
+
+    @Test
+    fun reportStoryDraftCanBeSavedRestoredAndClearedFromTheArticleScreen() {
+        completeOnboarding()
+
+        composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performScrollTo().performClick()
+        composeRule.onNodeWithText("তথ্য সংশোধনের অনুরোধ").performScrollTo().performClick()
+        composeRule.onNodeWithText("তথ্য সংশোধনের অনুরোধ").assertIsDisplayed()
+
+        val draft = "প্রকাশের তারিখটি মূল উৎসের সঙ্গে মিলিয়ে দেখুন।"
+        composeRule.onNodeWithTag("report-story-details").performTextInput(draft)
+        composeRule.onNodeWithTag("report-story-save").performClick()
+        composeRule.onNodeWithText("খসড়া সংরক্ষিত হয়েছে। এটি সার্ভারে পাঠানো হয়নি।").assertIsDisplayed()
+
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+        composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performScrollTo().performClick()
+        composeRule.onNodeWithText("তথ্য সংশোধনের অনুরোধ").performScrollTo().performClick()
+        composeRule.onNodeWithTag("report-story-details").assertTextEquals(draft)
+
+        composeRule.onNodeWithTag("report-story-clear").performClick()
+        composeRule.onNodeWithTag("report-story-details").assertTextEquals("")
     }
 
     @Test
