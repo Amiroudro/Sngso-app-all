@@ -400,7 +400,29 @@ internal fun Summary(nav: NavHostController) {
     Scroll {
         Intro("একই ঘটনা, তিনভাবে বুঝুন", "আপনার হাতে যত সময় আছে, সেই অনুযায়ী পড়ুন।")
         SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) { labels.forEachIndexed { i, label -> SegmentedButton(level == i, { level = i }, SegmentedButtonDefaults.itemShape(i, labels.size)) { Text(label, fontSize = 11.sp) } } }
-        Surface(color = if (sepia) SarangshoPalette.Paper else MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(16.dp), border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant), modifier = Modifier.fillMaxWidth()) { Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(9.dp)) { Kicker(labels[level]); Text(texts[level], fontSize = readerFontSize, lineHeight = readerLineHeight, color = if (sepia) SarangshoPalette.Ink else MaterialTheme.colorScheme.onSurface); Text("নমুনা লেখা • যাচাইকৃত সংবাদ সারাংশ নয়", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp) } }
+        Surface(
+            color = if (sepia) SarangshoPalette.Paper else MaterialTheme.colorScheme.surface,
+            contentColor = if (sepia) SarangshoPalette.Ink else MaterialTheme.colorScheme.onSurface,
+            shape = RoundedCornerShape(16.dp),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(9.dp)) {
+                Text(
+                    labels[level].uppercase(),
+                    fontSize = 10.sp,
+                    color = if (sepia) SarangshoPalette.Teal else MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.sp
+                )
+                Text(texts[level], fontSize = readerFontSize, lineHeight = readerLineHeight)
+                Text(
+                    "নমুনা লেখা • যাচাইকৃত সংবাদ সারাংশ নয়",
+                    color = if (sepia) SarangshoPalette.Muted else MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 11.sp
+                )
+            }
+        }
         RowLink("পড়ার পছন্দ", "ফন্ট ও লাইন স্পেসিং বদলান", Icons.Default.TextFields) { nav.navigate("reading-settings") }
         RowLink("টাইমলাইন", "ঘটনার পূর্বাপর", Icons.Default.Timeline) { nav.navigate("timeline") }
     }
