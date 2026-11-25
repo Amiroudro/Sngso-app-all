@@ -1,6 +1,7 @@
 package com.sarangsho.plus
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -201,7 +202,7 @@ class HomeScreenTest {
             .assertIsDisplayed()
         composeRule.onNodeWithText("পড়ার পছন্দ").performClick()
         composeRule.onNodeWithText("লাইন স্পেসিং: 1.8").assertIsDisplayed()
-        composeRule.onNodeWithTag("reader-sepia-switch").assertIsDisplayed()
+        composeRule.onNodeWithTag("reader-sepia-switch").assertIsOn()
     }
 
     @Test
