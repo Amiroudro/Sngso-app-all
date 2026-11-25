@@ -57,14 +57,14 @@ The wrapper verifies the downloaded Gradle distribution against the pinned SHA-2
 
 ## Current verification status
 
-Latest verification on the current branch head before the next prepared change:
+Latest completed verification:
 
-- Workflow run: [45651907054](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45651907054)
-- Tested commit: `3dcce6a79f59fba0a61f58a6df06e065543eb8aa`
-- Routine job: **success**. Toolchain verification, JVM unit tests, instrumentation-test APK compilation, debug APK assembly and artifact upload passed.
-- Debug APK: 17,024,591 bytes; SHA-256 `6cb67a89cef9f87b2c12ea46ad1e90c333069f8b81ff5e1dad6fab3ffa0734b1`. Artifact ZIP: `sarangsho-plus-debug-apk` (16,550,302 bytes), retained for one day.
-- Emulator job: **failure**, with zero app tests executed. SDK Platform 30 was installed and the API 30 AOSP emulator connected, but Android guest services became unresponsive. Logcat records an ANR in `com.android.phone`, repeated slow `system_server` operations and a 19.5-second foreground-handler dispatch. Gradle's device-property query raised `ShellCommandUnresponsiveException`, then reported `Unknown API Level`. The generated report is a synthetic `No compatible devices connected` failure, not an app test failure.
-- The earlier API 35 AOSP attempt [45644373497](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45644373497) reached app startup but ANR-killed the app under severe TCG CPU pressure (88% CPU pressure avg10; 99% total guest CPU use).
-- The next diagnostic configuration uses API 28 AOSP and two virtual CPU cores, with an explicit guest-shell readiness check before Gradle runs. This is an environment experiment, not evidence of runtime test success.
+- Workflow run: [45654046195](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45654046195)
+- Tested commit: `e2ef5baedca5003e878ff3844669544df57192c2`
+- Routine job: **success**. Toolchain verification, JVM unit tests, compilation/package of all 39 authored Android instrumentation tests, debug APK assembly and artifact upload passed.
+- Debug APK: 17,024,591 bytes; SHA-256 `4b51a5bb8bbfa4f0234a213c0720580761a3b3464261e34b36aedab2f8b58a8e`. Artifact ZIP: `sarangsho-plus-debug-apk` (16,551,113 bytes), retained for one day.
+- Emulator job: **failure**, with zero app tests executed. The API 28 AOSP emulator booted successfully in approximately 151 seconds. The emulator action then invoked the multiline shell preflight, but its script runner parsed the `for` loop as an incomplete command and exited with `Syntax error: end of file unexpected (expecting "done")` before Gradle or Logcat capture began. This is a workflow-script error, not an app test failure.
+- Earlier API 30 attempts failed because the guest was unresponsive during Gradle's device-property query; the API 35 attempt suffered severe TCG CPU pressure and an app-startup ANR.
+- The next attempt keeps API 28 AOSP and two virtual cores, removes the unnecessary multiline preflight, and proceeds directly to Logcat capture and `:app:connectedDebugAndroidTest`.
 
-The routine job confirms compilation and packaging, not runtime UI behavior. The 37 authored Android instrumentation tests remain unexecuted until an emulator run completes successfully. No physical-device or visual-accessibility result is claimed.
+The routine job confirms compilation and packaging, not runtime UI behavior. The 39 authored Android instrumentation tests remain unexecuted until an emulator run completes successfully. No physical-device or visual-accessibility result is claimed.

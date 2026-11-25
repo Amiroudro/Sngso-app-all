@@ -8,10 +8,10 @@
 - Four primary destinations remain in bottom navigation: Today, Learn, Library and Explore.
 - Shared screen components are separated from reading, learning and settings feature files.
 - Semantic light and dark color schemes are centralized.
-- Search and category filters work against explicitly labelled local sample stories.
-- Compose instrumentation tests cover onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, the Learn-hub activity shortcuts, language settings persistence, the quiz-to-history journey, reader font, line-spacing and sepia preference persistence through Article settings, and local learning-store persistence. Their APK compiles in CI. The API 35 AOSP attempt ANR-killed the app before tests. The first API 30 attempt lacked SDK Platform 30; after installing that platform, the next API 30 guest became unresponsive, with phone-service ANR and severe system-server delays. Gradle's device-property query timed out and surfaced `Unknown API Level`. Zero app tests have executed.
+- Search and category filters work against explicitly labelled local sample stories. In Explore, only the Gambia/Myanmar sample headline opens its matching article and summary; other sample headlines disclose that full reading pages are not yet available.
+- Compose instrumentation tests cover onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, the Learn-hub activity shortcuts, language settings persistence, the quiz-to-history journey, reader font, line-spacing and sepia preference persistence through Article settings, and local learning-store persistence. Their APK compiles in CI. The API 35 AOSP attempt ANR-killed the app before tests. The first API 30 attempt lacked SDK Platform 30; after installing that platform, the next API 30 guest became unresponsive and Gradle's device-property query timed out. API 28 AOSP subsequently booted in approximately 151 seconds, but the workflow's multiline shell preflight failed with an incomplete `for` loop before Gradle ran. Zero app tests have executed.
 - The routine pull-request workflow is configured to compile and package the instrumentation test APK using `:app:assembleDebugAndroidTest`. This checks that test sources compile; it does not execute the instrumentation tests.
-- Emulator instrumentation runs on non-draft pull-request updates after the routine build succeeds. The current hosted runner uses TCG software CPU emulation. API 35 AOSP reached app startup but suffered severe guest CPU pressure. API 30 AOSP first lacked its SDK platform; after the platform was installed, guest system services became unresponsive and Gradle could not read the API property. The next diagnostic attempt uses API 28 AOSP, two virtual cores and an explicit shell-readiness check.
+- Emulator instrumentation runs on non-draft pull-request updates after the routine build succeeds. The current hosted runner uses TCG software CPU emulation. API 35 AOSP reached app startup but suffered severe guest CPU pressure. API 30 AOSP first lacked its SDK platform; after the platform was installed, guest system services became unresponsive and Gradle could not read the API property. API 28 AOSP booted, but a workflow shell-loop syntax error prevented the test command from running. The next attempt keeps API 28 AOSP and two virtual cores, removes the multiline preflight and runs instrumentation directly.
 - Vocabulary Lab has a searchable five-entry sample word list with per-word bookmark controls; search matches the term, part of speech, pronunciation, Bengali meaning, definition, synonyms, antonym and example, trims surrounding whitespace, and supports bookmarking from the selected-word detail screen. Saved words and articles, reader and language preferences, onboarding choices, notification preferences, writing and feedback drafts, reading history, practice history, and the study checklist are stored locally with Android SharedPreferences. The study checklist resets by local calendar date. These features are device-only and do not sync.
 - Vocabulary definitions and examples are prototype learning content; dictionary/source references and a maintained exam vocabulary feed are not connected.
 - Android Auto Backup is disabled for the prototype so SharedPreferences drafts, bookmarks and reading activity are not silently included in the platform backup flow. A deliberate export/restore feature is not implemented.
@@ -40,7 +40,7 @@
 ## Next engineering sequence
 
 1. Get the routine Android unit/build and instrumentation-test compilation workflow green; fix compiler/test-source failures before adding more UI.
-2. Validate the API 28 AOSP emulator with two virtual cores and the guest-shell readiness check. Require actual test execution and inspect per-test failures; a boot or successful APK install is not a test pass.
+2. Validate the API 28 AOSP emulator with two virtual cores and the corrected single-purpose test script. Require actual test execution and inspect per-test failures; a boot or successful APK install is not a test pass.
 3. Replace string routes with typed destinations and add deep-link contracts.
 4. Introduce screen-level ViewModels and immutable UI state.
 5. Connect approved edition fixtures, then the real engine API.
@@ -70,21 +70,21 @@ This checks string consistency only. It does not prove that every screen renders
 
 ## Test coverage inventory (updated 2026-11-25)
 
-A source review found one JVM unit test (`ExampleUnitTest.applicationIdIsStable`) and 37 authored Android instrumentation test methods. The 37 Android tests are:
+A source review found one JVM unit test (`ExampleUnitTest.applicationIdIsStable`) and 39 authored Android instrumentation test methods. The 39 Android tests are:
 
 | Test file | Test methods | What they cover |
 |---|---:|---|
 | `HomeScreenTest.kt` | 18 | Welcome, onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, saved-collection article/word navigation, accessible Learn-hub shortcuts, language settings navigation/persistence, Today-to-archive navigation, selected-word detail navigation, bookmarking from Word Detail with list refresh on return, opening and removing saved articles and words in Saved Collections, handling unknown saved article IDs without misrouting, refreshing the collection after bookmarking a new word and unbookmarking from Word Detail, opening a saved word from Library, profile self-navigation prevention, whitespace-trimmed synonym and example-sentence search, reader font preference persistence, line-spacing and sepia preference persistence through Article settings, and the sample quiz-to-history journey |
-| `LocalLearningStoreTest.kt` | 18 | Topic, vocabulary search, bookmarks, drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration/bounds, practice-history validation/bounds, and daily study-task persistence/reset |
+| `LocalLearningStoreTest.kt` | 20 | Topic, vocabulary search, bookmarks, drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration/bounds, practice-history validation/bounds, and daily study-task persistence/reset |
 | `AppPrivacyManifestTest.kt` | 1 | Confirms Android Auto Backup is disabled for the app package |
 
 Coverage limits:
 
 - These are Android instrumentation tests, not JVM unit tests.
-- All 18 local-store tests clear their test preferences before and after each test.
+- All 20 local-store tests clear their test preferences before and after each test.
 - The test source uses Compose UI test APIs and AndroidX instrumentation APIs declared in the app module.
 - No test currently verifies all 48 routes, all article/summary navigation paths, process recreation, or accessibility behavior.
-- The tests are authored and compile successfully. The API 35 AOSP emulator run failed with zero app tests completed after an app-startup ANR under severe CPU pressure. The first API 30 attempt lacked SDK Platform 30; the next had the platform installed but the guest became unresponsive, causing Gradle's device-property query to time out and report `Unknown API Level`. No app test has executed. Runtime success remains unproven. Compilation is not a passing runtime test.
+- The tests are authored and compile successfully. The API 35 AOSP emulator run failed with zero app tests completed after an app-startup ANR under severe CPU pressure. The API 30 attempts failed before test execution because the SDK platform was missing and then because the guest became unresponsive. API 28 AOSP booted, but the shell preflight loop failed to parse before Gradle ran. No app test has executed. Runtime success remains unproven. Compilation is not a passing runtime test.
 - The routine CI step `:app:assembleDebugAndroidTest` only compiles/packages the instrumentation APK. It is not a substitute for `:app:connectedDebugAndroidTest`.
 
 The next test expansion should follow actual user journeys and stable data contracts, not attempt to create one shallow test for every screen.

@@ -95,21 +95,6 @@ jobs:
           emulator-boot-timeout: 900
           disable-animations: true
           script: |
-            # Confirm the guest shell and framework are responsive before Gradle queries device properties.
-            for attempt in $(seq 1 12); do
-              BOOT_COMPLETED="$(timeout 5s adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || true)"
-              API_LEVEL="$(timeout 5s adb shell getprop ro.build.version.sdk 2>/dev/null | tr -d '\r' || true)"
-              if [ "$BOOT_COMPLETED" = "1" ] && [ "$API_LEVEL" = "28" ]; then
-                break
-              fi
-              sleep 2
-            done
-            if [ "$BOOT_COMPLETED" != "1" ] || [ "$API_LEVEL" != "28" ]; then
-              echo "Emulator shell did not become responsive at API 28 (boot=$BOOT_COMPLETED api=$API_LEVEL)"
-              adb devices -l
-              exit 1
-            fi
-            echo "Emulator shell ready at API $API_LEVEL"
             adb logcat -c
             adb logcat -v threadtime > emulator-logcat.txt &
             LOGCAT_PID=$!

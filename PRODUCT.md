@@ -33,7 +33,7 @@ The product connects a source-aware daily briefing to a reusable study system: t
 ## Capabilities and Constraints
 
 - The current branch contains an early Compose screen prototype, not a complete verified application.
-- The repository has a working Gradle Android project scaffold. Routine CI runs one JVM smoke test, compiles the 37 authored Android instrumentation tests into a test APK and assembles a debug APK. Instrumentation compilation is not an emulator runtime test.
+- The repository has a working Gradle Android project scaffold. Routine CI runs one JVM smoke test, compiles the 39 authored Android instrumentation tests into a test APK and assembles a debug APK. Instrumentation compilation is not an emulator runtime test.
 - The separate editorial engine and its rights/verification rules remain authoritative for news content.
 - Sample content must be labelled as sample. Never fabricate live stories, source comparisons, user activity, progress, scores or data values.
 - Authentication, cloud persistence/synchronization, offline editions, push delivery, analytics and engine APIs are not connected unless separately implemented and verified. Several prototype features persist locally with SharedPreferences; local storage must not be mistaken for account sync or a production data layer.
