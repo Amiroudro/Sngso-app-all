@@ -2,7 +2,6 @@ package com.sarangsho.plus
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsOn
-import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.onAllNodesWithText
@@ -16,6 +15,8 @@ import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
+import org.junit.Assert.assertEquals
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Before
 import org.junit.Rule
@@ -73,10 +74,14 @@ class HomeScreenTest {
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
         composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performScrollTo().performClick()
         composeRule.onNodeWithText("তথ্য সংশোধনের অনুরোধ").performScrollTo().performClick()
-        composeRule.onNodeWithTag("report-story-details").assertTextEquals(draft)
+        val restored = composeRule.onNodeWithTag("report-story-details")
+            .fetchSemanticsNode().config[SemanticsProperties.EditableText].text
+        assertEquals(draft, restored)
 
         composeRule.onNodeWithTag("report-story-clear").performClick()
-        composeRule.onNodeWithTag("report-story-details").assertTextEquals("")
+        val cleared = composeRule.onNodeWithTag("report-story-details")
+            .fetchSemanticsNode().config[SemanticsProperties.EditableText].text
+        assertEquals("", cleared)
     }
 
     @Test
@@ -88,7 +93,7 @@ class HomeScreenTest {
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .performScrollTo().assertIsDisplayed()
 
-        composeRule.onNodeWithTag("feed-filter-world").performClick().assertIsSelected()
+        composeRule.onNodeWithTag("feed-filter-world").performClick().assertIsOn()
         composeRule.onNodeWithText("জাতিসংঘ ও জলবায়ু আলোচনার প্রেক্ষাপট").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .assertDoesNotExist()
