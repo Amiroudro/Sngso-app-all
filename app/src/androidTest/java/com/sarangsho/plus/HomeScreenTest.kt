@@ -114,6 +114,36 @@ class HomeScreenTest {
     }
 
     @Test
+    fun savedCollectionsOpenSavedArticlesAndBookmarkedWords() {
+        completeOnboarding()
+
+        composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performClick()
+        composeRule.onNodeWithContentDescription("সংরক্ষণ করুন").performClick()
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+
+        composeRule.onNodeWithText("শিখুন").performClick()
+        composeRule.onNodeWithText("শব্দ শেখা শুরু করুন").performClick()
+        composeRule.onNodeWithText("Resilience").assertIsDisplayed()
+        composeRule.onAllNodesWithText("সংরক্ষণ")[0].performClick()
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+
+        composeRule.onNodeWithText("লাইব্রেরি").performClick()
+        composeRule.onNodeWithText("সংরক্ষিত সংগ্রহ").performClick()
+        composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
+            .assertIsDisplayed()
+        composeRule.onNodeWithText("Resilience").assertIsDisplayed()
+
+        composeRule.onNodeWithText("নিবন্ধটি খুলুন").performClick()
+        composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
+            .assertIsDisplayed()
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+
+        composeRule.onNodeWithText("শব্দটি খুলুন").performClick()
+        composeRule.onNodeWithText("শব্দের বিস্তারিত").assertIsDisplayed()
+        composeRule.onNodeWithText("Resilience").assertIsDisplayed()
+    }
+
+    @Test
     fun learningActivityShortcutsOpenTheirMatchingDestinations() {
         completeOnboarding()
 
