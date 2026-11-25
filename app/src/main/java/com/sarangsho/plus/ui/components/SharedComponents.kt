@@ -43,8 +43,8 @@ internal fun Scroll(content: @Composable ColumnScope.() -> Unit) {
     }
 }
 
-@Composable internal fun Primary(text: String, action: () -> Unit) {
-    Button(action, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(10.dp), colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary), contentPadding = PaddingValues(14.dp)) { Text(text, fontWeight = FontWeight.SemiBold) }
+@Composable internal fun Primary(text: String, modifier: Modifier = Modifier, action: () -> Unit) {
+    Button(action, modifier = modifier.fillMaxWidth(), shape = RoundedCornerShape(10.dp), colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary), contentPadding = PaddingValues(14.dp)) { Text(text, fontWeight = FontWeight.SemiBold) }
 }
 
 @Composable internal fun RowLink(title: String, detail: String, icon: androidx.compose.ui.graphics.vector.ImageVector, action: () -> Unit) {

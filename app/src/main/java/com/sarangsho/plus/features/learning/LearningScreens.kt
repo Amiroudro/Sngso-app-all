@@ -16,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -155,7 +156,7 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
             Kicker("BCS • BANK")
             Text("পরীক্ষার অনুশীলন", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Text("বিষয় ও সময় বেছে MCQ অনুশীলন করুন। প্রকৃত প্রশ্নব্যাংক সংযুক্ত না হওয়া পর্যন্ত নমুনা প্রশ্ন স্পষ্টভাবে চিহ্নিত থাকবে।", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Primary("অনুশীলন সাজান") { nav.navigate("quiz-setup") }
+            Primary("অনুশীলন সাজান", modifier = Modifier.testTag("learn-hub-practice-setup")) { nav.navigate("quiz-setup") }
         }
         Panel {
             Kicker("WRITTEN PRACTICE")
@@ -461,7 +462,7 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
         Text("সময়", fontWeight = FontWeight.SemiBold)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("৫ মিনিট", "১৫ মিনিট", "৩০ মিনিট").forEach { FilterChip(selected = duration == it, onClick = { duration = it }, label = { Text(it) }) } }
         Panel { Text("আপনার নির্বাচন", fontWeight = FontWeight.Bold); Text(exam + " • " + duration); Text("এখনকার ডেমোতে পরীক্ষা ও সময়ের নির্বাচন অনুশীলনে প্রয়োগ হয় না। একটি নির্দিষ্ট নমুনা প্রশ্ন দেখানো হবে।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
-        Primary("নমুনা প্রশ্ন দেখুন") { nav.navigate("challenge") }
+        Primary("নমুনা প্রশ্ন দেখুন", modifier = Modifier.testTag("quiz-setup-start-practice")) { nav.navigate("challenge") }
     }
 }
 

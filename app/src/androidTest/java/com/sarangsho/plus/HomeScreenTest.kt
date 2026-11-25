@@ -2,6 +2,7 @@ package com.sarangsho.plus
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsOn
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -63,7 +64,7 @@ class HomeScreenTest {
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .performScrollTo().assertIsDisplayed()
 
-        composeRule.onNodeWithTag("feed-filter-world").performClick()
+        composeRule.onNodeWithTag("feed-filter-world").performClick().assertIsSelected()
         composeRule.onNodeWithText("জাতিসংঘ ও জলবায়ু আলোচনার প্রেক্ষাপট").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .assertDoesNotExist()
@@ -172,7 +173,7 @@ class HomeScreenTest {
             .performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("Resilience").performScrollTo().assertIsDisplayed()
 
-        composeRule.onNodeWithText("নিবন্ধটি খুলুন").performClick()
+        composeRule.onNodeWithText("নিবন্ধটি খুলুন").performScrollTo().performClick()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
@@ -293,7 +294,7 @@ class HomeScreenTest {
         composeRule.onNodeWithTag("reader-sepia-switch").assertIsOn()
 
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
-        composeRule.onNodeWithText("তিন-স্তরের সারাংশ").performClick()
+        composeRule.onNodeWithText("তিন-স্তরের সারাংশ").performScrollTo().performClick()
         composeRule.onNodeWithText("একই ঘটনা, তিনভাবে বুঝুন").assertIsDisplayed()
         composeRule.onNodeWithText("ঘটনাটির মূল বিষয় এক বাক্যে বুঝুন।").performScrollTo().assertIsDisplayed()
     }
@@ -382,9 +383,8 @@ class HomeScreenTest {
         composeRule.onNodeWithText("সম্পন্ন পড়ার কাজ").assertIsDisplayed()
         composeRule.onNodeWithText("অনুশীলন সেশন").assertIsDisplayed()
 
-        composeRule.onNodeWithText("অনুশীলন সাজান").performScrollTo().performClick()
-        composeRule.onNodeWithText("আপনার প্রস্তুতির ধরন অনুযায়ী প্রশ্ন বেছে নিন").assertIsDisplayed()
-        composeRule.onNodeWithText("নমুনা প্রশ্ন দেখুন").performScrollTo().performClick()
+        composeRule.onNodeWithTag("learn-hub-practice-setup").performScrollTo().performClick()
+        composeRule.onNodeWithTag("quiz-setup-start-practice").performScrollTo().performClick()
         composeRule.onNodeWithText("বাংলাদেশের সংবিধান কবে গণপরিষদে গৃহীত হয়?")
             .assertIsDisplayed()
         composeRule.onNodeWithText("৪ নভেম্বর ১৯৭২").performClick()
