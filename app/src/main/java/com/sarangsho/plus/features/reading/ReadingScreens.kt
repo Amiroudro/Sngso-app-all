@@ -284,19 +284,23 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
     Scroll {
         Intro("সকল সংবাদ", "বিষয় অনুযায়ী পড়ুন, প্রেক্ষাপট দেখুন এবং উৎস যাচাই করুন।")
         OutlinedTextField(query, { query = it }, Modifier.fillMaxWidth(), placeholder = { Text("শিরোনাম বা বিষয় খুঁজুন") }, leadingIcon = { Icon(Icons.Default.Search, null) }, singleLine = true)
-        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        // Two rows keep every filter fully visible on narrow phones.
+        // A single unscrollable Row clipped the final chips beyond the viewport.
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             listOf(
-                "সব" to "feed-filter-all",
-                "বাংলাদেশ" to "feed-filter-bangladesh",
-                "বিশ্ব" to "feed-filter-world",
-                "অর্থনীতি" to "feed-filter-economy"
-            ).forEach { (label, tag) ->
-                FilterChip(
-                    selected = filter == label,
-                    onClick = { filter = label },
-                    modifier = Modifier.testTag(tag),
-                    label = { Text(label) }
-                )
+                listOf("সব" to "feed-filter-all", "বাংলাদেশ" to "feed-filter-bangladesh"),
+                listOf("বিশ্ব" to "feed-filter-world", "অর্থনীতি" to "feed-filter-economy")
+            ).forEach { filterRow ->
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    filterRow.forEach { (label, tag) ->
+                        FilterChip(
+                            selected = filter == label,
+                            onClick = { filter = label },
+                            modifier = Modifier.testTag(tag),
+                            label = { Text(label) }
+                        )
+                    }
+                }
             }
         }
         Panel {
@@ -1229,12 +1233,21 @@ private fun topicGuide(topic: String): TopicGuide {
                 Kicker("নিবন্ধ • নমুনা")
                 Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
                 if (id == "sample-international-justice") {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        TextButton(onClick = { nav.navigate("article") }) { Text("নিবন্ধটি খুলুন") }
-                        TextButton(onClick = {
-                            LocalLearningStore.setArticleSaved(context, id, false)
-                            articles.remove(id)
-                        }) { Text("সংরক্ষণ সরান") }
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        TextButton(
+                            onClick = { nav.navigate("article") },
+                            modifier = Modifier.fillMaxWidth().testTag("saved-article-open")
+                        ) { Text("নিবন্ধটি খুলুন") }
+                        TextButton(
+                            onClick = {
+                                LocalLearningStore.setArticleSaved(context, id, false)
+                                articles.remove(id)
+                            },
+                            modifier = Modifier.fillMaxWidth().testTag("saved-article-remove")
+                        ) { Text("সংরক্ষণ সরান") }
                     }
                 } else {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
