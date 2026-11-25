@@ -18,7 +18,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.sarangsho.plus.ui.theme.SarangshoPalette
 
 
@@ -66,15 +65,4 @@ internal fun Scroll(content: @Composable ColumnScope.() -> Unit) {
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
     }
-}
-@Composable internal fun Story(title: String, category: String, detail: String, nav: NavHostController) {
-    Column(Modifier.fillMaxWidth().clickable(role = Role.Button) { nav.navigate("article") }.padding(vertical = 14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            Text(category, color = MaterialTheme.colorScheme.primary, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-            Text(detail, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
-        }
-        Text(title, fontSize = 19.sp, lineHeight = 27.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-        Text("বিস্তারিত পড়ুন  ›", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
-    }
-    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 }
