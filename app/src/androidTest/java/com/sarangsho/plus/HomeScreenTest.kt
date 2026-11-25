@@ -99,6 +99,28 @@ class HomeScreenTest {
     }
 
     @Test
+    fun unknownSavedArticleIdsNeverOpenTheSampleArticle() {
+        completeOnboarding()
+        InstrumentationRegistry.getInstrumentation().targetContext
+            .getSharedPreferences("sarangsho_learning", android.content.Context.MODE_PRIVATE)
+            .edit()
+            .putStringSet("saved_articles", setOf("legacy-story-123"))
+            .commit()
+
+        composeRule.onNodeWithText("লাইব্রেরি").performClick()
+        composeRule.onNodeWithText("legacy-story-123").assertIsDisplayed()
+        composeRule.onNodeWithText("এই নিবন্ধের বিস্তারিত এখনো উপলভ্য নয়।").assertIsDisplayed()
+        composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
+            .assertDoesNotExist()
+
+        composeRule.onNodeWithText("সংরক্ষিত সংগ্রহ").performClick()
+        composeRule.onNodeWithText("legacy-story-123").assertIsDisplayed()
+        composeRule.onNodeWithText("এই নিবন্ধের বিস্তারিত এখনো উপলভ্য নয়।").assertIsDisplayed()
+        composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
+            .assertDoesNotExist()
+    }
+
+    @Test
     fun learnVocabularyBookmarkAppearsInLibrary() {
         completeOnboarding()
 
