@@ -173,7 +173,7 @@ class HomeScreenTest {
             .performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("Resilience").performScrollTo().assertIsDisplayed()
 
-        composeRule.onNodeWithText("নিবন্ধটি খুলুন").performScrollTo().performClick()
+        composeRule.onNodeWithTag("saved-article-open").performScrollTo().performClick()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
