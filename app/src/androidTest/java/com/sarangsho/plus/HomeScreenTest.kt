@@ -180,6 +180,31 @@ class HomeScreenTest {
     }
 
     @Test
+    fun readerLineSpacingAndSepiaPreferencesPersistWhenReturningToArticle() {
+        completeOnboarding()
+
+        composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performClick()
+        composeRule.onNodeWithText("পড়ার পছন্দ").performClick()
+
+        composeRule.onNodeWithTag("reader-line-spacing-slider")
+            .performSemanticsAction(SemanticsActions.SetProgress) { setProgress -> setProgress(1.8f) }
+        composeRule.onNodeWithTag("reader-sepia-switch").performClick()
+
+        val preferences = InstrumentationRegistry.getInstrumentation().targetContext
+            .getSharedPreferences("sarangsho_learning", android.content.Context.MODE_PRIVATE)
+        composeRule.waitForIdle()
+        org.junit.Assert.assertEquals(1.8f, preferences.getFloat("reading_line_spacing", 0f), 0.02f)
+        org.junit.Assert.assertTrue(preferences.getBoolean("reading_sepia", false))
+
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+        composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
+            .assertIsDisplayed()
+        composeRule.onNodeWithText("পড়ার পছন্দ").performClick()
+        composeRule.onNodeWithText("লাইন স্পেসিং: 1.8").assertIsDisplayed()
+        composeRule.onNodeWithTag("reader-sepia-switch").assertIsDisplayed()
+    }
+
+    @Test
     fun vocabularyOpensTheSelectedWordDetail() {
         completeOnboarding()
 
