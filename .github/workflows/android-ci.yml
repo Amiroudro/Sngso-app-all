@@ -65,6 +65,10 @@ jobs:
         github.event.action == 'ready_for_review' &&
         needs.unit-and-build.result == 'success'))
     runs-on: ubuntu-24.04
+    # GitHub-hosted Linux runners may not expose KVM. Recent Android Emulator
+    # builds reject TCG software CPU emulation unless this explicit opt-in is set.
+    env:
+      ANDROID_I_WANT_MY_TCG: 'yes'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
