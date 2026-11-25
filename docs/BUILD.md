@@ -57,14 +57,14 @@ The wrapper verifies the downloaded Gradle distribution against the pinned SHA-2
 
 ## Current verification status
 
-Latest completed verification:
+Latest completed emulator verification:
 
-- Workflow run: [45654046195](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45654046195)
-- Tested commit: `e2ef5baedca5003e878ff3844669544df57192c2`
+- Workflow run: [45655470935](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45655470935)
+- Tested commit: `cdcb28ac682f071b2bafa85bea175bed25ac8e4a`
 - Routine job: **success**. Toolchain verification, JVM unit tests, compilation/package of all 39 authored Android instrumentation tests, debug APK assembly and artifact upload passed.
-- Debug APK: 17,024,591 bytes; SHA-256 `4b51a5bb8bbfa4f0234a213c0720580761a3b3464261e34b36aedab2f8b58a8e`. Artifact ZIP: `sarangsho-plus-debug-apk` (16,551,113 bytes), retained for one day.
-- Emulator job: **failure**, with zero app tests executed. The API 28 AOSP emulator booted successfully in approximately 151 seconds. The emulator action then invoked the multiline shell preflight, but its script runner parsed the `for` loop as an incomplete command and exited with `Syntax error: end of file unexpected (expecting "done")` before Gradle or Logcat capture began. This is a workflow-script error, not an app test failure.
-- Earlier API 30 attempts failed because the guest was unresponsive during Gradle's device-property query; the API 35 attempt suffered severe TCG CPU pressure and an app-startup ANR.
-- The next attempt keeps API 28 AOSP and two virtual cores, removes the unnecessary multiline preflight, and proceeds directly to Logcat capture and `:app:connectedDebugAndroidTest`.
+- Debug APK: 17,024,591 bytes; SHA-256 `05bb40614620f8d2dfc933e99e4d6dd85a96509abd08d4cdae344dd540cfe6fd`. Artifact ZIP: 16,548,380 bytes, retained for one day.
+- Emulator: API 28 AOSP booted and executed the complete 39-test instrumentation suite. **21 passed, 18 failed.** The privacy-manifest test and 19 of 20 local-store tests passed. Seventeen HomeScreen tests failed because the shared onboarding test helper attempted to tap the final button without scrolling it into view; this left tests on the onboarding screen. The profile test also matched two identical profile headings. One local-store migration test expected spaces in a JSON string, while `JSONArray.toString()` emits compact JSON.
+- No instrumentation process crash prevented test execution. The failures are now reproducible test interaction/assertion issues, not emulator boot failures.
+- Commit `7617b21` adds scroll-to-visible actions to onboarding and Home test targets, disambiguates the profile assertion, fixes the compact JSON expectation, and makes the unloaded Edition screen show an explicit placeholder instead of opening an unrelated sample article. A new workflow run will verify these changes.
 
-The routine job confirms compilation and packaging, not runtime UI behavior. The 39 authored Android instrumentation tests remain unexecuted until an emulator run completes successfully. No physical-device or visual-accessibility result is claimed.
+The debug APK is suitable for local UI exploration, but the app is not release-signed and the instrumentation suite is not yet green. No physical-device or visual-accessibility result is claimed.
