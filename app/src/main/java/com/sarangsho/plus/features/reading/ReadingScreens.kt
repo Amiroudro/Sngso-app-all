@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -284,8 +285,18 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
         Intro("সকল সংবাদ", "বিষয় অনুযায়ী পড়ুন, প্রেক্ষাপট দেখুন এবং উৎস যাচাই করুন।")
         OutlinedTextField(query, { query = it }, Modifier.fillMaxWidth(), placeholder = { Text("শিরোনাম বা বিষয় খুঁজুন") }, leadingIcon = { Icon(Icons.Default.Search, null) }, singleLine = true)
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            listOf("সব", "বাংলাদেশ", "বিশ্ব", "অর্থনীতি").forEach {
-                FilterChip(selected = filter == it, onClick = { filter = it }, label = { Text(it) })
+            listOf(
+                "সব" to "feed-filter-all",
+                "বাংলাদেশ" to "feed-filter-bangladesh",
+                "বিশ্ব" to "feed-filter-world",
+                "অর্থনীতি" to "feed-filter-economy"
+            ).forEach { (label, tag) ->
+                FilterChip(
+                    selected = filter == label,
+                    onClick = { filter = label },
+                    modifier = Modifier.testTag(tag),
+                    label = { Text(label) }
+                )
             }
         }
         Panel {
@@ -734,7 +745,7 @@ internal fun Summary(nav: NavHostController) {
         OutlinedTextField(
             value = query,
             onValueChange = { query = it },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag("saved-search-field"),
             singleLine = true,
             label = { Text("সংরক্ষিত বিষয় খুঁজুন") },
             placeholder = { Text("নিবন্ধ বা শব্দ লিখুন") },

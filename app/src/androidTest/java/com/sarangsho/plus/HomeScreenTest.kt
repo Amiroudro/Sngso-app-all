@@ -63,12 +63,12 @@ class HomeScreenTest {
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .performScrollTo().assertIsDisplayed()
 
-        composeRule.onAllNodesWithText("বিশ্ব")[0].performClick()
+        composeRule.onNodeWithTag("feed-filter-world").performClick()
         composeRule.onNodeWithText("জাতিসংঘ ও জলবায়ু আলোচনার প্রেক্ষাপট").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .assertDoesNotExist()
 
-        composeRule.onAllNodesWithText("সব")[0].performClick()
+        composeRule.onNodeWithTag("feed-filter-all").performClick()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("বিস্তারিত পড়ুন").performScrollTo().performClick()
@@ -77,7 +77,7 @@ class HomeScreenTest {
             .performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
 
-        composeRule.onAllNodesWithText("অর্থনীতি")[0].performClick()
+        composeRule.onNodeWithTag("feed-filter-economy").performClick()
         composeRule.onNodeWithText("এই বিষয়ের পূর্ণ পাঠ ও সারাংশ এখনো যুক্ত হয়নি।")
             .performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
@@ -94,7 +94,7 @@ class HomeScreenTest {
         composeRule.onNodeWithText("এখনো কোনো নিবন্ধ সংরক্ষণ করা হয়নি").assertDoesNotExist()
         composeRule.onNodeWithText("এখনো কোনো শব্দ বুকমার্ক করা হয়নি").assertDoesNotExist()
 
-        composeRule.onNodeWithText("নিবন্ধ বা শব্দ লিখুন").performScrollTo().performTextInput("no-such-saved-item")
+        composeRule.onNodeWithTag("saved-search-field").performTextInput("no-such-saved-item")
         composeRule.onNodeWithText("কোনো সংরক্ষিত বিষয় মেলেনি").assertIsDisplayed()
         composeRule.onNodeWithText("আপনার লাইব্রেরি এখনো খালি").assertDoesNotExist()
     }
@@ -170,7 +170,7 @@ class HomeScreenTest {
         composeRule.onNodeWithText("সংরক্ষিত সংগ্রহ").performClick()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .performScrollTo().assertIsDisplayed()
-        composeRule.onNodeWithText("Resilience").assertIsDisplayed()
+        composeRule.onNodeWithText("Resilience").performScrollTo().assertIsDisplayed()
 
         composeRule.onNodeWithText("নিবন্ধটি খুলুন").performClick()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
@@ -295,7 +295,7 @@ class HomeScreenTest {
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
         composeRule.onNodeWithText("তিন-স্তরের সারাংশ").performClick()
         composeRule.onNodeWithText("একই ঘটনা, তিনভাবে বুঝুন").assertIsDisplayed()
-        composeRule.onNodeWithText("ঘটনাটির মূল বিষয় এক বাক্যে বুঝুন।").assertIsDisplayed()
+        composeRule.onNodeWithText("ঘটনাটির মূল বিষয় এক বাক্যে বুঝুন।").performScrollTo().assertIsDisplayed()
     }
 
     @Test
@@ -382,7 +382,8 @@ class HomeScreenTest {
         composeRule.onNodeWithText("সম্পন্ন পড়ার কাজ").assertIsDisplayed()
         composeRule.onNodeWithText("অনুশীলন সেশন").assertIsDisplayed()
 
-        composeRule.onNodeWithText("অনুশীলন সাজান").performClick()
+        composeRule.onNodeWithText("অনুশীলন সাজান").performScrollTo().performClick()
+        composeRule.onNodeWithText("আপনার প্রস্তুতির ধরন অনুযায়ী প্রশ্ন বেছে নিন").assertIsDisplayed()
         composeRule.onNodeWithText("নমুনা প্রশ্ন দেখুন").performScrollTo().performClick()
         composeRule.onNodeWithText("বাংলাদেশের সংবিধান কবে গণপরিষদে গৃহীত হয়?")
             .assertIsDisplayed()
