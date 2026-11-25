@@ -316,7 +316,7 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
 
 @Composable internal fun Article(nav: NavHostController) {
     val context = LocalContext.current
-    SideEffect { LocalLearningStore.recordArticleRead(context, "sample-international-justice") }
+    LaunchedEffect(context) { LocalLearningStore.recordArticleRead(context, "sample-international-justice") }
     val readerPreferences = rememberReaderPreferences(context)
     val readerFontSize = readerPreferences.fontSize
     val readerLineHeight = readerPreferences.lineHeight
