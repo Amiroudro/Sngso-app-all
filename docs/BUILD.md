@@ -57,14 +57,14 @@ The wrapper verifies the downloaded Gradle distribution against the pinned SHA-2
 
 ## Current verification status
 
-Latest verification on the current branch head:
+Latest verification on the current branch head before the next prepared change:
 
-- Workflow run: [45644373497](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45644373497)
-- Branch commit: `964d16d824dace81ddaa1e539d8c5c5c762eecad`
-- Routine job: **success**. Toolchain verification, JVM unit tests, instrumentation-test APK compilation, debug APK assembly and artifact upload all passed.
-- Debug APK: 17,024,591 bytes; SHA-256 `6cb67a89cef9f87b2c12ea46ad1e90c333069f8b81ff5e1dad6fab3ffa0734b1`. Artifact ZIP: `sarangsho-plus-debug-apk` (16,550,300 bytes), retained for one day.
-- Emulator job: **failure**, with zero app tests executed. The API 30 AOSP emulator connected, but Gradle rejected it as `Unknown API Level` because the emulator job had installed SDK Platform 35 only; Platform 30 was missing. The generated report contains one synthetic `No compatible devices connected` failure, not an app test failure.
-- The prior API 35 AOSP attempt (run [45644373497](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45644373497)) reached instrumentation but ANR-killed the app under severe TCG CPU pressure (88% CPU pressure avg10; 99% total guest CPU use).
-- The next CI attempt installs both SDK Platforms 30 and 35 and sets the emulator runner's dedicated `cores: 4` input. The previous `-cores 4` option alone did not override the action's two-core configuration.
+- Workflow run: [45651907054](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45651907054)
+- Tested commit: `3dcce6a79f59fba0a61f58a6df06e065543eb8aa`
+- Routine job: **success**. Toolchain verification, JVM unit tests, instrumentation-test APK compilation, debug APK assembly and artifact upload passed.
+- Debug APK: 17,024,591 bytes; SHA-256 `6cb67a89cef9f87b2c12ea46ad1e90c333069f8b81ff5e1dad6fab3ffa0734b1`. Artifact ZIP: `sarangsho-plus-debug-apk` (16,550,302 bytes), retained for one day.
+- Emulator job: **failure**, with zero app tests executed. SDK Platform 30 was installed and the API 30 AOSP emulator connected, but Android guest services became unresponsive. Logcat records an ANR in `com.android.phone`, repeated slow `system_server` operations and a 19.5-second foreground-handler dispatch. Gradle's device-property query raised `ShellCommandUnresponsiveException`, then reported `Unknown API Level`. The generated report is a synthetic `No compatible devices connected` failure, not an app test failure.
+- The earlier API 35 AOSP attempt [45644373497](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45644373497) reached app startup but ANR-killed the app under severe TCG CPU pressure (88% CPU pressure avg10; 99% total guest CPU use).
+- The next diagnostic configuration uses API 28 AOSP and two virtual CPU cores, with an explicit guest-shell readiness check before Gradle runs. This is an environment experiment, not evidence of runtime test success.
 
 The routine job confirms compilation and packaging, not runtime UI behavior. The 37 authored Android instrumentation tests remain unexecuted until an emulator run completes successfully. No physical-device or visual-accessibility result is claimed.

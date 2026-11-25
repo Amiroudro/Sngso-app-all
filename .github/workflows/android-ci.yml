@@ -64,6 +64,7 @@ jobs:
         !github.event.pull_request.draft &&
         needs.unit-and-build.result == 'success'))
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
     # GitHub-hosted Linux runners may not expose KVM. Recent Android Emulator
     # builds reject TCG software CPU emulation unless this explicit opt-in is set.
     env:
@@ -78,22 +79,37 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
         with:
-          packages: 'platform-tools platforms;android-30 platforms;android-35 build-tools;35.0.0'
+          packages: 'platform-tools platforms;android-28 platforms;android-35 build-tools;35.0.0'
           accept-android-sdk-licenses: true
       - name: Run Compose smoke test on emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          # API 30 AOSP keeps the guest system lighter on TCG-only hosted runners.
+          # API 28 AOSP keeps the guest system lighter on TCG-only hosted runners.
           # The app still compiles against SDK 35 and supports API 26+.
-          api-level: 30
+          api-level: 28
           target: default
           arch: x86_64
           profile: pixel_2
-          cores: 4
+          cores: 2
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           emulator-boot-timeout: 900
           disable-animations: true
           script: |
+            # Confirm the guest shell and framework are responsive before Gradle queries device properties.
+            for attempt in $(seq 1 12); do
+              BOOT_COMPLETED="$(timeout 5s adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || true)"
+              API_LEVEL="$(timeout 5s adb shell getprop ro.build.version.sdk 2>/dev/null | tr -d '\r' || true)"
+              if [ "$BOOT_COMPLETED" = "1" ] && [ "$API_LEVEL" = "28" ]; then
+                break
+              fi
+              sleep 2
+            done
+            if [ "$BOOT_COMPLETED" != "1" ] || [ "$API_LEVEL" != "28" ]; then
+              echo "Emulator shell did not become responsive at API 28 (boot=$BOOT_COMPLETED api=$API_LEVEL)"
+              adb devices -l
+              exit 1
+            fi
+            echo "Emulator shell ready at API $API_LEVEL"
             adb logcat -c
             adb logcat -v threadtime > emulator-logcat.txt &
             LOGCAT_PID=$!
