@@ -78,21 +78,26 @@ private val vocabularyEntries = listOf(
     )
 )
 
+private fun VocabularyEntry.matchesQuery(query: String): Boolean {
+    val normalizedQuery = query.trim()
+    if (normalizedQuery.isBlank()) return false
+    return listOf(
+        term,
+        partOfSpeech,
+        pronunciation,
+        banglaMeaning,
+        definition,
+        synonyms,
+        antonym,
+        example
+    ).any { it.contains(normalizedQuery, ignoreCase = true) }
+}
+
 internal fun searchVocabulary(query: String): List<Pair<String, String>> {
     val normalizedQuery = query.trim()
     if (normalizedQuery.isBlank()) return emptyList()
-    return vocabularyEntries.filter { entry ->
-        listOf(
-            entry.term,
-            entry.partOfSpeech,
-            entry.pronunciation,
-            entry.banglaMeaning,
-            entry.definition,
-            entry.synonyms,
-            entry.antonym,
-            entry.example
-        ).any { it.contains(normalizedQuery, ignoreCase = true) }
-    }.map { it.term to it.banglaMeaning }
+    return vocabularyEntries.filter { it.matchesQuery(normalizedQuery) }
+        .map { it.term to it.banglaMeaning }
 }
 
 @Composable internal fun LearningHub(nav: NavHostController) {
@@ -193,19 +198,8 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
     }
     var query by rememberSaveable { mutableStateOf("") }
     val normalizedQuery = query.trim()
-    val filteredWords = vocabularyEntries.filter { entry ->
-        normalizedQuery.isBlank() ||
-            listOf(
-                entry.term,
-                entry.partOfSpeech,
-                entry.pronunciation,
-                entry.banglaMeaning,
-                entry.definition,
-                entry.synonyms,
-                entry.antonym,
-                entry.example
-            ).any { it.contains(normalizedQuery, ignoreCase = true) }
-    }
+    val filteredWords = if (normalizedQuery.isBlank()) vocabularyEntries
+        else vocabularyEntries.filter { it.matchesQuery(normalizedQuery) }
     Scroll {
         Intro("Vocabulary Lab", "অর্থ, ব্যবহার ও পরীক্ষায় প্রয়োগ শিখুন। শব্দ বুকমার্ক করলে Saved-এ পাবেন।")
         OutlinedTextField(
