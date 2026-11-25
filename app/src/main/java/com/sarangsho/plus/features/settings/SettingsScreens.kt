@@ -53,13 +53,13 @@ import androidx.compose.ui.platform.testTag
                 LocalLearningStore.setReadingFontSize(context, it)
             }, valueRange = 16f..26f)
             Text("লাইন স্পেসিং: " + "%.1f".format(lineSpacing), fontWeight = FontWeight.SemiBold)
-            Slider(value = lineSpacing, onValueChange = {
+            Slider(value = lineSpacing, modifier = Modifier.testTag("reader-line-spacing-slider"), onValueChange = {
                 lineSpacing = it
                 LocalLearningStore.setReadingLineSpacing(context, it)
             }, valueRange = 1.2f..2.0f)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("উষ্ণ কাগজের নমুনা", Modifier.weight(1f))
-                Switch(checked = sepia, onCheckedChange = {
+                Switch(checked = sepia, modifier = Modifier.testTag("reader-sepia-switch"), onCheckedChange = {
                     sepia = it
                     LocalLearningStore.setReadingSepia(context, it)
                 })
