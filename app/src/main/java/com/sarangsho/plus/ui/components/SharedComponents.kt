@@ -4,8 +4,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -23,9 +24,17 @@ import com.sarangsho.plus.ui.theme.SarangshoPalette
 
 @Composable
 internal fun Scroll(content: @Composable ColumnScope.() -> Unit) {
-    LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-        item { Column(verticalArrangement = Arrangement.spacedBy(14.dp), content = content) }
-    }
+    // Each screen is one continuous column, not a lazy list of one giant item.
+    // verticalScroll exposes descendant scroll targets to Compose accessibility
+    // and UI tests, so controls below the fold can be brought into view reliably.
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(18.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp),
+        content = content
+    )
 }
 
 @Composable internal fun Intro(title: String, body: String) {
