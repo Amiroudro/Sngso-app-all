@@ -72,7 +72,7 @@ class HomeScreenTest {
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .assertIsDisplayed()
         composeRule.onNodeWithText("বিস্তারিত পড়ুন").performScrollTo().performClick()
-        composeRule.onNodeWithText("উৎস যাচাইয়ের অবস্থা").assertIsDisplayed()
+        composeRule.onNodeWithText("উৎস যাচাইয়ের অবস্থা").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .assertIsDisplayed()
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
@@ -228,7 +228,7 @@ class HomeScreenTest {
         composeRule.onNodeWithText("গতকালের সংস্করণ").assertHasClickAction().performClick()
         composeRule.onNodeWithText("দৈনিক ব্রিফিং").assertIsDisplayed()
         composeRule.onNodeWithText("প্রকাশিত সংস্করণ লোড হলে এখানে তার যাচাইকৃত প্রতিবেদন দেখানো হবে।")
-            .assertIsDisplayed()
+            .performScrollTo().assertIsDisplayed()
     }
 
     @Test
