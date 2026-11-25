@@ -62,7 +62,7 @@ jobs:
       always() &&
       (github.event_name == 'workflow_dispatch' ||
        (github.event_name == 'pull_request' &&
-        github.event.action == 'ready_for_review' &&
+        !github.event.pull_request.draft &&
         needs.unit-and-build.result == 'success'))
     runs-on: ubuntu-24.04
     # GitHub-hosted Linux runners may not expose KVM. Recent Android Emulator
