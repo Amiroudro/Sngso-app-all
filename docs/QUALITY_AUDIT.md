@@ -56,12 +56,12 @@
 - Unsupported actions are disabled with explanatory copy rather than appearing functional.
 - No live story count, source comparison, score, progress metric or download state is fabricated.
 
-## Navigation source check (updated 2026-11-24)
+## Navigation source check (updated 2026-11-25)
 
 A source-level scan of the current branch found:
 
 - 48 unique route declarations and 48 matching screen-dispatch branches.
-- 94 literal `navigate("…")` calls across the activity and feature files; no literal target points to an undeclared route.
+- 97 literal `navigate("…")` calls across the activity and feature files; no literal target points to an undeclared route.
 - One variable-driven `navigate(target)` call powers bottom navigation. Its four possible values (`home`, `learn`, `saved`, `feed`) are all declared routes.
 - The Language Settings screen is reachable from Settings, the edition archive from Today, and Word Detail from each Vocabulary Lab entry. The selected term is passed through the navigation back-stack entry and rendered from the bundled vocabulary record.
 
