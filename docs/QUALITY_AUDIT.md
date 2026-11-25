@@ -15,6 +15,7 @@
 - Vocabulary Lab has a searchable five-entry sample word list with per-word bookmark controls; search matches the term, part of speech, pronunciation, Bengali meaning, definition, synonyms, antonym and example, trims surrounding whitespace, and supports bookmarking from the selected-word detail screen. Saved words and articles, reader and language preferences, onboarding choices, notification preferences, writing and feedback drafts, reading history, practice history, and the study checklist are stored locally with Android SharedPreferences. The study checklist resets by local calendar date. These features are device-only and do not sync.
 - Vocabulary definitions and examples are prototype learning content; dictionary/source references and a maintained exam vocabulary feed are not connected.
 - Authentication, downloads, feedback submission and production user analytics are not connected. Saved articles are stored locally on-device; they are not account-synced.
+- Article and three-level summary reading controls now refresh font size, line spacing and sepia mode when the reader returns from Reading Settings; this avoids leaving an already-open reading surface with stale preferences.
 - Empty and unavailable states explain when their data/service is not connected.
 - Sample stories and sample vocabulary are labelled as such.
 
