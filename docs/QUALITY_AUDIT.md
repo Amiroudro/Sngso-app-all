@@ -23,7 +23,7 @@
 
 | Priority | Finding | Required evidence to close |
 |---|---|---|
-| P0 | Basic Android buildability is verified, but must remain stable | Keep the routine unit-test, instrumentation-APK compilation and debug-assembly workflow green on every source change |
+| P0 | Current branch head must pass routine Android CI before buildability is claimed | Keep the JVM smoke test, instrumentation-APK compilation and debug-assembly workflow green on every source change |
 | P0 | No successful emulator instrumentation or real-device visual verification | Emulator workflow passes; screenshots from a small phone, large phone and tablet |
 | P1 | Gradle Wrapper has completed a fresh CI build, but local developer setup is not yet documented end-to-end | Verify wrapper download, Gradle startup and APK assembly on a clean developer machine |
 | P1 | Editorial engine contract is not connected | Contract tests against approved edition fixtures |
@@ -69,7 +69,7 @@ This checks string consistency only. It does not prove that every screen renders
 
 ## Test coverage inventory (updated 2026-11-25)
 
-A source review of the test files found 36 authored Android instrumentation test methods:
+A source review found one JVM unit test (`ExampleUnitTest.applicationIdIsStable`) and 36 authored Android instrumentation test methods. The 36 Android tests are:
 
 | Test file | Test methods | What they cover |
 |---|---:|---|

@@ -29,7 +29,7 @@ This is an expanding screen inventory, not a required count. A route is added on
 - Unit and Compose instrumentation test dependencies
 - GitHub Actions build, unit-test and emulator smoke-test workflow
 
-Open the project in Android Studio, allow Gradle sync and run the app configuration on a device or emulator. The Gradle Wrapper is committed and the GitHub Actions workflow uses it. The latest verified routine CI run passed unit tests, instrumentation APK compilation and debug APK assembly. The instrumentation suite has not yet been executed on an emulator.
+Open the project in Android Studio, allow Gradle sync and run the app configuration on a device or emulator. The Gradle Wrapper is committed and the GitHub Actions workflow uses it. The routine pull-request workflow runs one JVM smoke test, compiles the 36 authored Android instrumentation tests into a test APK, and assembles a debug APK. Compiling the instrumentation APK does not execute those tests. Emulator execution is gated until the draft PR is marked ready for review.
 
 ## Design principles
 
