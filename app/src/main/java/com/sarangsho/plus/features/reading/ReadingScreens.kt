@@ -374,6 +374,8 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
             Text("রাষ্ট্রের বিরুদ্ধে আন্তর্জাতিক আদালতে দায়বদ্ধতার প্রশ্ন কীভাবে উত্থাপিত হয়, তা বুঝতে মামলার পক্ষ, আদালতের এখতিয়ার এবং প্রযোজ্য আন্তর্জাতিক আইন আলাদা করে দেখতে হয়।", fontSize = readerFontSize, lineHeight = readerLineHeight)
             Text("নমুনা ব্যাখ্যা • যাচাইকৃত সংবাদ প্রতিবেদন নয়", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
         }
+        }
+        }
         Text("এই প্রতিবেদনের পাঠ-সরঞ্জাম", fontSize = 18.sp, fontWeight = FontWeight.Bold)
         RowLink("পড়ার পছন্দ", "ফন্ট ও লাইন স্পেসিং বদলান", Icons.Default.TextFields) { nav.navigate("reading-settings") }
         RowLink("তিন-স্তরের সারাংশ", "৩০ সেকেন্ড, ২ মিনিট ও বিস্তারিত পাঠ", Icons.Default.Subject) { nav.navigate("summary") }
@@ -381,8 +383,6 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
         RowLink("পত্রিকার দৃষ্টিভঙ্গি", "উৎস পাওয়া গেলে তুলনা করুন", Icons.Default.CompareArrows) { nav.navigate("perspectives") }
         RowLink("জ্ঞান মানচিত্র", "প্রতিষ্ঠান, আইন ও ধারণার সম্পর্ক", Icons.Default.Hub) { nav.navigate("graph") }
         RowLink("উৎস ও যাচাই", "মূল নথি ও প্রকাশনার তথ্য", Icons.Default.Source) { nav.navigate("sources") }
-        }
-        }
         RowLink("তথ্য সংশোধনের অনুরোধ", "ভুল বা অস্পষ্ট তথ্য জানান", Icons.Default.Flag) { nav.navigate("report-story") }
     }
 }
