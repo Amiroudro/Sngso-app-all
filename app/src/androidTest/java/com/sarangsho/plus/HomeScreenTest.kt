@@ -150,6 +150,12 @@ class HomeScreenTest {
         composeRule.onNodeWithText("সংরক্ষণ").performClick()
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
         composeRule.onNodeWithText("Mitigate").assertIsDisplayed()
+
+        composeRule.onNodeWithText("সংরক্ষণ সরান").performClick()
+        composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
+            .assertDoesNotExist()
+        composeRule.onAllNodesWithText("সরান")[0].performClick()
+        composeRule.onNodeWithText("Mitigate").assertDoesNotExist()
     }
 
     @Test
