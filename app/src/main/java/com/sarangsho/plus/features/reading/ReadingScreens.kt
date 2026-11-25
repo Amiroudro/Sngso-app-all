@@ -757,16 +757,22 @@ internal fun Summary(nav: NavHostController) {
                 Panel {
                     Kicker("সংরক্ষিত নিবন্ধ • নমুনা")
                     Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        if (id == "sample-international-justice") {
+                    if (id == "sample-international-justice") {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             TextButton(onClick = { nav.navigate("article") }) { Text("পড়ুন") }
-                        } else {
-                            Text("এই নিবন্ধের বিস্তারিত এখনো উপলভ্য নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                            TextButton(onClick = {
+                                LocalLearningStore.setArticleSaved(context, id, false)
+                                savedArticles.remove(id)
+                            }) { Text("সংরক্ষণ সরান") }
                         }
-                        TextButton(onClick = {
-                            LocalLearningStore.setArticleSaved(context, id, false)
-                            savedArticles.remove(id)
-                        }) { Text("সংরক্ষণ সরান") }
+                    } else {
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Text("এই নিবন্ধের বিস্তারিত এখনো উপলভ্য নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                            TextButton(onClick = {
+                                LocalLearningStore.setArticleSaved(context, id, false)
+                                savedArticles.remove(id)
+                            }) { Text("সংরক্ষণ সরান") }
+                        }
                     }
                 }
             }
@@ -1189,16 +1195,22 @@ private fun topicGuide(topic: String): TopicGuide {
             Panel {
                 Kicker("নিবন্ধ • নমুনা")
                 Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (id == "sample-international-justice") {
+                if (id == "sample-international-justice") {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         TextButton(onClick = { nav.navigate("article") }) { Text("নিবন্ধটি খুলুন") }
-                    } else {
-                        Text("এই নিবন্ধের বিস্তারিত এখনো উপলভ্য নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                        TextButton(onClick = {
+                            LocalLearningStore.setArticleSaved(context, id, false)
+                            articles.remove(id)
+                        }) { Text("সংরক্ষণ সরান") }
                     }
-                    TextButton(onClick = {
-                        LocalLearningStore.setArticleSaved(context, id, false)
-                        articles.remove(id)
-                    }) { Text("সংরক্ষণ সরান") }
+                } else {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text("এই নিবন্ধের বিস্তারিত এখনো উপলভ্য নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                        TextButton(onClick = {
+                            LocalLearningStore.setArticleSaved(context, id, false)
+                            articles.remove(id)
+                        }) { Text("সংরক্ষণ সরান") }
+                    }
                 }
             }
         }
