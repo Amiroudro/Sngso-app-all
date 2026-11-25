@@ -221,6 +221,10 @@ class HomeScreenTest {
         composeRule.onNodeWithContentDescription("প্রোফাইল").performClick()
         composeRule.onNodeWithText("আমার প্রোফাইল").assertIsDisplayed()
         composeRule.onNodeWithContentDescription("প্রোফাইল").assertDoesNotExist()
+
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+        composeRule.onNodeWithText("Sarangsho+").assertIsDisplayed()
+        composeRule.onNodeWithContentDescription("প্রোফাইল").assertIsDisplayed()
     }
 
     @Test
