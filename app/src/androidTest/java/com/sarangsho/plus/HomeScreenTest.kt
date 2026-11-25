@@ -225,6 +225,8 @@ class HomeScreenTest {
         composeRule.onNodeWithText("দৈনিক সংস্করণ").assertIsDisplayed()
         composeRule.onNodeWithText("গতকালের সংস্করণ").assertHasClickAction().performClick()
         composeRule.onNodeWithText("দৈনিক ব্রিফিং").assertIsDisplayed()
+        composeRule.onNodeWithText("প্রকাশিত সংস্করণ লোড হলে এখানে তার যাচাইকৃত প্রতিবেদন দেখানো হবে।")
+            .assertIsDisplayed()
     }
 
     @Test
