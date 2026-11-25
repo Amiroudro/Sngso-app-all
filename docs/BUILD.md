@@ -57,4 +57,12 @@ The wrapper verifies the downloaded Gradle distribution against the pinned SHA-2
 
 ## Current verification status
 
-The wrapper files and CI commands are committed. This does not mean the latest source has passed a build. Recent GitHub Actions jobs failed before a runner was assigned, so Gradle did not start and no compiler or test result was produced. The workflow now includes a separate instrumentation-test APK compilation task, but that change has not yet been exercised by a successful build. Treat the build as unverified until the build and test commands complete successfully.
+Latest successful routine pull-request build:
+
+- Workflow run: [45619100750](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45619100750)
+- Verified branch commit: `a875feda7c4cbe9dd824c4d904977bb473854946`
+- Result: **success**
+- Passed steps: toolchain verification, JVM unit tests, instrumentation-test APK compilation, debug APK assembly and artifact upload.
+- Debug APK artifact: `sarangsho-plus-debug-apk` (16,550,308 bytes). GitHub Actions retention is one day; download it from the run's Artifacts section before it expires.
+
+This routine workflow confirms that the project compiles and packages the app and instrumentation APKs. It does not execute the 36 authored Android instrumentation tests. The emulator job was skipped because the pull request remains a draft. No emulator or physical-device runtime result is claimed.
