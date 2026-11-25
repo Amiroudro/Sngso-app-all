@@ -704,6 +704,10 @@ internal fun Summary(nav: NavHostController) {
                         Text("Vocabulary Lab • এই ডিভাইসে সংরক্ষিত", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
                     }
                     TextButton(onClick = {
+                        nav.currentBackStackEntry?.savedStateHandle?.set("selected_word", word)
+                        nav.navigate("word-detail")
+                    }) { Text("খুলুন") }
+                    TextButton(onClick = {
                         LocalLearningStore.setWordBookmarked(context, word, false)
                         bookmarkedWords.remove(word)
                     }) { Text("সরান") }
