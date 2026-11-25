@@ -9,6 +9,9 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextClearance
+import androidx.compose.ui.test.hasSetProgressAction
+import androidx.compose.ui.test.performSemanticsAction
+import androidx.compose.ui.test.SemanticsActions
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Before
 import org.junit.Rule
@@ -151,6 +154,29 @@ class HomeScreenTest {
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
         composeRule.onNodeWithText("অ্যাপের ভাষা").performClick()
         composeRule.onNodeWithText("নির্বাচন: English", substring = true).assertIsDisplayed()
+    }
+
+    @Test
+    fun readerFontPreferenceCanBeChangedAndPersistsWhenReturningToArticle() {
+        completeOnboarding()
+
+        composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performClick()
+        composeRule.onNodeWithText("পড়ার পছন্দ").performClick()
+        composeRule.onNodeWithText("লেখার আকার: 18 sp").assertIsDisplayed()
+
+        composeRule.onAllNodes(hasSetProgressAction())[0]
+            .performSemanticsAction(SemanticsActions.SetProgress) { setProgress -> setProgress(22f) }
+
+        val preferences = InstrumentationRegistry.getInstrumentation().targetContext
+            .getSharedPreferences("sarangsho_learning", android.content.Context.MODE_PRIVATE)
+        composeRule.waitForIdle()
+        org.junit.Assert.assertEquals(22f, preferences.getFloat("reading_font_size", 0f), 0.1f)
+
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+        composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
+            .assertIsDisplayed()
+        composeRule.onNodeWithText("পড়ার পছন্দ").performClick()
+        composeRule.onNodeWithText("লেখার আকার: 22 sp").assertIsDisplayed()
     }
 
     @Test
