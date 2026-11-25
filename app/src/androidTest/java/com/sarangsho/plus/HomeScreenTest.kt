@@ -270,6 +270,11 @@ class HomeScreenTest {
         composeRule.onNodeWithText("পড়ার পছন্দ").performClick()
         composeRule.onNodeWithText("লাইন স্পেসিং: 1.8").assertIsDisplayed()
         composeRule.onNodeWithTag("reader-sepia-switch").assertIsOn()
+
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+        composeRule.onNodeWithText("তিন-স্তরের সারাংশ").performClick()
+        composeRule.onNodeWithText("একই ঘটনা, তিনভাবে বুঝুন").assertIsDisplayed()
+        composeRule.onNodeWithText("ঘটনাটির মূল বিষয় এক বাক্যে বুঝুন।").assertIsDisplayed()
     }
 
     @Test
