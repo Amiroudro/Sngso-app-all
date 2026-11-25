@@ -14,6 +14,7 @@
 - Emulator instrumentation is gated to the PR's ready-for-review event after the routine build job succeeds, with manual dispatch retained for use after the workflow reaches the default branch.
 - Vocabulary Lab has a searchable five-entry sample word list with per-word bookmark controls; search matches the term, part of speech, pronunciation, Bengali meaning, definition, synonyms, antonym and example, trims surrounding whitespace, and supports bookmarking from the selected-word detail screen. Saved words and articles, reader and language preferences, onboarding choices, notification preferences, writing and feedback drafts, reading history, practice history, and the study checklist are stored locally with Android SharedPreferences. The study checklist resets by local calendar date. These features are device-only and do not sync.
 - Vocabulary definitions and examples are prototype learning content; dictionary/source references and a maintained exam vocabulary feed are not connected.
+- Android Auto Backup is disabled for the prototype so SharedPreferences drafts, bookmarks and reading activity are not silently included in the platform backup flow. A deliberate export/restore feature is not implemented.
 - Authentication, downloads, feedback submission and production user analytics are not connected. Saved articles are stored locally on-device; they are not account-synced.
 - Article and three-level summary reading controls now refresh font size, line spacing and sepia mode when the reader returns from Reading Settings; this avoids leaving an already-open reading surface with stale preferences.
 - Empty and unavailable states explain when their data/service is not connected.
@@ -69,12 +70,13 @@ This checks string consistency only. It does not prove that every screen renders
 
 ## Test coverage inventory (updated 2026-11-25)
 
-A source review found one JVM unit test (`ExampleUnitTest.applicationIdIsStable`) and 36 authored Android instrumentation test methods. The 36 Android tests are:
+A source review found one JVM unit test (`ExampleUnitTest.applicationIdIsStable`) and 37 authored Android instrumentation test methods. The 37 Android tests are:
 
 | Test file | Test methods | What they cover |
 |---|---:|---|
 | `HomeScreenTest.kt` | 18 | Welcome, onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, saved-collection article/word navigation, accessible Learn-hub shortcuts, language settings navigation/persistence, Today-to-archive navigation, selected-word detail navigation, bookmarking from Word Detail with list refresh on return, opening and removing saved articles and words in Saved Collections, handling unknown saved article IDs without misrouting, refreshing the collection after bookmarking a new word and unbookmarking from Word Detail, opening a saved word from Library, profile self-navigation prevention, whitespace-trimmed synonym and example-sentence search, reader font preference persistence, line-spacing and sepia preference persistence through Article settings, and the sample quiz-to-history journey |
 | `LocalLearningStoreTest.kt` | 18 | Topic, vocabulary search, bookmarks, drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration/bounds, practice-history validation/bounds, and daily study-task persistence/reset |
+| `AppPrivacyManifestTest.kt` | 1 | Confirms Android Auto Backup is disabled for the app package |
 
 Coverage limits:
 

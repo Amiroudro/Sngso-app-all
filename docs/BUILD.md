@@ -65,4 +65,4 @@ Latest successful routine pull-request build:
 - Passed steps: toolchain verification, JVM unit tests, instrumentation-test APK compilation, debug APK assembly and artifact upload.
 - Debug APK artifact: `sarangsho-plus-debug-apk` (16,550,308 bytes). GitHub Actions retention is one day; download it from the run's Artifacts section before it expires.
 
-This routine workflow confirms that the project compiles and packages the app and instrumentation APKs. It does not execute the 36 authored Android instrumentation tests. The emulator job was skipped because the pull request remains a draft. No emulator or physical-device runtime result is claimed.
+This routine workflow confirms that the project compiles and packages the app and instrumentation APKs. It does not execute the 37 authored Android instrumentation tests. The emulator job was skipped because the pull request remains a draft. No emulator or physical-device runtime result is claimed.
