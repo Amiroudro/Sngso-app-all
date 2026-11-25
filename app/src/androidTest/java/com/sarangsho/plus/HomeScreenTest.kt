@@ -206,6 +206,12 @@ class HomeScreenTest {
         composeRule.onNodeWithText("লাইব্রেরি").performClick()
         composeRule.onNodeWithText("সংরক্ষিত শব্দ • 1").assertIsDisplayed()
         composeRule.onNodeWithText("Resilience").assertIsDisplayed()
+
+        composeRule.onNodeWithText("খুলুন").performClick()
+        composeRule.onNodeWithText("Definition: The ability to recover or adapt after difficulty.")
+            .assertIsDisplayed()
+        composeRule.onNodeWithContentDescription("পেছনে").performClick()
+        composeRule.onNodeWithText("সংরক্ষিত শব্দ • 1").assertIsDisplayed()
     }
 
     @Test
