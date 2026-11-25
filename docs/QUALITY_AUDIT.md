@@ -70,21 +70,21 @@ This checks string consistency only. It does not prove that every screen renders
 
 ## Test coverage inventory (updated 2026-11-25)
 
-A source review found one JVM unit test (`ExampleUnitTest.applicationIdIsStable`) and 39 authored Android instrumentation test methods. The 39 Android tests are:
+A source review found one JVM unit test (`ExampleUnitTest.applicationIdIsStable`) and 40 authored Android instrumentation test methods. The 40 Android tests are:
 
 | Test file | Test methods | What they cover |
 |---|---:|---|
 | `HomeScreenTest.kt` | 18 | Welcome and onboarding; Explore filters, matching article navigation and unavailable sample-story states; Library empty/search states; article and vocabulary bookmarks; Saved Collections opening, refresh and removal; unknown saved article handling; Learn-hub shortcuts and practice history; archive navigation; language persistence; reader font, line-spacing and sepia preferences; vocabulary detail/search; and profile navigation state |
-| `LocalLearningStoreTest.kt` | 20 | Topic, vocabulary search, bookmarks, drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration/bounds, practice-history validation/bounds, and daily study-task persistence/reset |
+| `LocalLearningStoreTest.kt` | 21 | Topic, vocabulary search, bookmarks, writing/feedback/story-report drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration/bounds, practice-history validation/bounds, and daily study-task persistence/reset |
 | `AppPrivacyManifestTest.kt` | 1 | Confirms Android Auto Backup is disabled for the app package |
 
 Coverage limits:
 
 - These are Android instrumentation tests, not JVM unit tests.
-- All 20 local-store tests clear their test preferences before and after each test.
+- All 21 local-store tests clear their test preferences before and after each test.
 - The test source uses Compose UI test APIs and AndroidX instrumentation APIs declared in the app module.
 - No test currently verifies all 48 routes, all article/summary navigation paths, process recreation, or accessibility behavior.
-- The tests are authored and compile successfully. API 28 AOSP executed all 39 instrumentation tests: 32 passed and 7 failed. The privacy-manifest test and all 20 local-store tests passed. The remaining failures are confined to HomeScreen UI interactions: some article/story/search/practice targets were below the viewport and one practice-history heading matched twice. Commit `43ec7e8` adds scroll-to-visible actions and disambiguates that heading. Runtime verification remains incomplete until the next run confirms the fixes.
+- The current source contains 40 authored instrumentation tests (18 HomeScreen, 21 local-store, 1 privacy-manifest). The latest completed API 28 run executed the preceding 39-test source: 32 passed and 7 failed. The privacy-manifest test and all 20 then-existing local-store tests passed. The remaining failures are confined to HomeScreen UI interactions: some article/story/search/practice targets were below the viewport and one practice-history heading matched twice. Commit `43ec7e8` adds scroll-to-visible actions and disambiguates that heading. Runtime verification remains incomplete until the next run confirms the fixes.
 - The routine CI step `:app:assembleDebugAndroidTest` only compiles/packages the instrumentation APK. It is not a substitute for `:app:connectedDebugAndroidTest`.
 
 The next test expansion should follow actual user journeys and stable data contracts, not attempt to create one shallow test for every screen.

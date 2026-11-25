@@ -67,4 +67,4 @@ Latest completed emulator verification:
 - The privacy-manifest test and all 20 local-store tests passed. No emulator startup failure prevented test execution.
 - Commit `43ec7e8` adds scroll-to-visible behavior to the remaining off-screen test targets and selects one of the duplicate practice-history headings. Commit `a337143` also replaces the unloaded Edition screen's unrelated sample-article link with an explicit placeholder. The next workflow run will verify these changes.
 
-The debug APK is suitable for local UI exploration, but it is not release-signed and the instrumentation suite is not yet green. No physical-device or visual-accessibility result is claimed.
+The current branch adds a local-only story-correction draft and its persistence regression test, bringing the authored Android instrumentation inventory to 40. The latest completed emulator run predates that test addition. The debug APK is suitable for local UI exploration, but it is not release-signed and the instrumentation suite is not yet green. No physical-device or visual-accessibility result is claimed.
