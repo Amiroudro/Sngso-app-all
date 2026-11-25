@@ -8,6 +8,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTextClearance
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Before
 import org.junit.Rule
@@ -168,14 +169,19 @@ class HomeScreenTest {
     }
 
     @Test
-    fun vocabularySearchMatchesSynonymsAndTrimsWhitespace() {
+    fun vocabularySearchMatchesSynonymsExamplesAndTrimsWhitespace() {
         completeOnboarding()
 
         composeRule.onNodeWithText("শিখুন").performClick()
         composeRule.onNodeWithText("শব্দ শেখা শুরু করুন").performClick()
-        composeRule.onNodeWithText("শব্দ, অর্থ, সমার্থক বা উদাহরণ খুঁজুন")
-            .performTextInput(" adaptability ")
+        val search = composeRule.onNodeWithText("শব্দ, অর্থ, সমার্থক বা উদাহরণ খুঁজুন")
+        search.performTextInput(" adaptability ")
 
+        composeRule.onNodeWithText("Resilience").assertIsDisplayed()
+        composeRule.onNodeWithText("Mitigate").assertDoesNotExist()
+
+        search.performTextClearance()
+        search.performTextInput("natural disaster")
         composeRule.onNodeWithText("Resilience").assertIsDisplayed()
         composeRule.onNodeWithText("Mitigate").assertDoesNotExist()
     }
