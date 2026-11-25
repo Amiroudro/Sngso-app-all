@@ -9,6 +9,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performSemanticsAction
@@ -34,9 +35,10 @@ class HomeScreenTest {
     private fun completeOnboarding() {
         composeRule.onNodeWithText("আমার প্রস্তুতি সাজাই").performClick()
         composeRule.onNodeWithText("আপনার প্রধান লক্ষ্য কী?").assertIsDisplayed()
-        composeRule.onNodeWithText("বিষয় বেছে নিন").performClick()
+        composeRule.onNodeWithText("বিষয় বেছে নিন").performScrollTo().performClick()
         composeRule.onNodeWithText("কোন বিষয়গুলো পড়তে চান?").assertIsDisplayed()
-        composeRule.onNodeWithText("আমার ব্রিফিং দেখুন").performClick()
+        composeRule.onNodeWithText("আমার ব্রিফিং দেখুন").performScrollTo().performClick()
+        composeRule.onNodeWithText("এক্সপ্লোর").assertIsDisplayed()
     }
 
     @Test
@@ -49,7 +51,7 @@ class HomeScreenTest {
     fun firstRunOnboardingLeadsToTodayBriefing() {
         completeOnboarding()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
-            .assertIsDisplayed()
+            .performScrollTo().assertIsDisplayed()
     }
 
     @Test
@@ -69,7 +71,7 @@ class HomeScreenTest {
         composeRule.onAllNodesWithText("সব")[0].performClick()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .assertIsDisplayed()
-        composeRule.onNodeWithText("বিস্তারিত পড়ুন").performClick()
+        composeRule.onNodeWithText("বিস্তারিত পড়ুন").performScrollTo().performClick()
         composeRule.onNodeWithText("উৎস যাচাইয়ের অবস্থা").assertIsDisplayed()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .assertIsDisplayed()
@@ -77,7 +79,7 @@ class HomeScreenTest {
 
         composeRule.onAllNodesWithText("অর্থনীতি")[0].performClick()
         composeRule.onNodeWithText("এই বিষয়ের পূর্ণ পাঠ ও সারাংশ এখনো যুক্ত হয়নি।")
-            .assertIsDisplayed()
+            .performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .assertDoesNotExist()
     }
@@ -100,7 +102,7 @@ class HomeScreenTest {
     fun todayFeaturedArticleCanBeBookmarkedIntoLibrary() {
         completeOnboarding()
 
-        composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performClick()
+        composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performScrollTo().performClick()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .assertIsDisplayed()
         composeRule.onNodeWithContentDescription("সংরক্ষণ করুন").performClick()
@@ -221,7 +223,7 @@ class HomeScreenTest {
     fun todayBriefingOpensTheEditionArchive() {
         completeOnboarding()
 
-        composeRule.onNodeWithText("পুরোনো সংস্করণ").assertHasClickAction().performClick()
+        composeRule.onNodeWithText("পুরোনো সংস্করণ").performScrollTo().assertHasClickAction().performClick()
         composeRule.onNodeWithText("দৈনিক সংস্করণ").assertIsDisplayed()
         composeRule.onNodeWithText("গতকালের সংস্করণ").assertHasClickAction().performClick()
         composeRule.onNodeWithText("দৈনিক ব্রিফিং").assertIsDisplayed()
@@ -362,7 +364,7 @@ class HomeScreenTest {
         completeOnboarding()
 
         composeRule.onNodeWithContentDescription("প্রোফাইল").performClick()
-        composeRule.onNodeWithText("আমার প্রোফাইল").assertIsDisplayed()
+        composeRule.onAllNodesWithText("আমার প্রোফাইল")[0].assertIsDisplayed()
         composeRule.onNodeWithContentDescription("প্রোফাইল").assertDoesNotExist()
 
         composeRule.onNodeWithContentDescription("পেছনে").performClick()

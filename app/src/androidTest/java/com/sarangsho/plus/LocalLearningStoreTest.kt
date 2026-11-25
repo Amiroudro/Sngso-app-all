@@ -157,7 +157,7 @@ class LocalLearningStoreTest {
 
         assertEquals(expected, LocalLearningStore.getRecentArticles(context))
         assertEquals(
-            expected.joinToString(prefix = "[", postfix = "]") { "\"" + it + "\"" },
+            expected.joinToString(separator = ",", prefix = "[", postfix = "]") { "\"" + it + "\"" },
             prefs.getString("recent_articles", null)
         )
         assertTrue(prefs.all["recent_articles"] is String)
