@@ -215,6 +215,15 @@ class HomeScreenTest {
     }
 
     @Test
+    fun profileScreenDoesNotOfferNavigationToItself() {
+        completeOnboarding()
+
+        composeRule.onNodeWithContentDescription("প্রোফাইল").performClick()
+        composeRule.onNodeWithText("আমার প্রোফাইল").assertIsDisplayed()
+        composeRule.onNodeWithContentDescription("প্রোফাইল").assertDoesNotExist()
+    }
+
+    @Test
     fun learnHubPracticeFlowRecordsAndDisplaysACompletedAttempt() {
         completeOnboarding()
 
