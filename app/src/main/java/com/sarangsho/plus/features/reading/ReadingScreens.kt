@@ -715,7 +715,11 @@ internal fun Summary(nav: NavHostController) {
                     Kicker("সংরক্ষিত নিবন্ধ • নমুনা")
                     Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        TextButton(onClick = { nav.navigate("article") }) { Text("পড়ুন") }
+                        if (id == "sample-international-justice") {
+                            TextButton(onClick = { nav.navigate("article") }) { Text("পড়ুন") }
+                        } else {
+                            Text("এই নিবন্ধের বিস্তারিত এখনো উপলভ্য নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                        }
                         TextButton(onClick = {
                             LocalLearningStore.setArticleSaved(context, id, false)
                             savedArticles.remove(id)
