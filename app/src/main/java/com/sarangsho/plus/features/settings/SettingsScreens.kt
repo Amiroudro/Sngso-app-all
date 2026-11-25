@@ -70,7 +70,7 @@ import androidx.compose.ui.platform.LocalContext
                 Text("বাংলা ও ইংরেজি একসঙ্গে পড়ার সময় অক্ষরের গঠন এবং লাইনের ফাঁক যেন পরিষ্কার থাকে।", fontSize = fontSize.sp, lineHeight = (fontSize * lineSpacing).sp, color = SarangshoPalette.Ink)
             }
         }
-        Text("এই পছন্দগুলো এই ডিভাইসে সংরক্ষিত থাকে। বর্তমান নমুনা পাঠেই প্রিভিউ দেখা যায়; সব নিবন্ধে প্রয়োগের সংযোগ বাকি।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        Text("এই পছন্দগুলো এই ডিভাইসে সংরক্ষিত থাকে এবং নমুনা নিবন্ধ ও তিন-স্তরের সারাংশে প্রয়োগ হয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
     }
 }
 
