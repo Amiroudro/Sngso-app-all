@@ -241,11 +241,21 @@ import androidx.compose.ui.semantics.semantics
             label = { Text("কী ভুল হয়েছে?") },
             placeholder = { Text("দাবি, সংশোধনের প্রস্তাব এবং প্রাসঙ্গিক উৎসের লিংক লিখুন।") }
         )
-        Button(
-            onClick = { LocalLearningStore.setReportStoryDraft(context, details); saved = true },
-            enabled = details.isNotBlank(),
-            modifier = Modifier.fillMaxWidth()
-        ) { Text("খসড়া এই ডিভাইসে সংরক্ষণ করুন") }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(
+                onClick = { LocalLearningStore.setReportStoryDraft(context, details); saved = true },
+                enabled = details.isNotBlank(),
+                modifier = Modifier.weight(1f)
+            ) { Text("খসড়া সংরক্ষণ") }
+            TextButton(
+                onClick = {
+                    LocalLearningStore.clearReportStoryDraft(context)
+                    details = ""
+                    saved = false
+                },
+                enabled = details.isNotBlank()
+            ) { Text("খসড়া মুছুন") }
+        }
         if (saved) Text("খসড়া সংরক্ষিত হয়েছে। এটি সার্ভারে পাঠানো হয়নি।", color = MaterialTheme.colorScheme.primary, fontSize = 12.sp)
         Text("খসড়া এই ডিভাইসেই থাকবে। প্রতিবেদন পাঠানোর সার্ভিস এখনো সংযুক্ত নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
     }
