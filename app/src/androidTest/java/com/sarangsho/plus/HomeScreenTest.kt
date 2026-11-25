@@ -11,7 +11,7 @@ import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.hasSetProgressAction
 import androidx.compose.ui.test.performSemanticsAction
-import androidx.compose.ui.test.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Before
 import org.junit.Rule
