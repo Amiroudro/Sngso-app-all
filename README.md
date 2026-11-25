@@ -33,7 +33,7 @@ Open the project in Android Studio, allow Gradle sync and run the app configurat
 
 ## Design principles
 
-- Bengali-first typography with explicit font fallback and tested line height.
+- Bengali-first typography with readable line-height choices; font fallback, enlarged text and device rendering still require a hardware accessibility pass.
 - A restrained ink / warm-paper / deep-teal palette; no generic gradient-heavy dashboard.
 - Strong editorial hierarchy: headlines, metadata, evidence, context and learning actions remain distinct.
 - Reading surfaces prioritize line length, contrast, spacing and adjustable text size.

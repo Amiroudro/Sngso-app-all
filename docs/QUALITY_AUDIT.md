@@ -9,9 +9,9 @@
 - Shared screen components are separated from reading, learning and settings feature files.
 - Semantic light and dark color schemes are centralized.
 - Search and category filters work against explicitly labelled local sample stories.
-- Compose instrumentation tests cover onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, the Learn-hub activity shortcuts, language settings persistence, the quiz-to-history journey, reader font, line-spacing and sepia preference persistence through Article settings, and local learning-store persistence. Their APK compiles in CI. The latest API 35 AOSP emulator attempt failed before the first test could execute (0 tests completed), after the app process was ANR-killed during startup.
+- Compose instrumentation tests cover onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, the Learn-hub activity shortcuts, language settings persistence, the quiz-to-history journey, reader font, line-spacing and sepia preference persistence through Article settings, and local learning-store persistence. Their APK compiles in CI. The API 35 AOSP attempt ANR-killed the app before tests; the API 30 attempt was rejected by Gradle as an unknown API level because SDK Platform 30 was not installed. Zero app tests have executed.
 - The routine pull-request workflow is configured to compile and package the instrumentation test APK using `:app:assembleDebugAndroidTest`. This checks that test sources compile; it does not execute the instrumentation tests.
-- Emulator instrumentation runs on non-draft pull-request updates after the routine build succeeds. The current hosted runner uses TCG software CPU emulation; the API 35 AOSP attempt showed severe guest CPU pressure and did not reach test execution. A lighter API 30 AOSP image is the next diagnostic configuration.
+- Emulator instrumentation runs on non-draft pull-request updates after the routine build succeeds. The current hosted runner uses TCG software CPU emulation. API 35 AOSP reached app startup but suffered severe guest CPU pressure; API 30 AOSP was connected but Gradle rejected it because SDK Platform 30 was missing. The next attempt installs both Android SDK Platforms 30 and 35 and explicitly configures four emulator cores.
 - Vocabulary Lab has a searchable five-entry sample word list with per-word bookmark controls; search matches the term, part of speech, pronunciation, Bengali meaning, definition, synonyms, antonym and example, trims surrounding whitespace, and supports bookmarking from the selected-word detail screen. Saved words and articles, reader and language preferences, onboarding choices, notification preferences, writing and feedback drafts, reading history, practice history, and the study checklist are stored locally with Android SharedPreferences. The study checklist resets by local calendar date. These features are device-only and do not sync.
 - Vocabulary definitions and examples are prototype learning content; dictionary/source references and a maintained exam vocabulary feed are not connected.
 - Android Auto Backup is disabled for the prototype so SharedPreferences drafts, bookmarks and reading activity are not silently included in the platform backup flow. A deliberate export/restore feature is not implemented.
@@ -40,7 +40,7 @@
 ## Next engineering sequence
 
 1. Get the routine Android unit/build and instrumentation-test compilation workflow green; fix compiler/test-source failures before adding more UI.
-2. Validate the API 30 AOSP emulator configuration. Require actual test execution and inspect per-test failures; a boot or successful APK install is not a test pass.
+2. Validate the API 30 AOSP emulator after installing SDK Platform 30 and setting the runner's explicit four-core input. Require actual test execution and inspect per-test failures; a boot or successful APK install is not a test pass.
 3. Replace string routes with typed destinations and add deep-link contracts.
 4. Introduce screen-level ViewModels and immutable UI state.
 5. Connect approved edition fixtures, then the real engine API.
@@ -83,8 +83,8 @@ Coverage limits:
 - These are Android instrumentation tests, not JVM unit tests.
 - All 18 local-store tests clear their test preferences before and after each test.
 - The test source uses Compose UI test APIs and AndroidX instrumentation APIs declared in the app module.
-- No test currently verifies all 48 routes, article/summary navigation comprehensively, Saved-screen removal, process recreation, or accessibility behavior.
-- The tests are authored and compile successfully. The latest API 35 AOSP emulator run failed with 0 tests completed: the app process was ANR-killed during startup while guest CPU pressure reached 88% (avg10) and total CPU usage reached 99%. This is consistent with TCG emulator saturation, but runtime success remains unproven. Compilation is not a passing runtime test.
+- No test currently verifies all 48 routes, all article/summary navigation paths, process recreation, or accessibility behavior.
+- The tests are authored and compile successfully. The API 35 AOSP emulator run failed with zero app tests completed after an app-startup ANR under severe CPU pressure. The API 30 attempt also completed zero app tests: Gradle reported `Unknown API Level` because SDK Platform 30 was absent. Both failures are environment/configuration failures so far; runtime success remains unproven. Compilation is not a passing runtime test.
 - The routine CI step `:app:assembleDebugAndroidTest` only compiles/packages the instrumentation APK. It is not a substitute for `:app:connectedDebugAndroidTest`.
 
 The next test expansion should follow actual user journeys and stable data contracts, not attempt to create one shallow test for every screen.

@@ -62,9 +62,9 @@ Latest verification on the current branch head:
 - Workflow run: [45644373497](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45644373497)
 - Branch commit: `964d16d824dace81ddaa1e539d8c5c5c762eecad`
 - Routine job: **success**. Toolchain verification, JVM unit tests, instrumentation-test APK compilation, debug APK assembly and artifact upload all passed.
-- Debug APK artifact: `sarangsho-plus-debug-apk` (16,550,301 bytes). GitHub Actions retention is one day; download it from the run's Artifacts section before it expires.
-- Emulator job: **failure**, with `tests=0`. The AOSP API 35 emulator booted and installed both APKs, but the app process failed to complete startup and was ANR-killed before instrumentation could execute.
-- Captured emulator diagnostics show CPU pressure `some avg10=88.08`, `avg60=88.47`, `avg300=74.20`, and 99% total guest CPU use. Android system services also experienced ANRs. The evidence points to severe TCG software-emulation CPU saturation; it does not establish an application-code crash.
-- The next CI attempt uses an API 30 AOSP image and four virtual CPU cores to test whether a lighter guest environment can complete instrumentation.
+- Debug APK: 17,024,591 bytes; SHA-256 `6cb67a89cef9f87b2c12ea46ad1e90c333069f8b81ff5e1dad6fab3ffa0734b1`. Artifact ZIP: `sarangsho-plus-debug-apk` (16,550,300 bytes), retained for one day.
+- Emulator job: **failure**, with zero app tests executed. The API 30 AOSP emulator connected, but Gradle rejected it as `Unknown API Level` because the emulator job had installed SDK Platform 35 only; Platform 30 was missing. The generated report contains one synthetic `No compatible devices connected` failure, not an app test failure.
+- The prior API 35 AOSP attempt (run [45644373497](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45644373497)) reached instrumentation but ANR-killed the app under severe TCG CPU pressure (88% CPU pressure avg10; 99% total guest CPU use).
+- The next CI attempt installs both SDK Platforms 30 and 35 and sets the emulator runner's dedicated `cores: 4` input. The previous `-cores 4` option alone did not override the action's two-core configuration.
 
 The routine job confirms compilation and packaging, not runtime UI behavior. The 37 authored Android instrumentation tests remain unexecuted until an emulator run completes successfully. No physical-device or visual-accessibility result is claimed.
