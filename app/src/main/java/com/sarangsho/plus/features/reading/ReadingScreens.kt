@@ -323,11 +323,32 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
     val sepia = readerPreferences.sepia
     var saved by rememberSaveable { mutableStateOf(LocalLearningStore.isArticleSaved(context, "sample-international-justice")) }
     Scroll {
-        Surface(color = if (sepia) SarangshoPalette.Paper else MaterialTheme.colorScheme.background, shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth()) {
+        Surface(
+            color = if (sepia) SarangshoPalette.Paper else MaterialTheme.colorScheme.background,
+            contentColor = if (sepia) SarangshoPalette.Ink else MaterialTheme.colorScheme.onBackground,
+            shape = RoundedCornerShape(16.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
         Column(Modifier.padding(if (sepia) 12.dp else 0.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            Kicker("বিশ্লেষণ • নমুনা নিবন্ধ")
-            AssistChip(onClick = {}, enabled = false, label = { Text("নমুনা", fontSize = 10.sp) })
+            Text(
+                "বিশ্লেষণ • নমুনা নিবন্ধ".uppercase(),
+                fontSize = 10.sp,
+                color = if (sepia) SarangshoPalette.Teal else MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp
+            )
+            Surface(
+                color = if (sepia) SarangshoPalette.Soft else MaterialTheme.colorScheme.surfaceVariant,
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(
+                    "নমুনা",
+                    Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                    fontSize = 10.sp,
+                    color = if (sepia) SarangshoPalette.Teal else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
             IconButton(onClick = {
                 saved = !saved
                 LocalLearningStore.setArticleSaved(context, "sample-international-justice", saved)
@@ -335,8 +356,8 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
                 Icon(if (saved) Icons.Default.Bookmark else Icons.Default.BookmarkBorder, contentDescription = if (saved) "সংরক্ষিত" else "সংরক্ষণ করুন")
             }
         }
-        Text("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন", fontSize = 25.sp, lineHeight = 34.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
-        Text("আন্তর্জাতিক আইন • রোহিঙ্গা সংকট • বিচারিক প্রক্রিয়া", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        Text("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন", fontSize = 25.sp, lineHeight = 34.sp, fontWeight = FontWeight.Bold, color = if (sepia) SarangshoPalette.Ink else MaterialTheme.colorScheme.onBackground)
+        Text("আন্তর্জাতিক আইন • রোহিঙ্গা সংকট • বিচারিক প্রক্রিয়া", color = if (sepia) SarangshoPalette.Muted else MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
         Panel {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Icon(Icons.Default.VerifiedUser, null, tint = MaterialTheme.colorScheme.primary)
