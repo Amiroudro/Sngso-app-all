@@ -159,7 +159,7 @@ import androidx.compose.ui.semantics.semantics
         OutlinedTextField(
             value = message,
             onValueChange = { message = it; saved = false },
-            modifier = Modifier.fillMaxWidth().height(180.dp),
+            modifier = Modifier.fillMaxWidth().height(180.dp).testTag("report-story-details"),
             label = { Text("বিস্তারিত লিখুন") },
             placeholder = { Text("কী ঘটেছে, কোন স্ক্রিনে, কী আশা করেছিলেন...") }
         )
@@ -245,7 +245,7 @@ import androidx.compose.ui.semantics.semantics
             Button(
                 onClick = { LocalLearningStore.setReportStoryDraft(context, details); saved = true },
                 enabled = details.isNotBlank(),
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f).testTag("report-story-save")
             ) { Text("খসড়া সংরক্ষণ") }
             TextButton(
                 onClick = {
@@ -253,7 +253,8 @@ import androidx.compose.ui.semantics.semantics
                     details = ""
                     saved = false
                 },
-                enabled = details.isNotBlank()
+                enabled = details.isNotBlank(),
+                modifier = Modifier.testTag("report-story-clear")
             ) { Text("খসড়া মুছুন") }
         }
         if (saved) Text("খসড়া সংরক্ষিত হয়েছে। এটি সার্ভারে পাঠানো হয়নি।", color = MaterialTheme.colorScheme.primary, fontSize = 12.sp)
