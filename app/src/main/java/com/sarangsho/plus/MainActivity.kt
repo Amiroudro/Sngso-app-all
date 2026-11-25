@@ -106,8 +106,10 @@ private fun SarangshoApp() {
                                 Icon(Icons.Default.NotificationsNone, "নোটিফিকেশন")
                             }
                         }
-                        IconButton(onClick = { nav.navigate("profile") }) {
-                            Icon(Icons.Default.AccountCircle, "প্রোফাইল")
+                        if (route != "profile") {
+                            IconButton(onClick = { nav.navigate("profile") }) {
+                                Icon(Icons.Default.AccountCircle, "প্রোফাইল")
+                            }
                         }
                     },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = MaterialTheme.colorScheme.background)
