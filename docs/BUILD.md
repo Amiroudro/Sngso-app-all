@@ -39,12 +39,12 @@ The debug app APK is written to `app/build/outputs/apk/debug/app-debug.apk`.
 
 ## GitHub Actions usage
 
-- Pull-request updates run unit tests, compile/package the instrumentation test APK, and assemble the debug app APK.
+- Pull-request updates run JVM unit tests, compile/package the instrumentation test APK, and assemble both debug and unsigned release APKs. The workflow uploads the unsigned release APK for build inspection; it is not signed for normal distribution.
 - The workflow does not run a second time for branch pushes while a pull request is open.
 - A concurrency group cancels an older in-progress verification for the same pull request when a newer commit arrives.
 - Emulator instrumentation runs for non-draft pull requests after the routine unit/build job succeeds. The hosted Linux runner currently uses TCG software emulation because KVM is unavailable.
 - The `workflow_dispatch` trigger is retained for deliberate manual reruns after the workflow exists on the default branch. GitHub requires manually dispatched workflows to exist on that branch.
-- APK artifacts are retained for one day to limit storage usage. Download a needed APK promptly after a successful run.
+- Debug APK artifacts are retained for one day. Unsigned release APK and emulator diagnostics artifacts are retained for seven days. Download needed artifacts promptly after a successful run.
 
 ## Reproducibility and integrity
 
@@ -59,15 +59,15 @@ The wrapper verifies the downloaded Gradle distribution against the pinned SHA-2
 
 Latest completed verification:
 
-- Workflow run: [45832521965](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45832521965)
-- Tested commit: `443917301b481f72ed32213c03c9b7a6b9f673d0`
+- Workflow run: [45856677746](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45856677746)
+- Tested commit: `8ec761a73390bba63ae94c286a25bb1b89ecb739`
 - Overall workflow: **success**. Both `unit-and-build` and `compose-instrumentation` jobs passed.
-- Routine job: toolchain verification, JVM unit tests, instrumentation APK compilation, debug APK assembly and artifact upload all passed.
-- Emulator: API 28 AOSP executed all 41 authored Android instrumentation tests. **41 passed, 0 failed, 0 skipped.** The Explore category-filter interaction test passed.
-- Debug APK artifact: 16,553,492 bytes; retained for one day. Emulator diagnostics artifact: retained for seven days.
-- The workflow's emulator script now runs the test command, captures its exit status and stops logcat within one shell. This fixes the prior false-negative where per-line shell execution lost `LOGCAT_PID` and `TEST_EXIT` even though Gradle reported `BUILD SUCCESSFUL` and the instrumentation runner reported `OK (41 tests)`.
+- Routine job: JVM unit tests, instrumentation APK compilation, debug APK assembly, and unsigned release APK assembly all passed. Both APK artifacts uploaded successfully.
+- Emulator: API 28 AOSP completed all 42 authored Android instrumentation tests. **42 completed, 0 failed, 0 skipped.**
+- Unsigned release APK artifact: 11,105,551 bytes; retained for seven days. Debug APK artifact: 17,176,246 bytes; retained for one day. Emulator diagnostics artifact: retained for seven days.
+- Build output includes Compose icon API deprecation warnings in `ReadingScreens.kt`; they did not fail the build and remain cleanup work.
 
-The debug APK is suitable for local UI exploration, but it is not release-signed. No physical-device, rendered visual or accessibility result is claimed.
+The unsigned release APK is a build-verification artifact, not a signed distribution package. The debug APK is suitable for local UI exploration, but it is not release-signed. No physical-device, rendered visual or accessibility result is claimed.
 
 ## Direct-distribution release APK
 
