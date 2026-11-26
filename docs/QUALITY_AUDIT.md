@@ -9,9 +9,9 @@
 - Shared screen components are separated from reading, learning and settings feature files.
 - Semantic light and dark color schemes are centralized.
 - Search and category filters work against explicitly labelled local sample stories. In Explore, only the Gambia/Myanmar sample headline opens its matching article and summary; other sample headlines disclose that full reading pages are not yet available.
-- Compose instrumentation tests cover onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, the Learn-hub activity shortcuts, language settings persistence, the quiz-to-history journey, reader font, line-spacing and sepia preference persistence through Article settings, and local learning-store persistence. Their APK compiles in CI. API 35 AOSP ANR-killed the app before tests. API 30 attempts failed on missing SDK and then an unresponsive guest. API 28 AOSP booted and executed all 39 tests: 21 passed and 18 failed. Most HomeScreen failures came from the onboarding helper not scrolling its final button into view; one profile assertion matched two headings, and one local-store test expected spaced JSON. The test fixes are in commit `7617b21` and await rerun.
-- The routine pull-request workflow is configured to compile and package the instrumentation test APK using `:app:assembleDebugAndroidTest`. This checks that test sources compile; it does not execute the instrumentation tests.
-- Emulator instrumentation runs on non-draft pull-request updates after the routine build succeeds. The current hosted runner uses TCG software CPU emulation. API 35 AOSP reached app startup but suffered severe guest CPU pressure. API 30 AOSP first lacked its SDK platform; after the platform was installed, guest system services became unresponsive. API 28 AOSP booted and ran all 39 tests, exposing 18 test-level failures. The next run verifies the onboarding scroll, profile selector, JSON expectation and unloaded-Edition placeholder fixes.
+- Compose instrumentation tests cover onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, the Learn-hub activity shortcuts, language settings persistence, the quiz-to-history journey, reader font, line-spacing and sepia preference persistence through Article settings, and local learning-store persistence. The latest API 28 AOSP emulator run (workflow `45832521965`, commit `4439173`) executed all 41 authored instrumentation tests: **41 passed, 0 failed, 0 skipped**. The previously failing Explore category-filter interaction now passes.
+- The routine pull-request job runs the JVM test, compiles/packages the instrumentation APK using `:app:assembleDebugAndroidTest`, and assembles the debug APK. The separate `compose-instrumentation` job executes the instrumentation suite on an API 28 AOSP emulator; compilation alone is not runtime verification.
+- Emulator instrumentation runs on non-draft pull-request updates after the routine build succeeds. The hosted runner uses TCG software CPU emulation. Earlier API 35 and API 30 attempts exposed guest-performance and SDK setup problems; the current API 28 configuration completed the full 41-test suite successfully. The emulator workflow's shell wrapper was also corrected so PID and exit-code variables survive through logcat cleanup. The latest end-to-end workflow is green.
 - Vocabulary Lab has a searchable five-entry sample word list with per-word bookmark controls; search matches the term, part of speech, pronunciation, Bengali meaning, definition, synonyms, antonym and example, trims surrounding whitespace, and supports bookmarking from the selected-word detail screen. Saved words and articles, reader and language preferences, onboarding choices, notification preferences, writing and feedback drafts, reading history, practice history, and the study checklist are stored locally with Android SharedPreferences. The study checklist resets by local calendar date. These features are device-only and do not sync.
 - Vocabulary definitions and examples are prototype learning content; dictionary/source references and a maintained exam vocabulary feed are not connected.
 - Android Auto Backup is disabled for the prototype so SharedPreferences drafts, bookmarks and reading activity are not silently included in the platform backup flow. A deliberate export/restore feature is not implemented.
@@ -24,8 +24,8 @@
 
 | Priority | Finding | Required evidence to close |
 |---|---|---|
-| P0 | Current branch head must pass routine Android CI before buildability is claimed | Keep the JVM smoke test, instrumentation-APK compilation and debug-assembly workflow green on every source change |
-| P0 | No successful emulator instrumentation or real-device visual verification | Emulator workflow passes; screenshots from a small phone, large phone and tablet |
+| P0 | Current branch head must pass routine Android CI before buildability is claimed | Keep the JVM smoke test, instrumentation-APK compilation, debug assembly and emulator instrumentation green on every source change |
+| P0 | No physical-device visual verification | Capture and inspect screenshots on a small phone, large phone and tablet; verify Bengali typography, TalkBack, font scaling and dark mode |
 | P1 | Gradle Wrapper has completed a fresh CI build, but local developer setup is not yet documented end-to-end | Verify wrapper download, Gradle startup and APK assembly on a clean developer machine |
 | P1 | Editorial engine contract is not connected | Contract tests against approved edition fixtures |
 | P1 | Learning and reader data currently use device-local SharedPreferences rather than a structured database | Move durable collections and preferences to Room/DataStore with repository, migration, backup/restore and process-death tests |
@@ -39,8 +39,8 @@
 
 ## Next engineering sequence
 
-1. Get the routine Android unit/build and instrumentation-test compilation workflow green; fix compiler/test-source failures before adding more UI.
-2. Re-run the API 28 AOSP suite after the remaining Explore/Home/Learn/Library scroll and duplicate-heading fixes. Require all 39 test methods to pass and inspect any remaining per-test failures.
+1. **Completed:** routine Android unit/build and instrumentation-test compilation pass on the latest branch head.
+2. **Completed:** API 28 AOSP emulator suite passes all 41 instrumentation test methods with zero failures or skips. Continue requiring both jobs to pass for each source change.
 3. Replace string routes with typed destinations and add deep-link contracts.
 4. Introduce screen-level ViewModels and immutable UI state.
 5. Connect approved edition fixtures, then the real engine API.
@@ -68,13 +68,13 @@ A source-level scan of the current branch found:
 
 This checks string consistency only. It does not prove that every screen renders, that every interaction works, or that navigation survives process recreation. A compiled build and device-level tests are still required.
 
-## Test coverage inventory (updated 2026-11-25)
+## Test coverage inventory (updated 2026-11-26)
 
-A source review found one JVM unit test (`ExampleUnitTest.applicationIdIsStable`) and 40 authored Android instrumentation test methods. The 40 Android tests are:
+A source review found one JVM unit test (`ExampleUnitTest.applicationIdIsStable`) and 41 authored Android instrumentation test methods. The 41 Android tests are:
 
 | Test file | Test methods | What they cover |
 |---|---:|---|
-| `HomeScreenTest.kt` | 18 | Welcome and onboarding; Explore filters, matching article navigation and unavailable sample-story states; Library empty/search states; article and vocabulary bookmarks; Saved Collections opening, refresh and removal; unknown saved article handling; Learn-hub shortcuts and practice history; archive navigation; language persistence; reader font, line-spacing and sepia preferences; vocabulary detail/search; and profile navigation state |
+| `HomeScreenTest.kt` | 19 | Welcome and onboarding; Explore filters, matching article navigation and unavailable sample-story states; Library empty/search states; article and vocabulary bookmarks; Saved Collections opening, refresh and removal; unknown saved article handling; Learn-hub shortcuts and practice history; archive navigation; language persistence; reader font, line-spacing and sepia preferences; vocabulary detail/search; and profile navigation state |
 | `LocalLearningStoreTest.kt` | 21 | Topic, vocabulary search, bookmarks, writing/feedback/story-report drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration/bounds, practice-history validation/bounds, and daily study-task persistence/reset |
 | `AppPrivacyManifestTest.kt` | 1 | Confirms Android Auto Backup is disabled for the app package |
 
@@ -84,7 +84,7 @@ Coverage limits:
 - All 21 local-store tests clear their test preferences before and after each test.
 - The test source uses Compose UI test APIs and AndroidX instrumentation APIs declared in the app module.
 - No test currently verifies all 48 routes, all article/summary navigation paths, process recreation, or accessibility behavior.
-- The current source contains 40 authored instrumentation tests (18 HomeScreen, 21 local-store, 1 privacy-manifest). The latest completed API 28 run executed the preceding 39-test source: 32 passed and 7 failed. The privacy-manifest test and all 20 then-existing local-store tests passed. The remaining failures are confined to HomeScreen UI interactions: some article/story/search/practice targets were below the viewport and one practice-history heading matched twice. Commit `43ec7e8` adds scroll-to-visible actions and disambiguates that heading. Runtime verification remains incomplete until the next run confirms the fixes.
+- The current source contains 41 authored instrumentation tests (19 HomeScreen, 21 local-store, 1 privacy-manifest). Workflow `45832521965` executed all 41 on API 28 AOSP and passed with zero failures, errors or skips. This is emulator evidence, not a physical-device visual or accessibility audit.
 - The routine CI step `:app:assembleDebugAndroidTest` only compiles/packages the instrumentation APK. It is not a substitute for `:app:connectedDebugAndroidTest`.
 
 The next test expansion should follow actual user journeys and stable data contracts, not attempt to create one shallow test for every screen.
