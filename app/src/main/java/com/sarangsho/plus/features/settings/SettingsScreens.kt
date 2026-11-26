@@ -51,23 +51,26 @@ import androidx.compose.ui.semantics.semantics
     val context = LocalContext.current
     val readerSettings by ReaderPreferencesRepository.observe(context).collectAsState(initial = ReaderSettings())
     val scope = rememberCoroutineScope()
-    val fontSize = readerSettings.fontSize
-    val lineSpacing = readerSettings.lineSpacing
-    val sepia = readerSettings.sepia
+    var fontSize by remember(readerSettings.fontSize) { mutableFloatStateOf(readerSettings.fontSize) }
+    var lineSpacing by remember(readerSettings.lineSpacing) { mutableFloatStateOf(readerSettings.lineSpacing) }
+    var sepia by remember(readerSettings.sepia) { mutableStateOf(readerSettings.sepia) }
     Scroll {
         Intro("পড়ার পছন্দ", "দীর্ঘ লেখা আরাম করে পড়ার জন্য নিজের মতো সাজান।")
         Panel {
             Text("লেখার আকার: ${fontSize.toInt()} sp", fontWeight = FontWeight.SemiBold)
             Slider(value = fontSize, modifier = Modifier.testTag("reader-font-size-slider").semantics { contentDescription = "লেখার আকার" }, onValueChange = {
+                fontSize = it
                 scope.launch { ReaderPreferencesRepository.setFontSize(context, it) }
             }, valueRange = 16f..26f)
             Text("লাইন স্পেসিং: " + "%.1f".format(lineSpacing), fontWeight = FontWeight.SemiBold)
             Slider(value = lineSpacing, modifier = Modifier.testTag("reader-line-spacing-slider").semantics { contentDescription = "লাইন স্পেসিং" }, onValueChange = {
+                lineSpacing = it
                 scope.launch { ReaderPreferencesRepository.setLineSpacing(context, it) }
             }, valueRange = 1.2f..2.0f)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("উষ্ণ কাগজের নমুনা", Modifier.weight(1f))
                 Switch(checked = sepia, modifier = Modifier.testTag("reader-sepia-switch").semantics { contentDescription = "উষ্ণ কাগজের নমুনা" }, onCheckedChange = {
+                    sepia = it
                     scope.launch { ReaderPreferencesRepository.setSepia(context, it) }
                 })
             }
