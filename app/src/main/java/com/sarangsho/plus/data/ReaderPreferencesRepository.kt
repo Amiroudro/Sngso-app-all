@@ -20,8 +20,7 @@ private val Context.readerPreferencesDataStore: DataStore<Preferences> by prefer
             SharedPreferencesMigration(
                 context,
                 LEGACY_PREFERENCES,
-                keysToMigrate = setOf("reading_font_size", "reading_line_spacing", "reading_sepia"),
-                deleteSharedPreferences = false
+                keysToMigrate = setOf("reading_font_size", "reading_line_spacing", "reading_sepia")
             )
         )
     }
