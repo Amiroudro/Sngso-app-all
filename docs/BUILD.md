@@ -57,18 +57,19 @@ The wrapper verifies the downloaded Gradle distribution against the pinned SHA-2
 
 ## Current verification status
 
-Latest completed verification:
+Latest completed current-head verification:
 
-- Workflow run: [45872724840](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45872724840)
-- Tested merge commit: `a5b512ac6fee3fe87b5e50efc2420f00b145f49b` on `fix/android-build-verification`.
-- Overall workflow: **success** for the `unit-and-build` job. JVM unit tests, instrumentation APK compilation, debug APK assembly, and unsigned release APK assembly all passed.
-- The `compose-instrumentation` job was **skipped** because this was a draft pull request. The instrumentation test APK compiled, but this run did not execute the 42 tests on an emulator.
-- Unsigned release APK artifact: 11,105,552 bytes; retained for seven days. Debug APK artifact: 17,176,245 bytes; retained for one day.
-- The most recent confirmed full emulator execution remains workflow [45856677746](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45856677746), which ran all 42 authored Android instrumentation tests on API 28 AOSP: **42 passed, 0 failed, 0 skipped**. That run predates the merge commit above.
-- Build output includes Compose icon API deprecation warnings in `ReadingScreens.kt`; they did not fail the build and remain cleanup work.
-- No signed distribution APK has been generated.
-
-The unsigned release APK is a build-verification artifact, not a signed distribution package. The debug APK is suitable for local UI exploration, but it is not release-signed. No physical-device, rendered visual or accessibility result is claimed.
+- Workflow run: [45888948067](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45888948067)
+- Branch: `fix/android-build-verification`
+- Tested commit: `1e0616608d146f8becb0d046bf24e0061a8ccc6f`.
+- Overall workflow: **success**. Both `unit-and-build` and `compose-instrumentation` jobs completed successfully.
+- JVM unit tests passed; instrumentation APK compilation, debug APK assembly, and unsigned release APK assembly all passed.
+- API 28 AOSP emulator executed all 43 authored Android instrumentation tests: **43 passed, 0 failed, 0 skipped**.
+- Current-head debug APK: 17,709,246 bytes; SHA-256 `122b24455dbcd129b05e6034ce36834602b166f63e2aa1754e05c54724a82737`.
+- Current-head unsigned release APK: 11,622,158 bytes; SHA-256 `7397359ea58db3ef847cb50fd9cb70525c489bf5a3c8d53685ddb48b38d237b7`.
+- Debug APK artifact retention is one day; unsigned release APK and emulator diagnostics are retained for seven days. Download artifacts promptly from the workflow run.
+- The debug APK is for local testing, not distribution. The release APK is unsigned and is not suitable for distribution.
+- No signed distribution APK has been generated. No physical-device visual or accessibility result is claimed.
 
 ## Direct-distribution release APK
 
