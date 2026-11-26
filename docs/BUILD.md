@@ -57,14 +57,14 @@ The wrapper verifies the downloaded Gradle distribution against the pinned SHA-2
 
 ## Current verification status
 
-Latest completed emulator verification:
+Latest completed verification:
 
-- Workflow run: [45658108951](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45658108951)
-- Tested commit: `e8d960f2e23f96f27722168b0a87ee9036721b31`
-- Routine job: **success**. Toolchain verification, JVM unit tests, compilation/package of all 39 authored Android instrumentation tests, debug APK assembly and artifact upload passed.
-- Debug APK: 17,024,591 bytes; SHA-256 `bbf159d7ecb56aa74e4cd5d2dd5f6918b2b047a350152c78bd5cae5ef08abd54`. Artifact ZIP: 16,548,605 bytes, retained for one day.
-- Emulator: API 28 AOSP executed all 39 instrumentation tests. **32 passed, 7 failed.** The remaining failures are UI test interaction/selector issues: Explore's first story title was off-screen; Saved Collections and both reader-preference tests tapped the off-screen Home article button without scrolling; the Learn practice button and Library search field also needed scrolling; one test matched two identical practice-history headings.
-- The privacy-manifest test and all 20 local-store tests passed. No emulator startup failure prevented test execution.
-- Commit `43ec7e8` adds scroll-to-visible behavior to the remaining off-screen test targets and selects one of the duplicate practice-history headings. Commit `a337143` also replaces the unloaded Edition screen's unrelated sample-article link with an explicit placeholder. The next workflow run will verify these changes.
+- Workflow run: [45832521965](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45832521965)
+- Tested commit: `443917301b481f72ed32213c03c9b7a6b9f673d0`
+- Overall workflow: **success**. Both `unit-and-build` and `compose-instrumentation` jobs passed.
+- Routine job: toolchain verification, JVM unit tests, instrumentation APK compilation, debug APK assembly and artifact upload all passed.
+- Emulator: API 28 AOSP executed all 41 authored Android instrumentation tests. **41 passed, 0 failed, 0 skipped.** The Explore category-filter interaction test passed.
+- Debug APK artifact: 16,553,492 bytes; retained for one day. Emulator diagnostics artifact: retained for seven days.
+- The workflow's emulator script now runs the test command, captures its exit status and stops logcat within one shell. This fixes the prior false-negative where per-line shell execution lost `LOGCAT_PID` and `TEST_EXIT` even though Gradle reported `BUILD SUCCESSFUL` and the instrumentation runner reported `OK (41 tests)`.
 
-The current branch adds a local-only story-correction draft and its persistence regression test, bringing the authored Android instrumentation inventory to 40. The latest completed emulator run predates that test addition. The debug APK is suitable for local UI exploration, but it is not release-signed and the instrumentation suite is not yet green. No physical-device or visual-accessibility result is claimed.
+The debug APK is suitable for local UI exploration, but it is not release-signed. No physical-device, rendered visual or accessibility result is claimed.
