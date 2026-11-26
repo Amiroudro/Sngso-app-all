@@ -36,6 +36,12 @@ class AppDestinationTest {
         assertNull(AppDestination.fromDeepLink("sarangsho://app/article/extra"))
         assertNull(AppDestination.fromDeepLink("sarangsho://app/article?source=external"))
         assertNull(AppDestination.fromDeepLink("sarangsho://app/article#section"))
+        assertNull(AppDestination.fromDeepLink("sarangsho://app/%61rticle"))
+        assertNull(AppDestination.fromDeepLink("sarangsho://app/article%2Fextra"))
+        assertNull(AppDestination.fromDeepLink("sarangsho://app//article"))
+        assertNull(AppDestination.fromDeepLink("sarangsho://app/article/"))
+        assertNull(AppDestination.fromDeepLink("sarangsho://app/article?"))
+        assertNull(AppDestination.fromDeepLink("sarangsho://app/article#"))
     }
 
     @Test
