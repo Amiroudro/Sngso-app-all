@@ -295,7 +295,7 @@ class HomeScreenTest {
 
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         composeRule.waitForIdle()
-        val settings = runBlocking { ReaderPreferencesRepository.observe(context).first() }
+        val settings = runBlocking { ReaderPreferencesRepository.observe(context).first { it.fontSize == 22f } }
         org.junit.Assert.assertEquals(22f, settings.fontSize, 0.1f)
 
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
@@ -318,7 +318,7 @@ class HomeScreenTest {
 
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         composeRule.waitForIdle()
-        val settings = runBlocking { ReaderPreferencesRepository.observe(context).first() }
+        val settings = runBlocking { ReaderPreferencesRepository.observe(context).first { it.lineSpacing == 1.8f && it.sepia } }
         org.junit.Assert.assertEquals(1.8f, settings.lineSpacing, 0.02f)
         org.junit.Assert.assertTrue(settings.sepia)
 
