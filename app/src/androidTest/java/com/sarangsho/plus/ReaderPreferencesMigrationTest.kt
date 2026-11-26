@@ -1,6 +1,6 @@
 package com.sarangsho.plus
 
-import androidx.datastore.core.DataStoreFactory
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
@@ -36,13 +36,12 @@ class ReaderPreferencesMigrationTest {
         file.delete()
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         try {
-            val store = DataStoreFactory.create(
+            val store = PreferenceDataStoreFactory.create(
                 migrations = listOf(
                     SharedPreferencesMigration(
                         context,
                         legacyName,
-                        keysToMigrate = setOf("reading_font_size", "reading_line_spacing", "reading_sepia"),
-                        deleteSharedPreferences = false
+                        keysToMigrate = setOf("reading_font_size", "reading_line_spacing", "reading_sepia")
                     )
                 ),
                 scope = scope,
