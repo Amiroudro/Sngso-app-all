@@ -59,13 +59,14 @@ The wrapper verifies the downloaded Gradle distribution against the pinned SHA-2
 
 Latest completed verification:
 
-- Workflow run: [45856677746](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45856677746)
-- Tested commit: `8ec761a73390bba63ae94c286a25bb1b89ecb739`
-- Overall workflow: **success**. Both `unit-and-build` and `compose-instrumentation` jobs passed.
-- Routine job: JVM unit tests, instrumentation APK compilation, debug APK assembly, and unsigned release APK assembly all passed. Both APK artifacts uploaded successfully.
-- Emulator: API 28 AOSP completed all 42 authored Android instrumentation tests. **42 completed, 0 failed, 0 skipped.**
-- Unsigned release APK artifact: 11,105,551 bytes; retained for seven days. Debug APK artifact: 17,176,246 bytes; retained for one day. Emulator diagnostics artifact: retained for seven days.
+- Workflow run: [45872724840](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45872724840)
+- Tested merge commit: `a5b512ac6fee3fe87b5e50efc2420f00b145f49b` on `fix/android-build-verification`.
+- Overall workflow: **success** for the `unit-and-build` job. JVM unit tests, instrumentation APK compilation, debug APK assembly, and unsigned release APK assembly all passed.
+- The `compose-instrumentation` job was **skipped** because this was a draft pull request. The instrumentation test APK compiled, but this run did not execute the 42 tests on an emulator.
+- Unsigned release APK artifact: 11,105,552 bytes; retained for seven days. Debug APK artifact: 17,176,245 bytes; retained for one day.
+- The most recent confirmed full emulator execution remains workflow [45856677746](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45856677746), which ran all 42 authored Android instrumentation tests on API 28 AOSP: **42 passed, 0 failed, 0 skipped**. That run predates the merge commit above.
 - Build output includes Compose icon API deprecation warnings in `ReadingScreens.kt`; they did not fail the build and remain cleanup work.
+- No signed distribution APK has been generated.
 
 The unsigned release APK is a build-verification artifact, not a signed distribution package. The debug APK is suitable for local UI exploration, but it is not release-signed. No physical-device, rendered visual or accessibility result is claimed.
 
