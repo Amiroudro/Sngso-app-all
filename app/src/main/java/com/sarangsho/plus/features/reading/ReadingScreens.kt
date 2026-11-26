@@ -1,4 +1,6 @@
 package com.sarangsho.plus.features.reading
+
+import com.sarangsho.plus.navigation.AppDestination
 import com.sarangsho.plus.ui.components.*
 
 import android.content.Context
@@ -112,8 +114,8 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
             }
         }
         Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Primary("আমার প্রস্তুতি সাজাই") { nav.navigate("onboarding-goals") }
-            OutlinedButton(onClick = { nav.navigate("signin") }, modifier = Modifier.fillMaxWidth()) { Text("আগে থেকেই অ্যাকাউন্ট আছে? সাইন ইন") }
+            Primary("আমার প্রস্তুতি সাজাই") { nav.navigate(AppDestination.OnboardingGoals.route) }
+            OutlinedButton(onClick = { nav.navigate(AppDestination.Signin.route) }, modifier = Modifier.fillMaxWidth()) { Text("আগে থেকেই অ্যাকাউন্ট আছে? সাইন ইন") }
             Text("অ্যাকাউন্ট ছাড়াও নমুনা সংস্করণ দেখা যাবে", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
         }
     }
@@ -154,10 +156,10 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
             color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, lineHeight = 17.sp
         )
         Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text("সাইন ইন সেবা সংযুক্তির অপেক্ষায়") }
-        OutlinedButton(onClick = { nav.navigate("home") }, modifier = Modifier.fillMaxWidth()) { Text("অ্যাকাউন্ট ছাড়া চালিয়ে যান") }
+        OutlinedButton(onClick = { nav.navigate(AppDestination.Home.route) }, modifier = Modifier.fillMaxWidth()) { Text("অ্যাকাউন্ট ছাড়া চালিয়ে যান") }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            TextButton(onClick = { nav.navigate("signup") }) { Text("নতুন অ্যাকাউন্ট তৈরি") }
-            TextButton(onClick = { nav.navigate("password-reset") }) { Text("পাসওয়ার্ড ভুলে গেছেন?") }
+            TextButton(onClick = { nav.navigate(AppDestination.Signup.route) }) { Text("নতুন অ্যাকাউন্ট তৈরি") }
+            TextButton(onClick = { nav.navigate(AppDestination.PasswordReset.route) }) { Text("পাসওয়ার্ড ভুলে গেছেন?") }
         }
     }
 }
@@ -206,7 +208,7 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
                     lineHeight = 19.sp
                 )
                 Button(
-                    onClick = { nav.navigate("onboarding-goals") },
+                    onClick = { nav.navigate(AppDestination.OnboardingGoals.route) },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.secondary,
                         contentColor = MaterialTheme.colorScheme.onSecondary
@@ -238,23 +240,23 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
                 AssistChip(onClick = {}, enabled = false, label = { Text("আন্তর্জাতিক আইন") })
                 AssistChip(onClick = {}, enabled = false, label = { Text("নমুনা কনটেন্ট") })
             }
-            Primary("প্রতিবেদনটি পড়ুন") { nav.navigate("article") }
+            Primary("প্রতিবেদনটি পড়ুন") { nav.navigate(AppDestination.Article.route) }
         }
         RowLink("সব প্রতিবেদন দেখুন", "বিষয় অনুযায়ী সংবাদ ও ব্যাখ্যা", Icons.Default.ArrowForward) {
-            nav.navigate("feed")
+            nav.navigate(AppDestination.Feed.route)
         }
-        RowLink("পুরোনো সংস্করণ", "আগের দিনের ব্রিফিং ও প্রকাশনা", Icons.Default.CalendarMonth) { nav.navigate("archive") }
+        RowLink("পুরোনো সংস্করণ", "আগের দিনের ব্রিফিং ও প্রকাশনা", Icons.Default.CalendarMonth) { nav.navigate(AppDestination.Archive.route) }
         Text("সংবাদ থেকে শেখা", fontSize = 19.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
         Text("একটি ঘটনার পেছনের তথ্য, সময়রেখা ও উৎস আলাদা করে দেখুন.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
-        RowLink("তিন-স্তরের সারাংশ", "৩০ সেকেন্ড, ২ মিনিট অথবা বিস্তারিত", Icons.Default.Subject) { nav.navigate("summary") }
-        RowLink("ঘটনার টাইমলাইন", "তারিখ ও প্রেক্ষাপট আলাদা করে দেখুন", Icons.Default.Timeline) { nav.navigate("timeline") }
-        RowLink("পত্রিকার দৃষ্টিভঙ্গি", "উপলভ্য ও অনুমোদিত উৎস তুলনা", Icons.Default.CompareArrows) { nav.navigate("perspectives") }
-        RowLink("তথ্য ও পরিসংখ্যান", "সংজ্ঞা, একক, সময়কাল ও মূল উৎস", Icons.Default.BarChart) { nav.navigate("data") }
+        RowLink("তিন-স্তরের সারাংশ", "৩০ সেকেন্ড, ২ মিনিট অথবা বিস্তারিত", Icons.Default.Subject) { nav.navigate(AppDestination.Summary.route) }
+        RowLink("ঘটনার টাইমলাইন", "তারিখ ও প্রেক্ষাপট আলাদা করে দেখুন", Icons.Default.Timeline) { nav.navigate(AppDestination.Timeline.route) }
+        RowLink("পত্রিকার দৃষ্টিভঙ্গি", "উপলভ্য ও অনুমোদিত উৎস তুলনা", Icons.Default.CompareArrows) { nav.navigate(AppDestination.Perspectives.route) }
+        RowLink("তথ্য ও পরিসংখ্যান", "সংজ্ঞা, একক, সময়কাল ও মূল উৎস", Icons.Default.BarChart) { nav.navigate(AppDestination.Data.route) }
         Text("প্রস্তুতি চালিয়ে যান", fontSize = 19.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
         Text("পড়া বিষয়কে শব্দভান্ডার ও পরীক্ষার অনুশীলনের সঙ্গে যুক্ত করুন.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
-        RowLink("Vocabulary Lab", "শব্দ, অর্থ, collocation ও ব্যবহার", Icons.Default.Translate) { nav.navigate("vocabulary") }
-        RowLink("BCS ও Bank অনুশীলন", "প্রশ্নের ধরন বেছে প্রস্তুতি নিন", Icons.Default.EditNote) { nav.navigate("quiz-setup") }
-        RowLink("পড়ার পরিকল্পনা", "নিজের সময় অনুযায়ী প্রস্তুতি", Icons.Default.CalendarToday) { nav.navigate("study-plan") }
+        RowLink("Vocabulary Lab", "শব্দ, অর্থ, collocation ও ব্যবহার", Icons.Default.Translate) { nav.navigate(AppDestination.Vocabulary.route) }
+        RowLink("BCS ও Bank অনুশীলন", "প্রশ্নের ধরন বেছে প্রস্তুতি নিন", Icons.Default.EditNote) { nav.navigate(AppDestination.QuizSetup.route) }
+        RowLink("পড়ার পরিকল্পনা", "নিজের সময় অনুযায়ী প্রস্তুতি", Icons.Default.CalendarToday) { nav.navigate(AppDestination.StudyPlan.route) }
         Text(
             "এই হোম স্ক্রিনে প্রদর্শিত প্রতিবেদন ও বিষয়বস্তু নমুনা। লাইভ সংবাদ, ব্যক্তিগত অগ্রগতি বা পরীক্ষার ফল হিসেবে এগুলো ব্যবহার করবেন না।",
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -334,8 +336,8 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
                     Text(story.detail, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
                     if (story.hasFullArticle) {
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            TextButton(onClick = { nav.navigate("article") }) { Text("বিস্তারিত পড়ুন") }
-                            TextButton(onClick = { nav.navigate("summary") }) { Text("সারাংশ") }
+                            TextButton(onClick = { nav.navigate(AppDestination.Article.route) }) { Text("বিস্তারিত পড়ুন") }
+                            TextButton(onClick = { nav.navigate(AppDestination.Summary.route) }) { Text("সারাংশ") }
                         }
                     } else {
                         Text(
@@ -414,13 +416,13 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
         }
         }
         Text("এই প্রতিবেদনের পাঠ-সরঞ্জাম", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-        RowLink("পড়ার পছন্দ", "ফন্ট ও লাইন স্পেসিং বদলান", Icons.Default.TextFields) { nav.navigate("reading-settings") }
-        RowLink("তিন-স্তরের সারাংশ", "৩০ সেকেন্ড, ২ মিনিট ও বিস্তারিত পাঠ", Icons.Default.Subject) { nav.navigate("summary") }
-        RowLink("ঘটনার টাইমলাইন", "তারিখ ও ঘটনার সম্পর্ক যাচাই করে পড়ুন", Icons.Default.Timeline) { nav.navigate("timeline") }
-        RowLink("পত্রিকার দৃষ্টিভঙ্গি", "উৎস পাওয়া গেলে তুলনা করুন", Icons.Default.CompareArrows) { nav.navigate("perspectives") }
-        RowLink("জ্ঞান মানচিত্র", "প্রতিষ্ঠান, আইন ও ধারণার সম্পর্ক", Icons.Default.Hub) { nav.navigate("graph") }
-        RowLink("উৎস ও যাচাই", "মূল নথি ও প্রকাশনার তথ্য", Icons.Default.Source) { nav.navigate("sources") }
-        RowLink("তথ্য সংশোধনের অনুরোধ", "ভুল বা অস্পষ্ট তথ্য জানান", Icons.Default.Flag) { nav.navigate("report-story") }
+        RowLink("পড়ার পছন্দ", "ফন্ট ও লাইন স্পেসিং বদলান", Icons.Default.TextFields) { nav.navigate(AppDestination.ReadingSettings.route) }
+        RowLink("তিন-স্তরের সারাংশ", "৩০ সেকেন্ড, ২ মিনিট ও বিস্তারিত পাঠ", Icons.Default.Subject) { nav.navigate(AppDestination.Summary.route) }
+        RowLink("ঘটনার টাইমলাইন", "তারিখ ও ঘটনার সম্পর্ক যাচাই করে পড়ুন", Icons.Default.Timeline) { nav.navigate(AppDestination.Timeline.route) }
+        RowLink("পত্রিকার দৃষ্টিভঙ্গি", "উৎস পাওয়া গেলে তুলনা করুন", Icons.Default.CompareArrows) { nav.navigate(AppDestination.Perspectives.route) }
+        RowLink("জ্ঞান মানচিত্র", "প্রতিষ্ঠান, আইন ও ধারণার সম্পর্ক", Icons.Default.Hub) { nav.navigate(AppDestination.Graph.route) }
+        RowLink("উৎস ও যাচাই", "মূল নথি ও প্রকাশনার তথ্য", Icons.Default.Source) { nav.navigate(AppDestination.Sources.route) }
+        RowLink("তথ্য সংশোধনের অনুরোধ", "ভুল বা অস্পষ্ট তথ্য জানান", Icons.Default.Flag) { nav.navigate(AppDestination.ReportStory.route) }
     }
 }
 
@@ -460,8 +462,8 @@ internal fun Summary(nav: NavHostController) {
                 )
             }
         }
-        RowLink("পড়ার পছন্দ", "ফন্ট ও লাইন স্পেসিং বদলান", Icons.Default.TextFields) { nav.navigate("reading-settings") }
-        RowLink("টাইমলাইন", "ঘটনার পূর্বাপর", Icons.Default.Timeline) { nav.navigate("timeline") }
+        RowLink("পড়ার পছন্দ", "ফন্ট ও লাইন স্পেসিং বদলান", Icons.Default.TextFields) { nav.navigate(AppDestination.ReadingSettings.route) }
+        RowLink("টাইমলাইন", "ঘটনার পূর্বাপর", Icons.Default.Timeline) { nav.navigate(AppDestination.Timeline.route) }
     }
 }
 
@@ -551,7 +553,7 @@ internal fun Summary(nav: NavHostController) {
                 Icons.Default.Public
             ) {
                 LocalLearningStore.setSelectedTopic(context, topic)
-                nav.navigate("topic-detail")
+                nav.navigate(AppDestination.TopicDetail.route)
             }
         }
     }
@@ -615,7 +617,7 @@ internal fun Summary(nav: NavHostController) {
                 Text(item.second, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                 Text(item.third, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                TextButton(onClick = { nav.navigate("indicator-detail") }) { Text("সংজ্ঞা ও যাচাইয়ের নিয়ম") }
+                TextButton(onClick = { nav.navigate(AppDestination.IndicatorDetail.route) }) { Text("সংজ্ঞা ও যাচাইয়ের নিয়ম") }
             }
         }
         Text("ডেটা যাচাইয়ের চেকলিস্ট", fontSize = 17.sp, fontWeight = FontWeight.Bold)
@@ -695,14 +697,14 @@ internal fun Summary(nav: NavHostController) {
                     Kicker("সংবাদ • নমুনা নিবন্ধ")
                     Text(storyTitle, fontWeight = FontWeight.Bold, fontSize = 17.sp, lineHeight = 24.sp)
                     Text("আন্তর্জাতিক আইন • রোহিঙ্গা সংকট", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
-                    TextButton(onClick = { nav.navigate("article") }) { Text("নিবন্ধ খুলুন") }
+                    TextButton(onClick = { nav.navigate(AppDestination.Article.route) }) { Text("নিবন্ধ খুলুন") }
                 }
             }
             topicMatches.forEach { topic ->
                 Panel {
                     Kicker("বিষয়")
                     Text(topic, fontWeight = FontWeight.SemiBold)
-                    TextButton(onClick = { nav.navigate("topic-detail") }) { Text("বিষয়ভিত্তিক পাঠ খুলুন") }
+                    TextButton(onClick = { nav.navigate(AppDestination.TopicDetail.route) }) { Text("বিষয়ভিত্তিক পাঠ খুলুন") }
                 }
             }
             wordMatches.forEach { (term, meaning) ->
@@ -710,7 +712,7 @@ internal fun Summary(nav: NavHostController) {
                     Kicker("শব্দভান্ডার")
                     Text(term, fontWeight = FontWeight.Bold, fontSize = 19.sp)
                     Text(meaning, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    TextButton(onClick = { nav.navigate("vocabulary") }) { Text("Vocabulary Lab খুলুন") }
+                    TextButton(onClick = { nav.navigate(AppDestination.Vocabulary.route) }) { Text("Vocabulary Lab খুলুন") }
                 }
             }
         }
@@ -796,7 +798,7 @@ internal fun Summary(nav: NavHostController) {
                     Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
                     if (id == "sample-international-justice") {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            TextButton(onClick = { nav.navigate("article") }) { Text("পড়ুন") }
+                            TextButton(onClick = { nav.navigate(AppDestination.Article.route) }) { Text("পড়ুন") }
                             TextButton(onClick = {
                                 LocalLearningStore.setArticleSaved(context, id, false)
                                 savedArticles.remove(id)
@@ -821,7 +823,7 @@ internal fun Summary(nav: NavHostController) {
                 Panel {
                     Text(if (bookmarkedWords.isEmpty()) "এখনো কোনো শব্দ বুকমার্ক করা হয়নি" else "এই অনুসন্ধানে কোনো শব্দ পাওয়া যায়নি", fontWeight = FontWeight.SemiBold)
                     Text("Vocabulary Lab-এ গিয়ে কোনো শব্দ বুকমার্ক করলে সেটি এখানে দেখা যাবে।", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Primary("Vocabulary Lab খুলুন") { nav.navigate("vocabulary") }
+                    Primary("Vocabulary Lab খুলুন") { nav.navigate(AppDestination.Vocabulary.route) }
                 }
             }
             visibleWords.forEach { word ->
@@ -832,7 +834,7 @@ internal fun Summary(nav: NavHostController) {
                     }
                     TextButton(onClick = {
                         nav.currentBackStackEntry?.savedStateHandle?.set("selected_word", word)
-                        nav.navigate("word-detail")
+                        nav.navigate(AppDestination.WordDetail.route)
                     }) { Text("খুলুন") }
                     TextButton(onClick = {
                         LocalLearningStore.setWordBookmarked(context, word, false)
@@ -853,8 +855,8 @@ internal fun Summary(nav: NavHostController) {
                 Text("বানান পরিবর্তন করে দেখুন অথবা অনুসন্ধান মুছে সব বিষয় দেখুন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        RowLink("Vocabulary Lab", "আরও শব্দ শিখুন ও বুকমার্ক করুন", Icons.Default.Translate) { nav.navigate("vocabulary") }
-        RowLink("সংরক্ষিত সংগ্রহ", "ফোল্ডার ও বিষয়ভিত্তিক তালিকা", Icons.Default.Folder) { nav.navigate("saved-collections") }
+        RowLink("Vocabulary Lab", "আরও শব্দ শিখুন ও বুকমার্ক করুন", Icons.Default.Translate) { nav.navigate(AppDestination.Vocabulary.route) }
+        RowLink("সংরক্ষিত সংগ্রহ", "ফোল্ডার ও বিষয়ভিত্তিক তালিকা", Icons.Default.Folder) { nav.navigate(AppDestination.SavedCollections.route) }
         Text("সংরক্ষিত নিবন্ধ ও শব্দ শুধু এই ডিভাইসে থাকে। অ্যাকাউন্ট বা অন্য ডিভাইসে সিঙ্ক হয় না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
     }
 }
@@ -873,7 +875,7 @@ internal fun Summary(nav: NavHostController) {
                 Column(Modifier.weight(1f)) {
                     Text("সারাংশ পাঠক", fontSize = 19.sp, fontWeight = FontWeight.Bold)
                     Text("স্থানীয় ডেমো • সাইন ইন করা হয়নি", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
-                    AssistChip(onClick = { nav.navigate("signin") }, label = { Text("সাইন ইন / অ্যাকাউন্ট") })
+                    AssistChip(onClick = { nav.navigate(AppDestination.Signin.route) }, label = { Text("সাইন ইন / অ্যাকাউন্ট") })
                 }
             }
         }
@@ -887,21 +889,21 @@ internal fun Summary(nav: NavHostController) {
                 fontSize = 12.sp,
                 lineHeight = 19.sp
             )
-            TextButton(onClick = { nav.navigate("onboarding-goals") }) {
+            TextButton(onClick = { nav.navigate(AppDestination.OnboardingGoals.route) }) {
                 Text("লক্ষ্য ও বিষয় পরিবর্তন")
             }
         }
         Text("আপনার শেখার জায়গা", fontWeight = FontWeight.Bold, fontSize = 17.sp)
-        RowLink("আমার শব্দভান্ডার", "সংরক্ষিত শব্দ ও পুনরাবৃত্তি", Icons.Default.Translate) { nav.navigate("vocabulary") }
-        RowLink("রিভিশন ডেক", "মনে রাখার অনুশীলন", Icons.Default.Style) { nav.navigate("revision") }
-        RowLink("লিখিত অনুশীলন", "আপনার উত্তর ও খসড়া", Icons.Default.EditNote) { nav.navigate("writing") }
-        RowLink("অনুশীলনের ইতিহাস", "আগের সেশন ও ভুলের তালিকা", Icons.Default.History) { nav.navigate("practice-history") }
-        RowLink("পড়ার ইতিহাস", "সম্প্রতি খোলা পাঠ", Icons.Default.MenuBook) { nav.navigate("reading-history") }
+        RowLink("আমার শব্দভান্ডার", "সংরক্ষিত শব্দ ও পুনরাবৃত্তি", Icons.Default.Translate) { nav.navigate(AppDestination.Vocabulary.route) }
+        RowLink("রিভিশন ডেক", "মনে রাখার অনুশীলন", Icons.Default.Style) { nav.navigate(AppDestination.Revision.route) }
+        RowLink("লিখিত অনুশীলন", "আপনার উত্তর ও খসড়া", Icons.Default.EditNote) { nav.navigate(AppDestination.Writing.route) }
+        RowLink("অনুশীলনের ইতিহাস", "আগের সেশন ও ভুলের তালিকা", Icons.Default.History) { nav.navigate(AppDestination.PracticeHistory.route) }
+        RowLink("পড়ার ইতিহাস", "সম্প্রতি খোলা পাঠ", Icons.Default.MenuBook) { nav.navigate(AppDestination.ReadingHistory.route) }
         Text("অ্যাপ ও পছন্দ", fontWeight = FontWeight.Bold, fontSize = 17.sp)
-        RowLink("নোটিফিকেশন", "আপডেট ও রিভিশন স্মরণ", Icons.Default.Notifications) { nav.navigate("notifications") }
-        RowLink("সেটিংস ও পছন্দ", "ভাষা, ফন্ট, ডাউনলোড ও গোপনীয়তা", Icons.Default.Settings) { nav.navigate("settings") }
-        RowLink("সহায়তা", "প্রশ্ন, সমস্যা ও মতামত", Icons.Default.HelpOutline) { nav.navigate("help") }
-        RowLink("Sarangsho Plus সম্পর্কে", "সংস্করণ ও অ্যাপের নীতিমালা", Icons.Default.Info) { nav.navigate("about") }
+        RowLink("নোটিফিকেশন", "আপডেট ও রিভিশন স্মরণ", Icons.Default.Notifications) { nav.navigate(AppDestination.Notifications.route) }
+        RowLink("সেটিংস ও পছন্দ", "ভাষা, ফন্ট, ডাউনলোড ও গোপনীয়তা", Icons.Default.Settings) { nav.navigate(AppDestination.Settings.route) }
+        RowLink("সহায়তা", "প্রশ্ন, সমস্যা ও মতামত", Icons.Default.HelpOutline) { nav.navigate(AppDestination.Help.route) }
+        RowLink("Sarangsho Plus সম্পর্কে", "সংস্করণ ও অ্যাপের নীতিমালা", Icons.Default.Info) { nav.navigate(AppDestination.About.route) }
         Panel {
             Kicker("গোপনীয়তা ও অগ্রগতি")
             Text("প্রকৃত ব্যবহার-ডেটা যুক্ত না হওয়া পর্যন্ত কোনো স্কোর, ধারাবাহিকতা বা সাপ্তাহিক অ্যানালিটিক্স দেখানো হবে না।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, lineHeight = 20.sp)
@@ -944,7 +946,7 @@ internal fun Summary(nav: NavHostController) {
         }
         Primary("বিষয় বেছে নিন") {
             LocalLearningStore.setOnboardingGoal(context, goal)
-            nav.navigate("onboarding-interests")
+            nav.navigate(AppDestination.OnboardingInterests.route)
         }
         Text("আপনার লক্ষ্য এই ডিভাইসে সংরক্ষিত হবে। অ্যাকাউন্ট সিঙ্ক এখনো যুক্ত হয়নি।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
     }
@@ -996,7 +998,7 @@ internal fun Summary(nav: NavHostController) {
         }
         Primary("আমার ব্রিফিং দেখুন") {
             LocalLearningStore.setOnboardingInterests(context, selected.toSet())
-            nav.navigate("home") {
+            nav.navigate(AppDestination.Home.route) {
                 popUpTo("onboarding-goals") { inclusive = true }
                 launchSingleTop = true
             }
@@ -1009,8 +1011,8 @@ internal fun Summary(nav: NavHostController) {
     Scroll {
         Intro("দৈনিক সংস্করণ", "আগের দিনের ব্রিফিং খুঁজুন এবং পরে পড়ার জন্য খুলুন।")
         Panel { Text("সাম্প্রতিক সংস্করণ", fontWeight = FontWeight.Bold); Text("প্রকাশিত সংস্করণের তালিকা ইঞ্জিন থেকে যুক্ত হলে এখানে তারিখ, ভাষা ও অবস্থা দেখানো হবে।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
-        RowLink("আজকের সংস্করণ", "লাইভ কনটেন্ট সংযুক্ত নয়", Icons.Default.Today) { nav.navigate("edition") }
-        RowLink("গতকালের সংস্করণ", "আর্কাইভ ডেটা অপেক্ষমাণ", Icons.Default.CalendarMonth) { nav.navigate("edition") }
+        RowLink("আজকের সংস্করণ", "লাইভ কনটেন্ট সংযুক্ত নয়", Icons.Default.Today) { nav.navigate(AppDestination.Edition.route) }
+        RowLink("গতকালের সংস্করণ", "আর্কাইভ ডেটা অপেক্ষমাণ", Icons.Default.CalendarMonth) { nav.navigate(AppDestination.Edition.route) }
     }
 }
 
@@ -1025,10 +1027,10 @@ internal fun Summary(nav: NavHostController) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-        RowLink("বাংলাদেশ বিষয়াবলি", "দেশের গুরুত্বপূর্ণ ঘটনা", Icons.Default.Flag) { nav.navigate("bangladesh") }
-        RowLink("বিশ্ব বিষয়াবলি", "আন্তর্জাতিক প্রেক্ষাপট", Icons.Default.Public) { nav.navigate("world") }
-        RowLink("আজকের অনুশীলন", "BCS ও Bank প্রশ্ন", Icons.Default.Quiz) { nav.navigate("quiz-setup") }
-        RowLink("তথ্যসূত্র ও যাচাই", "উৎস, সময় ও প্রবেশযোগ্যতা", Icons.Default.Source) { nav.navigate("sources") }
+        RowLink("বাংলাদেশ বিষয়াবলি", "দেশের গুরুত্বপূর্ণ ঘটনা", Icons.Default.Flag) { nav.navigate(AppDestination.Bangladesh.route) }
+        RowLink("বিশ্ব বিষয়াবলি", "আন্তর্জাতিক প্রেক্ষাপট", Icons.Default.Public) { nav.navigate(AppDestination.World.route) }
+        RowLink("আজকের অনুশীলন", "BCS ও Bank প্রশ্ন", Icons.Default.Quiz) { nav.navigate(AppDestination.QuizSetup.route) }
+        RowLink("তথ্যসূত্র ও যাচাই", "উৎস, সময় ও প্রবেশযোগ্যতা", Icons.Default.Source) { nav.navigate(AppDestination.Sources.route) }
     }
 }
 
@@ -1152,13 +1154,13 @@ private fun topicGuide(topic: String): TopicGuide {
             Kicker("নিজেকে যাচাই করুন")
             Text(guide.readingPrompt, fontWeight = FontWeight.SemiBold, lineHeight = 22.sp)
             Text("এটি অনুশীলনের নির্দেশনা, যাচাইকৃত পরীক্ষার প্রশ্ন নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
-            Primary("লিখিত অনুশীলন খুলুন") { nav.navigate("writing") }
+            Primary("লিখিত অনুশীলন খুলুন") { nav.navigate(AppDestination.Writing.route) }
         }
         Text("এই গাইডটি অ্যাপের স্থানীয় শিক্ষামূলক কাঠামো। নির্দিষ্ট আইন, পরিসংখ্যান, সাম্প্রতিক ঘটনা ও উৎসের লিংক আলাদাভাবে যাচাই করে যুক্ত করতে হবে.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, lineHeight = 17.sp)
-        RowLink("সংশ্লিষ্ট সংবাদ", "এই বিষয়ের সাম্প্রতিক ঘটনা", Icons.Default.Article) { nav.navigate("feed") }
-        RowLink("জ্ঞান মানচিত্র", "প্রতিষ্ঠান ও ধারণার সম্পর্ক", Icons.Default.Hub) { nav.navigate("graph") }
-        RowLink("তথ্য ও পরিসংখ্যান", "উৎসসহ প্রাসঙ্গিক সূচক", Icons.Default.BarChart) { nav.navigate("data") }
-        RowLink("অনুশীলন", "সাধারণ BCS ও Bank নমুনা অনুশীলন", Icons.Default.EditNote) { nav.navigate("quiz-setup") }
+        RowLink("সংশ্লিষ্ট সংবাদ", "এই বিষয়ের সাম্প্রতিক ঘটনা", Icons.Default.Article) { nav.navigate(AppDestination.Feed.route) }
+        RowLink("জ্ঞান মানচিত্র", "প্রতিষ্ঠান ও ধারণার সম্পর্ক", Icons.Default.Hub) { nav.navigate(AppDestination.Graph.route) }
+        RowLink("তথ্য ও পরিসংখ্যান", "উৎসসহ প্রাসঙ্গিক সূচক", Icons.Default.BarChart) { nav.navigate(AppDestination.Data.route) }
+        RowLink("অনুশীলন", "সাধারণ BCS ও Bank নমুনা অনুশীলন", Icons.Default.EditNote) { nav.navigate(AppDestination.QuizSetup.route) }
     }
 }
 
@@ -1166,7 +1168,7 @@ private fun topicGuide(topic: String): TopicGuide {
     Scroll {
         Intro("উৎস ও যাচাই", "প্রতিটি তথ্য কোথা থেকে এসেছে এবং কীভাবে যাচাই হয়েছে তা দেখুন।")
         Panel { Text("উৎস-তথ্য", fontWeight = FontWeight.Bold); Text("প্রকৃত সংস্করণ যুক্ত হলে প্রকাশক, শিরোনাম, মূল URL, প্রকাশকাল, হালনাগাদ সময়, প্রবেশযোগ্যতা ও যাচাইয়ের অবস্থা দেখানো হবে।") }
-        RowLink("উৎসের রেকর্ড", "প্রকাশক, অনুমতি ও মূল URL", Icons.Default.Link) { nav.navigate("source-detail") }
+        RowLink("উৎসের রেকর্ড", "প্রকাশক, অনুমতি ও মূল URL", Icons.Default.Link) { nav.navigate(AppDestination.SourceDetail.route) }
         listOf("প্রাথমিক সরকারি নথি", "আদালত ও আইনগত নথি", "আন্তর্জাতিক সংস্থা", "সংবাদ প্রকাশনা").forEach {
             Panel { Text(it, fontWeight = FontWeight.SemiBold); Text("উৎস-রেজিস্ট্রি থেকে তথ্য আসবে", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp) }
         }
@@ -1197,7 +1199,7 @@ private fun topicGuide(topic: String): TopicGuide {
                     Kicker("সম্প্রতি পড়া • নমুনা")
                     Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
                     if (id == "sample-international-justice") {
-                        TextButton(onClick = { nav.navigate("article") }) { Text("নিবন্ধটি খুলুন") }
+                        TextButton(onClick = { nav.navigate(AppDestination.Article.route) }) { Text("নিবন্ধটি খুলুন") }
                     } else {
                         Text("এই পাঠের বিস্তারিত এখন আর উপলভ্য নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
                     }
@@ -1244,7 +1246,7 @@ private fun topicGuide(topic: String): TopicGuide {
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         TextButton(
-                            onClick = { nav.navigate("article") },
+                            onClick = { nav.navigate(AppDestination.Article.route) },
                             modifier = Modifier.fillMaxWidth().testTag("saved-article-open")
                         ) { Text("নিবন্ধটি খুলুন") }
                         TextButton(
@@ -1274,7 +1276,7 @@ private fun topicGuide(topic: String): TopicGuide {
                 Text(word, Modifier.weight(1f), fontWeight = FontWeight.SemiBold)
                 TextButton(onClick = {
                     nav.currentBackStackEntry?.savedStateHandle?.set("selected_word", word)
-                    nav.navigate("word-detail")
+                    nav.navigate(AppDestination.WordDetail.route)
                 }) { Text("শব্দটি খুলুন") }
                 TextButton(onClick = {
                     LocalLearningStore.setWordBookmarked(context, word, false)
@@ -1283,7 +1285,7 @@ private fun topicGuide(topic: String): TopicGuide {
             }
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         }
-        TextButton(onClick = { nav.navigate("vocabulary") }) { Text("Vocabulary Lab খুলুন") }
+        TextButton(onClick = { nav.navigate(AppDestination.Vocabulary.route) }) { Text("Vocabulary Lab খুলুন") }
         Text("সংগ্রহগুলো এই ডিভাইসে সংরক্ষিত। কাস্টম ফোল্ডার ও ক্লাউড সিঙ্ক এখনো যুক্ত হয়নি।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
     }
 }
