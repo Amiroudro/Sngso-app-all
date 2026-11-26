@@ -984,8 +984,9 @@ internal fun Summary(nav: NavHostController) {
         }
         Primary("আমার ব্রিফিং দেখুন") {
             LocalLearningStore.setOnboardingInterests(context, selected.toSet())
+            LocalLearningStore.setOnboardingCompleted(context, true)
             nav.navigate(AppDestination.Home.route) {
-                popUpTo("onboarding-goals") { inclusive = true }
+                popUpTo(AppDestination.Welcome.route) { inclusive = true }
                 launchSingleTop = true
             }
         }

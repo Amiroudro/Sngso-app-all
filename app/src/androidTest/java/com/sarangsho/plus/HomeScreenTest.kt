@@ -22,6 +22,7 @@ import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsProperties
 import org.junit.Assert.assertEquals
 import androidx.test.platform.app.InstrumentationRegistry
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -42,6 +43,15 @@ class HomeScreenTest {
             ReaderPreferencesRepository.setLineSpacing(context, 1.5f)
             ReaderPreferencesRepository.setSepia(context, false)
         }
+    }
+
+    @After
+    fun clearLearningPreferencesAfterTest() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        context.getSharedPreferences("sarangsho_learning", android.content.Context.MODE_PRIVATE)
+            .edit()
+            .clear()
+            .commit()
     }
 
     private fun completeOnboarding() {

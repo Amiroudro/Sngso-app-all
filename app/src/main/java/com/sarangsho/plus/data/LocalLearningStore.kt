@@ -29,6 +29,7 @@ object LocalLearningStore {
     private const val KEY_FEEDBACK_DRAFT = "feedback_draft"
     private const val KEY_REPORT_STORY_DRAFT = "report_story_draft"
     private const val KEY_ONBOARDING_GOAL = "onboarding_goal"
+    private const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"
     private const val KEY_ONBOARDING_INTERESTS = "onboarding_interests"
     private const val KEY_SELECTED_TOPIC = "selected_topic"
 
@@ -75,6 +76,13 @@ object LocalLearningStore {
             .putString(KEY_COMPLETED_STUDY_TASKS_DATE, today)
             .putStringSet(KEY_COMPLETED_STUDY_TASKS, tasks)
             .apply()
+    }
+
+    fun hasCompletedOnboarding(context: Context): Boolean =
+        preferences(context).getBoolean(KEY_ONBOARDING_COMPLETED, false)
+
+    fun setOnboardingCompleted(context: Context, completed: Boolean) {
+        preferences(context).edit().putBoolean(KEY_ONBOARDING_COMPLETED, completed).apply()
     }
 
     fun getOnboardingGoal(context: Context): String =

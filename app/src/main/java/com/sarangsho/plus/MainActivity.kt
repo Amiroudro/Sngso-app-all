@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.sarangsho.plus.navigation.AppDestination
+import com.sarangsho.plus.data.LocalLearningStore
 import com.sarangsho.plus.features.learning.*
 import com.sarangsho.plus.features.reading.*
 import com.sarangsho.plus.features.settings.*
@@ -56,7 +57,9 @@ private val icons = listOf(Icons.Default.Home, Icons.Default.School, Icons.Defau
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val startDestination = AppDestination.fromDeepLink(intent?.dataString) ?: AppDestination.Welcome
+        val startDestination = AppDestination.fromDeepLink(intent?.dataString)
+            ?: if (LocalLearningStore.hasCompletedOnboarding(this)) AppDestination.Home
+            else AppDestination.Welcome
         setContent { SarangshoApp(startDestination) }
     }
 }

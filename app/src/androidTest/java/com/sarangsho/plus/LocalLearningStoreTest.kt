@@ -28,6 +28,17 @@ class LocalLearningStoreTest {
     }
 
     @Test
+    fun onboardingCompletionDefaultsToFalseAndPersistsWhenSet() {
+        assertFalse(LocalLearningStore.hasCompletedOnboarding(context))
+
+        LocalLearningStore.setOnboardingCompleted(context, true)
+
+        assertTrue(LocalLearningStore.hasCompletedOnboarding(context))
+        LocalLearningStore.setOnboardingCompleted(context, false)
+        assertFalse(LocalLearningStore.hasCompletedOnboarding(context))
+    }
+
+    @Test
     fun selectedTopicPersistsAndCanBeChanged() {
         LocalLearningStore.setSelectedTopic(context, "অর্থনীতি ও ব্যাংকিং")
         assertEquals("অর্থনীতি ও ব্যাংকিং", LocalLearningStore.getSelectedTopic(context))
