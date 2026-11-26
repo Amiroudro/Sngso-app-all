@@ -85,7 +85,7 @@ class HomeScreenTest {
         composeRule.activityRule.scenario.recreate()
         composeRule.waitForIdle()
 
-        composeRule.onNodeWithText("সারাংশ+").assertIsDisplayed()
+        composeRule.onNodeWithText("Sarangsho+").assertIsDisplayed()
         composeRule.onNodeWithText("আমার প্রস্তুতি সাজাই").assertDoesNotExist()
     }
 
