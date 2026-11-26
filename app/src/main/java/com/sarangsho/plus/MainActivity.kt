@@ -129,7 +129,7 @@ private fun SarangshoApp() {
                 }
             }
         ) { padding ->
-            NavHost(nav, startDestination = "welcome", modifier = Modifier.padding(padding)) {
+            NavHost(nav, startDestination = AppDestination.Welcome.route, modifier = Modifier.padding(padding)) {
                 pages.forEach { page -> composable(page.destination.route) { Screen(page.destination, nav) } }
             }
         }
