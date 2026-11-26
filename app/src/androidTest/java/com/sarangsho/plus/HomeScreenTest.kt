@@ -295,12 +295,19 @@ class HomeScreenTest {
 
         composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performScrollTo().performClick()
         composeRule.onNodeWithText("পড়ার পছন্দ").performScrollTo().performClick()
-        composeRule.onNodeWithTag("reader-font-size-slider")
-            .performSemanticsAction(SemanticsActions.SetProgress) { setProgress -> setProgress(22f) }
+        org.junit.Assert.assertTrue(
+            "Font-size slider must accept the requested progress value",
+            composeRule.onNodeWithTag("reader-font-size-slider")
+                .performSemanticsAction(SemanticsActions.SetProgress) { setProgress -> setProgress(22f) }
+        )
 
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         composeRule.waitForIdle()
-        val settings = runBlocking { ReaderPreferencesRepository.observe(context).first { it.fontSize == 22f } }
+        val settings = runBlocking {
+            kotlinx.coroutines.withTimeout(10_000) {
+                ReaderPreferencesRepository.observe(context).first { it.fontSize == 22f }
+            }
+        }
         org.junit.Assert.assertEquals(22f, settings.fontSize, 0.1f)
 
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
@@ -317,13 +324,20 @@ class HomeScreenTest {
         composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performScrollTo().performClick()
         composeRule.onNodeWithText("পড়ার পছন্দ").performScrollTo().performClick()
 
-        composeRule.onNodeWithTag("reader-line-spacing-slider")
-            .performSemanticsAction(SemanticsActions.SetProgress) { setProgress -> setProgress(1.8f) }
+        org.junit.Assert.assertTrue(
+            "Line-spacing slider must accept the requested progress value",
+            composeRule.onNodeWithTag("reader-line-spacing-slider")
+                .performSemanticsAction(SemanticsActions.SetProgress) { setProgress -> setProgress(1.8f) }
+        )
         composeRule.onNodeWithTag("reader-sepia-switch").performClick()
 
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         composeRule.waitForIdle()
-        val settings = runBlocking { ReaderPreferencesRepository.observe(context).first { it.lineSpacing == 1.8f && it.sepia } }
+        val settings = runBlocking {
+            kotlinx.coroutines.withTimeout(10_000) {
+                ReaderPreferencesRepository.observe(context).first { it.lineSpacing == 1.8f && it.sepia }
+            }
+        }
         org.junit.Assert.assertEquals(1.8f, settings.lineSpacing, 0.02f)
         org.junit.Assert.assertTrue(settings.sepia)
 
