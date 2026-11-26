@@ -9,9 +9,9 @@
 - Shared screen components are separated from reading, learning and settings feature files.
 - Semantic light and dark color schemes are centralized.
 - Search and category filters work against explicitly labelled local sample stories. In Explore, only the Gambia/Myanmar sample headline opens its matching article and summary; other sample headlines disclose that full reading pages are not yet available.
-- Compose instrumentation tests cover onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, the Learn-hub activity shortcuts, language settings persistence, the quiz-to-history journey, reader font, line-spacing and sepia preference persistence through Article settings, and local learning-store persistence. The latest confirmed API 28 AOSP emulator run (workflow `45856677746`) executed all 42 authored instrumentation tests: **42 passed, 0 failed, 0 skipped**. The merged commit's later workflow `45872724840` passed JVM tests and both APK builds, but its emulator job was skipped because the pull request remained a draft. The previously failing Explore category-filter interaction now passes.
+- Compose instrumentation tests cover onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, the Learn-hub activity shortcuts, language settings persistence, the quiz-to-history journey, reader font, line-spacing and sepia preference persistence through Article settings, and local learning-store persistence. The current-head API 28 AOSP emulator run (workflow `45888948067`) executed all 43 authored instrumentation tests: **43 passed, 0 failed, 0 skipped**. The previously failing Explore category-filter interaction now passes.
 - The routine pull-request job runs the JVM test, compiles/packages the instrumentation APK using `:app:assembleDebugAndroidTest`, and assembles the debug APK. The separate `compose-instrumentation` job executes the instrumentation suite on an API 28 AOSP emulator; compilation alone is not runtime verification.
-- Emulator instrumentation runs on non-draft pull-request updates after the routine build succeeds. The hosted runner uses TCG software CPU emulation. Earlier API 35 and API 30 attempts exposed guest-performance and SDK setup problems; the API 28 configuration completed the full 42-test suite successfully in workflow `45856677746`. The emulator workflow's shell wrapper was also corrected so PID and exit-code variables survive through logcat cleanup. The merged commit's latest workflow passed the routine build job, but emulator execution remains to be rerun on a non-draft PR.
+- Emulator instrumentation runs on non-draft pull-request updates after the routine build succeeds. The hosted runner uses TCG software CPU emulation. Earlier API 35 and API 30 attempts exposed guest-performance and SDK setup problems; the current API 28 configuration completed the full 43-test suite successfully in workflow `45888948067`. The emulator workflow's shell wrapper keeps PID and exit-code variables in one shell so logcat cleanup cannot mask the test result.
 - Vocabulary Lab has a searchable five-entry sample word list with per-word bookmark controls; search matches the term, part of speech, pronunciation, Bengali meaning, definition, synonyms, antonym and example, trims surrounding whitespace, and supports bookmarking from the selected-word detail screen. Reader font size, line spacing and sepia preferences are stored in Preferences DataStore. A non-destructive, idempotent migration copies only those three settings from the legacy `sarangsho_learning` SharedPreferences file and deliberately retains the source file and unrelated values. Other learning data (saved words and articles, language and onboarding preferences, notification preferences, writing and feedback drafts, reading history, practice history, and the study checklist) remains in device-local SharedPreferences. The study checklist resets by local calendar date. These features are device-only and do not sync.
 - Vocabulary definitions and examples are prototype learning content; dictionary/source references and a maintained exam vocabulary feed are not connected.
 - Android Auto Backup is disabled for the prototype so local drafts, bookmarks and reading activity are not silently included in the platform backup flow. A deliberate export/restore feature is not implemented.
@@ -24,7 +24,7 @@
 
 | Priority | Finding | Required evidence to close |
 |---|---|---|
-| P0 | Current branch head must pass routine Android CI before buildability is claimed | Keep the JVM smoke test, instrumentation-APK compilation, debug assembly and emulator instrumentation green on every source change |
+| P0 | Keep Android CI green on every source change | Require JVM tests, instrumentation-APK compilation, debug and unsigned release assembly, and emulator instrumentation to pass for the current head |
 | P0 | No physical-device visual verification | Capture and inspect screenshots on a small phone, large phone and tablet; verify Bengali typography, TalkBack, font scaling and dark mode |
 | P1 | Gradle Wrapper has completed a fresh CI build, but local developer setup is not yet documented end-to-end | Verify wrapper download, Gradle startup and APK assembly on a clean developer machine |
 | P1 | Editorial engine contract is not connected | Contract tests against approved edition fixtures |
@@ -39,8 +39,8 @@
 
 ## Next engineering sequence
 
-1. The merged commit `a5b512ac6fee3fe87b5e50efc2420f00b145f49b` passed JVM unit tests, instrumentation APK compilation, debug APK assembly and unsigned release APK assembly in workflow `45872724840`. Its emulator job was skipped because the PR was draft. The latest confirmed full API 28 AOSP run is workflow `45856677746` (42 tests passed), which predates the merge commit. Rerun emulator instrumentation on the current branch before claiming current-head runtime coverage.
-2. **Completed on earlier commit:** API 28 AOSP emulator suite passed all 42 instrumentation test methods with zero failures or skips in workflow `45856677746`. The merged commit passed the routine build but still needs emulator execution.
+1. **Current-head CI passed:** workflow `45888948067` for commit `1e0616608d146f8becb0d046bf24e0061a8ccc6f` completed both CI jobs successfully. The API 28 AOSP emulator ran all 43 instrumentation tests: 43 passed, 0 failed, 0 skipped. Repeat this gate for every subsequent source change.
+2. **Completed on current head:** API 28 AOSP emulator suite passed all 43 instrumentation test methods with zero failures or skips in workflow `45888948067`.
 3. **Completed:** centralize all 48 routes in typed `AppDestination` identifiers, migrate feature navigation call sites, and define a strict `sarangsho://app/{route}` deep-link contract. JVM tests cover route uniqueness, round-tripping and malformed-link rejection; the manifest exposes the app link. Navigation Compose still accepts route strings at its framework boundary.
 4. Introduce screen-level ViewModels and immutable UI state.
 5. Connect approved edition fixtures, then the real engine API.
@@ -70,12 +70,12 @@ This source scan predates the typed-destination migration. `AppDestination` is n
 
 ## Test coverage inventory (updated 2026-11-26)
 
-A source review found one JVM unit test (`ExampleUnitTest.applicationIdIsStable`) and 42 authored Android instrumentation test methods. The 42 Android tests are:
+A source review found one JVM unit test (`ExampleUnitTest.applicationIdIsStable`) and 43 authored Android instrumentation test methods. The 43 Android tests are:
 
 | Test file | Test methods | What they cover |
 |---|---:|---|
 | `HomeScreenTest.kt` | 19 | Welcome and onboarding; Explore filters, matching article navigation and unavailable sample-story states; Library empty/search states; article and vocabulary bookmarks; Saved Collections opening, refresh and removal; unknown saved article handling; Learn-hub shortcuts and practice history; archive navigation; language persistence; reader font, line-spacing and sepia preferences; vocabulary detail/search; and profile navigation state |
-| `LocalLearningStoreTest.kt` | 21 | Topic, vocabulary search, bookmarks, writing/feedback/story-report drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration/bounds, practice-history validation/bounds, and daily study-task persistence/reset |
+| `LocalLearningStoreTest.kt` | 22 | Topic, vocabulary search, bookmarks, writing/feedback/story-report drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration/bounds, practice-history validation/bounds, and daily study-task persistence/reset |
 | `AppPrivacyManifestTest.kt` | 1 | Confirms Android Auto Backup is disabled for the app package |
 | `ReaderPreferencesMigrationTest.kt` | 1 | Confirms reader settings migrate from legacy SharedPreferences without deleting the source or unrelated values |
 
@@ -85,7 +85,7 @@ Coverage limits:
 - All 21 local-store tests clear their test preferences before and after each test.
 - The test source uses Compose UI test APIs and AndroidX instrumentation APIs declared in the app module.
 - No test currently verifies all 48 routes, all article/summary navigation paths, process recreation, or accessibility behavior.
-- The current source contains 42 authored instrumentation tests (19 HomeScreen, 21 local-store, 1 privacy-manifest, 1 reader-preferences migration). Workflow `45856677746` executed all 42 tests on API 28 AOSP and passed with zero failures, errors or skips. The new reader-preferences migration test was executed successfully in workflow `45856677746` on API 28 AOSP. This is emulator evidence, not a physical-device visual or accessibility audit.
+- The current source contains 43 authored instrumentation tests (19 HomeScreen, 22 local-store, 1 privacy-manifest, 1 reader-preferences migration). Workflow `45888948067` executed all 43 tests on API 28 AOSP and passed with zero failures, errors or skips. This is emulator evidence, not a physical-device visual or accessibility audit.
 - The routine CI step `:app:assembleDebugAndroidTest` only compiles/packages the instrumentation APK. It is not a substitute for `:app:connectedDebugAndroidTest`.
 
 The next test expansion should follow actual user journeys and stable data contracts, not attempt to create one shallow test for every screen.
