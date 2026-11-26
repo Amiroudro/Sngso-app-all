@@ -1,7 +1,6 @@
 package com.sarangsho.plus
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -23,7 +22,7 @@ class ReaderPreferencesMigrationTest {
     @Test
     fun legacyReaderPreferencesAreCopiedWithoutDeletingTheLegacyFile() = runBlocking {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val legacyName = "reader_preferences_migration_test"
+        val legacyName = "sarangsho_learning"
         val legacy = context.getSharedPreferences(legacyName, 0)
         legacy.edit()
             .putFloat("reading_font_size", 23f)
@@ -37,13 +36,7 @@ class ReaderPreferencesMigrationTest {
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         try {
             val store = PreferenceDataStoreFactory.create(
-                migrations = listOf(
-                    SharedPreferencesMigration(
-                        context,
-                        legacyName,
-                        keysToMigrate = setOf("reading_font_size", "reading_line_spacing", "reading_sepia")
-                    )
-                ),
+                migrations = listOf(LegacyReaderPreferencesMigration(context)),
                 scope = scope,
                 produceFile = { file }
             )
@@ -57,7 +50,12 @@ class ReaderPreferencesMigrationTest {
         } finally {
             scope.cancel()
             file.delete()
-            legacy.edit().clear().commit()
+            legacy.edit()
+                .remove("reading_font_size")
+                .remove("reading_line_spacing")
+                .remove("reading_sepia")
+                .remove("unrelated_learning_value")
+                .commit()
         }
     }
 }
