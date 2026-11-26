@@ -85,7 +85,7 @@ Coverage limits:
 - All 21 local-store tests clear their test preferences before and after each test.
 - The test source uses Compose UI test APIs and AndroidX instrumentation APIs declared in the app module.
 - No test currently verifies all 48 routes, all article/summary navigation paths, process recreation, or accessibility behavior.
-- The current source contains 42 authored instrumentation tests (19 HomeScreen, 21 local-store, 1 privacy-manifest, 1 reader-preferences migration). Workflow `45832521965` executed the earlier 41-test suite on API 28 AOSP and passed with zero failures, errors or skips. The new migration test has not yet been confirmed on the emulator at the current branch head. This is emulator evidence, not a physical-device visual or accessibility audit.
+- The current source contains 42 authored instrumentation tests (19 HomeScreen, 21 local-store, 1 privacy-manifest, 1 reader-preferences migration). Workflow `45856677746` executed all 42 tests on API 28 AOSP and passed with zero failures, errors or skips. The new reader-preferences migration test was executed successfully in workflow `45856677746` on API 28 AOSP. This is emulator evidence, not a physical-device visual or accessibility audit.
 - The routine CI step `:app:assembleDebugAndroidTest` only compiles/packages the instrumentation APK. It is not a substitute for `:app:connectedDebugAndroidTest`.
 
 The next test expansion should follow actual user journeys and stable data contracts, not attempt to create one shallow test for every screen.
