@@ -17,6 +17,36 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            val keystorePath = System.getenv("SNGSO_KEYSTORE_PATH")
+            val keystorePassword = System.getenv("SNGSO_KEYSTORE_PASSWORD")
+            val keyAliasValue = System.getenv("SNGSO_KEY_ALIAS")
+            val keyPasswordValue = System.getenv("SNGSO_KEY_PASSWORD")
+            if (!keystorePath.isNullOrBlank() &&
+                !keystorePassword.isNullOrBlank() &&
+                !keyAliasValue.isNullOrBlank() &&
+                !keyPasswordValue.isNullOrBlank()
+            ) {
+                storeFile = file(keystorePath)
+                storePassword = keystorePassword
+                keyAlias = keyAliasValue
+                keyPassword = keyPasswordValue
+            }
+        }
+    }
+
+    buildTypes {
+        getByName("release") {
+            // Keep the first direct-distribution build debuggable only through
+            // Android's normal release restrictions; shrinking is deferred
+            // until its mapping/diagnostics flow has been validated.
+            isMinifyEnabled = false
+            isShrinkResources = false
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
+
     buildFeatures {
         compose = true
         buildConfig = true
