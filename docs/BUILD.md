@@ -68,3 +68,49 @@ Latest completed verification:
 - The workflow's emulator script now runs the test command, captures its exit status and stops logcat within one shell. This fixes the prior false-negative where per-line shell execution lost `LOGCAT_PID` and `TEST_EXIT` even though Gradle reported `BUILD SUCCESSFUL` and the instrumentation runner reported `OK (41 tests)`.
 
 The debug APK is suitable for local UI exploration, but it is not release-signed. No physical-device, rendered visual or accessibility result is claimed.
+
+## Direct-distribution release APK
+
+The app has a release build type and a separate manually triggered workflow at
+`.github/workflows/release-apk.yml`. The workflow builds a signed APK, verifies
+its APK signature with `apksigner`, writes a SHA-256 checksum, and uploads the
+APK as a 30-day artifact. It does not publish the APK to a store.
+
+### Create and protect the signing key
+
+Create the keystore once on a trusted computer with JDK 17 or newer:
+
+```sh
+keytool -genkeypair -v -keystore sarangsho-release.jks -alias sarangsho -keyalg RSA -keysize 4096 -validity 10000
+```
+
+Choose strong, unique keystore and key passwords. Keep the keystore and its
+passwords in a secure offline backup. **Losing this key can prevent future
+updates from being accepted as updates to the same installed app. Never commit
+the keystore, passwords, or an unencrypted copy to this repository.**
+
+Convert the keystore to a single-line Base64 value:
+
+- macOS/Linux: `base64 -w 0 sarangsho-release.jks` (on macOS use `base64 < sarangsho-release.jks | tr -d '\\n'`)
+- Windows PowerShell: `[Convert]::ToBase64String([IO.File]::ReadAllBytes("sarangsho-release.jks"))`
+
+In the GitHub repository, open **Settings → Secrets and variables → Actions**
+and create these repository secrets:
+
+| Secret | Value |
+|---|---|
+| `SNGSO_KEYSTORE_BASE64` | The complete Base64 output |
+| `SNGSO_KEYSTORE_PASSWORD` | Keystore password |
+| `SNGSO_KEY_ALIAS` | `sarangsho` (or the alias you chose) |
+| `SNGSO_KEY_PASSWORD` | Key password |
+
+After this workflow file is present on the repository's default branch, open
+**Actions → Direct APK Release → Run workflow**. GitHub's manual workflow
+dispatch requires the workflow to exist on the default branch. The release job
+fails closed if any signing secret is missing and does not fall back to an
+unsigned APK.
+
+Download the `sarangsho-plus-direct-release` artifact from the successful run.
+Verify the accompanying `.sha256` file before sharing the APK. Install and
+smoke-test the release APK on a physical Android device before wider
+distribution. Do not share the keystore or signing secrets with testers.
