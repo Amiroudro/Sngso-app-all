@@ -38,12 +38,20 @@ android {
 
     buildTypes {
         getByName("release") {
-            // Keep the first direct-distribution build debuggable only through
-            // Android's normal release restrictions; shrinking is deferred
-            // until its mapping/diagnostics flow has been validated.
+            // Keep shrinking disabled until release mapping and diagnostics are validated.
             isMinifyEnabled = false
             isShrinkResources = false
-            signingConfig = signingConfigs.getByName("release")
+            val releaseSigningConfigured = listOf(
+                System.getenv("SNGSO_KEYSTORE_PATH"),
+                System.getenv("SNGSO_KEYSTORE_PASSWORD"),
+                System.getenv("SNGSO_KEY_ALIAS"),
+                System.getenv("SNGSO_KEY_PASSWORD")
+            ).all { !it.isNullOrBlank() }
+            signingConfig = if (releaseSigningConfigured) {
+                signingConfigs.getByName("release")
+            } else {
+                null
+            }
         }
     }
 
