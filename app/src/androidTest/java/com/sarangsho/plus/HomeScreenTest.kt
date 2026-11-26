@@ -1,5 +1,9 @@
 package com.sarangsho.plus
 
+import com.sarangsho.plus.data.ReaderPreferencesRepository
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.assertTextEquals
@@ -291,10 +295,10 @@ class HomeScreenTest {
         composeRule.onNodeWithTag("reader-font-size-slider")
             .performSemanticsAction(SemanticsActions.SetProgress) { setProgress -> setProgress(22f) }
 
-        val preferences = InstrumentationRegistry.getInstrumentation().targetContext
-            .getSharedPreferences("sarangsho_learning", android.content.Context.MODE_PRIVATE)
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
         composeRule.waitForIdle()
-        org.junit.Assert.assertEquals(22f, preferences.getFloat("reading_font_size", 0f), 0.1f)
+        val settings = runBlocking { ReaderPreferencesRepository.observe(context).first() }
+        org.junit.Assert.assertEquals(22f, settings.fontSize, 0.1f)
 
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
@@ -314,11 +318,11 @@ class HomeScreenTest {
             .performSemanticsAction(SemanticsActions.SetProgress) { setProgress -> setProgress(1.8f) }
         composeRule.onNodeWithTag("reader-sepia-switch").performClick()
 
-        val preferences = InstrumentationRegistry.getInstrumentation().targetContext
-            .getSharedPreferences("sarangsho_learning", android.content.Context.MODE_PRIVATE)
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
         composeRule.waitForIdle()
-        org.junit.Assert.assertEquals(1.8f, preferences.getFloat("reading_line_spacing", 0f), 0.02f)
-        org.junit.Assert.assertTrue(preferences.getBoolean("reading_sepia", false))
+        val settings = runBlocking { ReaderPreferencesRepository.observe(context).first() }
+        org.junit.Assert.assertEquals(1.8f, settings.lineSpacing, 0.02f)
+        org.junit.Assert.assertTrue(settings.sepia)
 
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
