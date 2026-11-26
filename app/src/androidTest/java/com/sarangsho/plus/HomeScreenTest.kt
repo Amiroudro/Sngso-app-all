@@ -295,10 +295,14 @@ class HomeScreenTest {
 
         composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performScrollTo().performClick()
         composeRule.onNodeWithText("পড়ার পছন্দ").performScrollTo().performClick()
+        var fontSizeAccepted = false
+        composeRule.onNodeWithTag("reader-font-size-slider")
+            .performSemanticsAction(SemanticsActions.SetProgress) { setProgress ->
+                fontSizeAccepted = setProgress(22f)
+            }
         org.junit.Assert.assertTrue(
             "Font-size slider must accept the requested progress value",
-            composeRule.onNodeWithTag("reader-font-size-slider")
-                .performSemanticsAction(SemanticsActions.SetProgress) { setProgress -> setProgress(22f) }
+            fontSizeAccepted
         )
 
         val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -324,10 +328,14 @@ class HomeScreenTest {
         composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performScrollTo().performClick()
         composeRule.onNodeWithText("পড়ার পছন্দ").performScrollTo().performClick()
 
+        var lineSpacingAccepted = false
+        composeRule.onNodeWithTag("reader-line-spacing-slider")
+            .performSemanticsAction(SemanticsActions.SetProgress) { setProgress ->
+                lineSpacingAccepted = setProgress(1.8f)
+            }
         org.junit.Assert.assertTrue(
             "Line-spacing slider must accept the requested progress value",
-            composeRule.onNodeWithTag("reader-line-spacing-slider")
-                .performSemanticsAction(SemanticsActions.SetProgress) { setProgress -> setProgress(1.8f) }
+            lineSpacingAccepted
         )
         composeRule.onNodeWithTag("reader-sepia-switch").performClick()
 
