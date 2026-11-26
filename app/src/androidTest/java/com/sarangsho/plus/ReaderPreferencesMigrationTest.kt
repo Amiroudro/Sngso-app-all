@@ -26,6 +26,14 @@ class ReaderPreferencesMigrationTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val legacyName = "sarangsho_learning"
         val legacy = context.getSharedPreferences(legacyName, 0)
+        val hadFontSize = legacy.contains("reading_font_size")
+        val previousFontSize = if (hadFontSize) legacy.getFloat("reading_font_size", 18f) else 18f
+        val hadLineSpacing = legacy.contains("reading_line_spacing")
+        val previousLineSpacing = if (hadLineSpacing) legacy.getFloat("reading_line_spacing", 1.5f) else 1.5f
+        val hadSepia = legacy.contains("reading_sepia")
+        val previousSepia = if (hadSepia) legacy.getBoolean("reading_sepia", false) else false
+        val hadUnrelated = legacy.contains("unrelated_learning_value")
+        val previousUnrelated = legacy.getString("unrelated_learning_value", null)
         legacy.edit()
             .putFloat("reading_font_size", 23f)
             .putFloat("reading_line_spacing", 1.8f)
@@ -52,12 +60,12 @@ class ReaderPreferencesMigrationTest {
         } finally {
             scope.cancel()
             file.delete()
-            legacy.edit()
-                .remove("reading_font_size")
-                .remove("reading_line_spacing")
-                .remove("reading_sepia")
-                .remove("unrelated_learning_value")
-                .commit()
+            legacy.edit().apply {
+                if (hadFontSize) putFloat("reading_font_size", previousFontSize) else remove("reading_font_size")
+                if (hadLineSpacing) putFloat("reading_line_spacing", previousLineSpacing) else remove("reading_line_spacing")
+                if (hadSepia) putBoolean("reading_sepia", previousSepia) else remove("reading_sepia")
+                if (hadUnrelated) putString("unrelated_learning_value", previousUnrelated) else remove("unrelated_learning_value")
+            }.commit()
         }
     }
 }
