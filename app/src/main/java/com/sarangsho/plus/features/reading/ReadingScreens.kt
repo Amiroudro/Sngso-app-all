@@ -29,10 +29,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.sarangsho.plus.data.LocalLearningStore
+import com.sarangsho.plus.data.ReaderPreferencesRepository
+import com.sarangsho.plus.data.ReaderSettings
 import com.sarangsho.plus.features.learning.searchVocabulary
 import androidx.navigation.compose.rememberNavController
 import com.sarangsho.plus.ui.theme.SarangshoTheme
@@ -53,30 +52,14 @@ private data class ReaderPreferences(
     val sepia: Boolean
 )
 
-/** Refresh reader controls when returning from Reading Settings. */
+/** Observe persisted reader controls so settings changes update open reading screens. */
 @Composable
 private fun rememberReaderPreferences(context: Context): ReaderPreferences {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    var fontSize by remember(context) { mutableFloatStateOf(LocalLearningStore.getReadingFontSize(context)) }
-    var lineSpacing by remember(context) { mutableFloatStateOf(LocalLearningStore.getReadingLineSpacing(context)) }
-    var sepia by remember(context) { mutableStateOf(LocalLearningStore.isReadingSepia(context)) }
-
-    DisposableEffect(lifecycleOwner, context) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                fontSize = LocalLearningStore.getReadingFontSize(context)
-                lineSpacing = LocalLearningStore.getReadingLineSpacing(context)
-                sepia = LocalLearningStore.isReadingSepia(context)
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-    }
-
+    val settings by ReaderPreferencesRepository.observe(context).collectAsState(initial = ReaderSettings())
     return ReaderPreferences(
-        fontSize = fontSize.sp,
-        lineHeight = (fontSize * lineSpacing).sp,
-        sepia = sepia
+        fontSize = settings.fontSize.sp,
+        lineHeight = (settings.fontSize * settings.lineSpacing).sp,
+        sepia = settings.sepia
     )
 }
 
