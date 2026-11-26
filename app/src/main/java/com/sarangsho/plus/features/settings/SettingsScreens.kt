@@ -1,4 +1,6 @@
 package com.sarangsho.plus.features.settings
+
+import com.sarangsho.plus.navigation.AppDestination
 import com.sarangsho.plus.ui.components.*
 
 import androidx.compose.foundation.BorderStroke
@@ -31,13 +33,13 @@ import androidx.compose.ui.semantics.semantics
 @Composable internal fun Settings(nav: NavHostController) {
     Scroll {
         Intro("সেটিংস", "অ্যাপের ব্যবহার, পড়া ও ব্যক্তিগত তথ্য নিয়ন্ত্রণ করুন।")
-        RowLink("পড়ার পছন্দ", "ফন্ট, আকার, লাইন স্পেসিং ও থিম", Icons.Default.TextFields) { nav.navigate("reading-settings") }
-        RowLink("অফলাইন লাইব্রেরি", "ডাউনলোড ও স্টোরেজ", Icons.Default.Download) { nav.navigate("downloads") }
-        RowLink("নোটিফিকেশন", "কোন আপডেট পাবেন", Icons.Default.Notifications) { nav.navigate("notifications") }
-        RowLink("অ্যাপের ভাষা", "বাংলা, English অথবা মিশ্র ভাষা", Icons.Default.Translate) { nav.navigate("language") }
-        RowLink("গোপনীয়তা", "ডেটা ও অ্যাকাউন্ট নিয়ন্ত্রণ", Icons.Default.PrivacyTip) { nav.navigate("privacy") }
-        RowLink("সহায়তা ও মতামত", "সমস্যা জানান বা প্রশ্ন করুন", Icons.Default.SupportAgent) { nav.navigate("feedback") }
-        RowLink("অ্যাপ সম্পর্কে", "সংস্করণ ও প্রকল্পের তথ্য", Icons.Default.Info) { nav.navigate("about") }
+        RowLink("পড়ার পছন্দ", "ফন্ট, আকার, লাইন স্পেসিং ও থিম", Icons.Default.TextFields) { nav.navigate(AppDestination.ReadingSettings.route) }
+        RowLink("অফলাইন লাইব্রেরি", "ডাউনলোড ও স্টোরেজ", Icons.Default.Download) { nav.navigate(AppDestination.Downloads.route) }
+        RowLink("নোটিফিকেশন", "কোন আপডেট পাবেন", Icons.Default.Notifications) { nav.navigate(AppDestination.Notifications.route) }
+        RowLink("অ্যাপের ভাষা", "বাংলা, English অথবা মিশ্র ভাষা", Icons.Default.Translate) { nav.navigate(AppDestination.Language.route) }
+        RowLink("গোপনীয়তা", "ডেটা ও অ্যাকাউন্ট নিয়ন্ত্রণ", Icons.Default.PrivacyTip) { nav.navigate(AppDestination.Privacy.route) }
+        RowLink("সহায়তা ও মতামত", "সমস্যা জানান বা প্রশ্ন করুন", Icons.Default.SupportAgent) { nav.navigate(AppDestination.Feedback.route) }
+        RowLink("অ্যাপ সম্পর্কে", "সংস্করণ ও প্রকল্পের তথ্য", Icons.Default.Info) { nav.navigate(AppDestination.About.route) }
     }
 }
 
@@ -215,7 +217,7 @@ import androidx.compose.ui.semantics.semantics
         OutlinedTextField(password, { password = it }, Modifier.fillMaxWidth(), label = { Text("পাসওয়ার্ড") }, visualTransformation = PasswordVisualTransformation(), singleLine = true)
         Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) { Text("অ্যাকাউন্ট তৈরি শিগগিরই চালু হবে") }
         Text("নিরাপদ authentication ও account storage এখনো সংযুক্ত নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
-        Text("সাইন ইন পেজে ফিরুন", Modifier.clickable { nav.navigate("signin") }, color = MaterialTheme.colorScheme.primary)
+        Text("সাইন ইন পেজে ফিরুন", Modifier.clickable { nav.navigate(AppDestination.Signin.route) }, color = MaterialTheme.colorScheme.primary)
     }
 }
 
