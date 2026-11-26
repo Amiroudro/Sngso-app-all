@@ -67,7 +67,7 @@ enum class AppDestination(val route: String) {
             if (value.isNullOrBlank()) return null
             return runCatching {
                 val uri = URI(value)
-                if (uri.scheme != "sarangsho" || uri.host != "app" ||
+                if (uri.scheme != "sarangsho" || uri.rawAuthority != "app" ||
                     uri.rawQuery != null || uri.rawFragment != null
                 ) return null
                 val path = uri.rawPath ?: return null
