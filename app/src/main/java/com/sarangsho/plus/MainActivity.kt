@@ -56,13 +56,14 @@ private val icons = listOf(Icons.Default.Home, Icons.Default.School, Icons.Defau
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { SarangshoApp() }
+        val startDestination = AppDestination.fromDeepLink(intent?.dataString) ?: AppDestination.Welcome
+        setContent { SarangshoApp(startDestination) }
     }
 }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun SarangshoApp() {
+private fun SarangshoApp(startDestination: AppDestination) {
     val nav = rememberNavController()
     val entry by nav.currentBackStackEntryAsState()
     val destination = AppDestination.fromRoute(entry?.destination?.route) ?: AppDestination.Welcome
@@ -129,7 +130,7 @@ private fun SarangshoApp() {
                 }
             }
         ) { padding ->
-            NavHost(nav, startDestination = AppDestination.Welcome.route, modifier = Modifier.padding(padding)) {
+            NavHost(nav, startDestination = startDestination.route, modifier = Modifier.padding(padding)) {
                 pages.forEach { page -> composable(page.destination.route) { Screen(page.destination, nav) } }
             }
         }
