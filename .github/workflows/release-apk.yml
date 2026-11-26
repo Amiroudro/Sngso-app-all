@@ -48,6 +48,15 @@ jobs:
           echo "SNGSO_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
           echo "SNGSO_KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
 
+      - name: Validate keystore alias and private key
+        run: |
+          set -euo pipefail
+          keytool -list -v \
+            -keystore "$SNGSO_KEYSTORE_PATH" \
+            -storepass "$SNGSO_KEYSTORE_PASSWORD" \
+            -alias "$SNGSO_KEY_ALIAS" |
+            grep -q "Entry type: PrivateKeyEntry"
+
       - name: Run unit tests
         run: ./gradlew --no-daemon --stacktrace :app:testDebugUnitTest
 
