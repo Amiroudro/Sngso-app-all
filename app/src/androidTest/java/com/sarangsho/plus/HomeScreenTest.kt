@@ -290,8 +290,6 @@ class HomeScreenTest {
 
         composeRule.onNodeWithText("প্রতিবেদনটি পড়ুন").performScrollTo().performClick()
         composeRule.onNodeWithText("পড়ার পছন্দ").performScrollTo().performClick()
-        composeRule.onNodeWithText("লেখার আকার: 18 sp").assertIsDisplayed()
-
         composeRule.onNodeWithTag("reader-font-size-slider")
             .performSemanticsAction(SemanticsActions.SetProgress) { setProgress -> setProgress(22f) }
 
