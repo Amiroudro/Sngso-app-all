@@ -32,7 +32,7 @@
 | P1 | Vocabulary entries are a small manually authored sample without dictionary/source citations or feed updates | Add reviewed word records with source metadata, provenance and update validation |
 | P1 | Authentication and account recovery are unavailable | Real auth integration or remove account creation from release UI |
 | P1 | Offline edition download/sync is unavailable | Download lifecycle, storage errors and stale-cache tests |
-| P2 | Screen routes are still string-based | Move to typed route definitions before route count expands further |
+| P2 | Navigation still uses the Navigation Compose string API at the framework boundary | Keep typed `AppDestination` as the sole route registry; introduce typed argument routes only when screens require stable IDs or filters |
 | P2 | Some UI state is local to composables | Move durable/business state to ViewModels and collect lifecycle-aware state |
 | P2 | Bengali font scaling and TalkBack have not been tested on hardware | Manual accessibility pass at default and enlarged text scales |
 | P2 | Dark theme has source support but no rendered contrast audit | Capture and inspect dark-mode screens |
@@ -41,10 +41,10 @@
 
 1. **Completed:** routine Android unit/build and instrumentation-test compilation pass on the latest branch head.
 2. **Completed:** API 28 AOSP emulator suite passes all 41 instrumentation test methods with zero failures or skips. Continue requiring both jobs to pass for each source change.
-3. Replace string routes with typed destinations and add deep-link contracts.
+3. **Completed:** centralize all 48 routes in typed `AppDestination` identifiers, migrate feature navigation call sites, and define a strict `sarangsho://app/{route}` deep-link contract. JVM tests cover route uniqueness, round-tripping and malformed-link rejection; the manifest exposes the app link. Navigation Compose still accepts route strings at its framework boundary.
 4. Introduce screen-level ViewModels and immutable UI state.
 5. Connect approved edition fixtures, then the real engine API.
-6. Add reviewed, source-attributed vocabulary records and a controlled update path; replace the initial SharedPreferences store with Room/DataStore repositories for offline reading, saved items, preferences and learning progress.
+6. Add reviewed, source-attributed vocabulary records and a controlled update path; replace the initial SharedPreferences store with Room/DataStore repositories for offline reading, saved items, preferences and learning progress. Preserve existing user data through a tested one-time migration.
 7. Capture rendered screenshots and run the Impeccable critique/audit pass at real device sizes.
 8. Complete Bengali typography, TalkBack, font scaling, dark theme and reduced-motion checks.
 
@@ -57,7 +57,7 @@
 - Unsupported actions are disabled with explanatory copy rather than appearing functional.
 - No live story count, source comparison, score, progress metric or download state is fabricated.
 
-## Navigation source check (updated 2026-11-25)
+## Navigation source check (updated 2026-11-26)
 
 A source-level scan of the current branch found:
 
@@ -66,7 +66,7 @@ A source-level scan of the current branch found:
 - One variable-driven `navigate(target)` call powers bottom navigation. Its four possible values (`home`, `learn`, `saved`, `feed`) are all declared routes.
 - The Language Settings screen is reachable from Settings, the edition archive from Today, and Word Detail from each Vocabulary Lab entry. The selected term is passed through the navigation back-stack entry and rendered from the bundled vocabulary record.
 
-This checks string consistency only. It does not prove that every screen renders, that every interaction works, or that navigation survives process recreation. A compiled build and device-level tests are still required.
+This source scan predates the typed-destination migration. `AppDestination` is now the canonical registry for all 48 routes, and the activity plus feature navigation call sites reference its typed entries. Navigation Compose still receives each destination's stable string route at its API boundary. The deep-link parser accepts only the exact `sarangsho://app/{known-route}` form and rejects user-info, ports, unknown routes, encoded route aliases, extra path segments, query strings and fragments. JVM tests exercise every destination's route and deep-link round trip plus malformed inputs. This does not prove every screen renders or every back-stack journey works; device-level navigation tests and process-recreation coverage remain outstanding.
 
 ## Test coverage inventory (updated 2026-11-26)
 
