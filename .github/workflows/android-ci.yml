@@ -94,16 +94,11 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           emulator-boot-timeout: 900
           disable-animations: true
+          # The emulator action executes script lines in separate shells. Keep
+          # PID and exit-code handling in one shell command so cleanup cannot
+          # turn a successful test run into a false failure.
           script: |
-            adb logcat -c
-            adb logcat -v threadtime > emulator-logcat.txt &
-            LOGCAT_PID=$!
-            set +e
-            ./gradlew --no-daemon --stacktrace :app:connectedDebugAndroidTest
-            TEST_EXIT=$?
-            kill "$LOGCAT_PID" || true
-            wait "$LOGCAT_PID" 2>/dev/null || true
-            exit "$TEST_EXIT"
+            set +e; adb logcat -c; adb logcat -v threadtime > emulator-logcat.txt & LOGCAT_PID=$!; ./gradlew --no-daemon --stacktrace :app:connectedDebugAndroidTest; TEST_EXIT=$?; kill "$LOGCAT_PID" 2>/dev/null || true; wait "$LOGCAT_PID" 2>/dev/null || true; exit "$TEST_EXIT"
       - name: Upload emulator diagnostics
         if: always()
         uses: actions/upload-artifact@v4
