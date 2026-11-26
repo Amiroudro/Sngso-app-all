@@ -1,5 +1,6 @@
 package com.sarangsho.plus
 
+import com.sarangsho.plus.data.LocalLearningStore
 import com.sarangsho.plus.data.ReaderPreferencesRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -74,6 +75,18 @@ class HomeScreenTest {
         completeOnboarding()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .performScrollTo().assertIsDisplayed()
+    }
+
+    @Test
+    fun returningUserLaunchesDirectlyIntoTodayBriefing() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        LocalLearningStore.setOnboardingCompleted(context, true)
+
+        composeRule.activityRule.scenario.recreate()
+        composeRule.waitForIdle()
+
+        composeRule.onNodeWithText("সারাংশ+").assertIsDisplayed()
+        composeRule.onNodeWithText("আমার প্রস্তুতি সাজাই").assertDoesNotExist()
     }
 
     @Test
