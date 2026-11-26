@@ -1,4 +1,6 @@
 package com.sarangsho.plus.features.learning
+
+import com.sarangsho.plus.navigation.AppDestination
 import com.sarangsho.plus.data.LocalLearningStore
 import com.sarangsho.plus.ui.components.*
 
@@ -126,15 +128,15 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Column(Modifier.weight(1f).heightIn(min = 64.dp).clickable(role = Role.Button) { nav.navigate("saved") }.padding(vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Column(Modifier.weight(1f).heightIn(min = 64.dp).clickable(role = Role.Button) { nav.navigate(AppDestination.Saved.route) }.padding(vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                     Text(savedWordCount.toString(), fontSize = 23.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                     Text("সংরক্ষিত শব্দ", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                Column(Modifier.weight(1f).heightIn(min = 64.dp).clickable(role = Role.Button) { nav.navigate("study-plan") }.padding(vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Column(Modifier.weight(1f).heightIn(min = 64.dp).clickable(role = Role.Button) { nav.navigate(AppDestination.StudyPlan.route) }.padding(vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                     Text(completedTaskCount.toString(), fontSize = 23.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                     Text("সম্পন্ন পড়ার কাজ", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                Column(Modifier.weight(1f).heightIn(min = 64.dp).clickable(role = Role.Button) { nav.navigate("practice-history") }.padding(vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Column(Modifier.weight(1f).heightIn(min = 64.dp).clickable(role = Role.Button) { nav.navigate(AppDestination.PracticeHistory.route) }.padding(vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                     Text(practiceSessionCount.toString(), fontSize = 23.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                     Text("অনুশীলন সেশন", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
@@ -150,31 +152,31 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
             Kicker("VOCABULARY LAB")
             Text("শব্দভান্ডার গড়ে তুলুন", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Text("বাংলা অর্থ, ইংরেজি সংজ্ঞা, সমার্থক শব্দ, collocation এবং বাস্তব বাক্যে ব্যবহার শিখুন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Primary("শব্দ শেখা শুরু করুন") { nav.navigate("vocabulary") }
+            Primary("শব্দ শেখা শুরু করুন") { nav.navigate(AppDestination.Vocabulary.route) }
         }
         Panel {
             Kicker("BCS • BANK")
             Text("পরীক্ষার অনুশীলন", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Text("বিষয় ও সময় বেছে MCQ অনুশীলন করুন। প্রকৃত প্রশ্নব্যাংক সংযুক্ত না হওয়া পর্যন্ত নমুনা প্রশ্ন স্পষ্টভাবে চিহ্নিত থাকবে।", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Primary("অনুশীলন সাজান", modifier = Modifier.testTag("learn-hub-practice-setup")) { nav.navigate("quiz-setup") }
+            Primary("অনুশীলন সাজান", modifier = Modifier.testTag("learn-hub-practice-setup")) { nav.navigate(AppDestination.QuizSetup.route) }
         }
         Panel {
             Kicker("WRITTEN PRACTICE")
             Text("লিখিত উত্তরের চর্চা", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
             Text("বিশ্লেষণী প্রশ্নে নিজের ভাষায় উত্তর লিখুন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            OutlinedButton(onClick = { nav.navigate("writing") }, modifier = Modifier.fillMaxWidth()) { Text("লিখিত অনুশীলন খুলুন") }
+            OutlinedButton(onClick = { nav.navigate(AppDestination.Writing.route) }, modifier = Modifier.fillMaxWidth()) { Text("লিখিত অনুশীলন খুলুন") }
         }
         Panel {
             Kicker("ACTIVE RECALL")
             Text("রিভিশন ডেক", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
             Text("ফ্ল্যাশকার্ডের মাধ্যমে শেখা তথ্য মনে করার অনুশীলন করুন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            OutlinedButton(onClick = { nav.navigate("revision") }, modifier = Modifier.fillMaxWidth()) { Text("রিভিশন শুরু করুন") }
+            OutlinedButton(onClick = { nav.navigate(AppDestination.Revision.route) }, modifier = Modifier.fillMaxWidth()) { Text("রিভিশন শুরু করুন") }
         }
         Panel {
             Kicker("STUDY PLAN")
             Text("পড়ার পরিকল্পনা", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
             Text("আজকের পড়া ও অনুশীলন নিজের সুবিধামতো সাজান।", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            OutlinedButton(onClick = { nav.navigate("study-plan") }, modifier = Modifier.fillMaxWidth()) { Text("পরিকল্পনা দেখুন") }
+            OutlinedButton(onClick = { nav.navigate(AppDestination.StudyPlan.route) }, modifier = Modifier.fillMaxWidth()) { Text("পরিকল্পনা দেখুন") }
         }
     }
 }
@@ -261,7 +263,7 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
                 OutlinedButton(
                     onClick = {
                         nav.currentBackStackEntry?.savedStateHandle?.set("selected_word", entry.term)
-                        nav.navigate("word-detail")
+                        nav.navigate(AppDestination.WordDetail.route)
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -312,7 +314,7 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
             Primary("উত্তর জমা দিন") {
                 if (selected >= 0) {
                     nav.currentBackStackEntry?.savedStateHandle?.set("selectedAnswer", selected)
-                    nav.navigate("answer")
+                    nav.navigate(AppDestination.Answer.route)
                 }
             }
             Text("নমুনা প্রশ্ন; প্রকৃত পরীক্ষার প্রশ্ন বা পূর্বাভাস নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
@@ -351,18 +353,18 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
             Text("গণপরিষদে বাংলাদেশের সংবিধান ১৯৭২ সালের ৪ নভেম্বর গৃহীত হয় এবং ১৬ ডিসেম্বর ১৯৭২ কার্যকর হয়। গৃহীত হওয়ার তারিখ ও কার্যকর হওয়ার তারিখ আলাদা।")
             Text("পরীক্ষার কৌশল: ‘গৃহীত’, ‘স্বাক্ষরিত’ ও ‘কার্যকর’ শব্দের পার্থক্য খেয়াল করুন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        Primary("আরও অনুশীলন") { nav.navigate("challenge") }
+        Primary("আরও অনুশীলন") { nav.navigate(AppDestination.Challenge.route) }
         OutlinedButton(
             onClick = {
                 nav.currentBackStackEntry?.savedStateHandle?.set("correctCount", if (isCorrect) 1 else 0)
                 nav.currentBackStackEntry?.savedStateHandle?.set("questionCount", 1)
                 // Reset the guard for every attempt, including a reused answer destination.
                 nav.currentBackStackEntry?.savedStateHandle?.set("practiceAttemptRecorded", false)
-                nav.navigate("quiz-results")
+                nav.navigate(AppDestination.QuizResults.route)
             },
             modifier = Modifier.fillMaxWidth()
         ) { Text("সেশন শেষ করুন") }
-        OutlinedButton(onClick = { nav.navigate("revision") }, modifier = Modifier.fillMaxWidth()) { Text("রিভিশনে যোগ করুন") }
+        OutlinedButton(onClick = { nav.navigate(AppDestination.Revision.route) }, modifier = Modifier.fillMaxWidth()) { Text("রিভিশনে যোগ করুন") }
     }
 }
 
@@ -465,7 +467,7 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
         Text("সময়", fontWeight = FontWeight.SemiBold)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("৫ মিনিট", "১৫ মিনিট", "৩০ মিনিট").forEach { FilterChip(selected = duration == it, onClick = { duration = it }, label = { Text(it) }) } }
         Panel { Text("আপনার নির্বাচন", fontWeight = FontWeight.Bold); Text(exam + " • " + duration); Text("এখনকার ডেমোতে পরীক্ষা ও সময়ের নির্বাচন অনুশীলনে প্রয়োগ হয় না। একটি নির্দিষ্ট নমুনা প্রশ্ন দেখানো হবে।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
-        Primary("নমুনা প্রশ্ন দেখুন", modifier = Modifier.testTag("quiz-setup-start-practice")) { nav.navigate("challenge") }
+        Primary("নমুনা প্রশ্ন দেখুন", modifier = Modifier.testTag("quiz-setup-start-practice")) { nav.navigate(AppDestination.Challenge.route) }
     }
 }
 
@@ -508,9 +510,9 @@ internal fun searchVocabulary(query: String): List<Pair<String, String>> {
                 Text("প্রথমে অনুশীলনের প্রশ্নের উত্তর জমা দিন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        Primary("আবার অনুশীলন করুন") { nav.navigate("quiz-setup") }
-        OutlinedButton(onClick = { nav.navigate("practice-history") }, modifier = Modifier.fillMaxWidth()) { Text("অনুশীলনের ইতিহাস দেখুন") }
-        OutlinedButton(onClick = { nav.navigate("revision") }, modifier = Modifier.fillMaxWidth()) { Text("রিভিশন ডেক খুলুন") }
+        Primary("আবার অনুশীলন করুন") { nav.navigate(AppDestination.QuizSetup.route) }
+        OutlinedButton(onClick = { nav.navigate(AppDestination.PracticeHistory.route) }, modifier = Modifier.fillMaxWidth()) { Text("অনুশীলনের ইতিহাস দেখুন") }
+        OutlinedButton(onClick = { nav.navigate(AppDestination.Revision.route) }, modifier = Modifier.fillMaxWidth()) { Text("রিভিশন ডেক খুলুন") }
     }
 }
 
