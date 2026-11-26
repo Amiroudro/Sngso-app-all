@@ -1,5 +1,7 @@
 package com.sarangsho.plus.navigation
 
+import java.net.URI
+
 /**
  * Stable, typed identifiers for the app's current destinations.
  * Keep route strings at this boundary while feature call sites migrate.
@@ -54,9 +56,24 @@ enum class AppDestination(val route: String) {
     PasswordReset("password-reset"),
     ReportStory("report-story");
 
+    fun toDeepLink(): String = "sarangsho://app/$route"
+
     companion object {
         private val byRoute = entries.associateBy(AppDestination::route)
 
         fun fromRoute(route: String?): AppDestination? = route?.let(byRoute::get)
+
+        fun fromDeepLink(value: String?): AppDestination? {
+            if (value.isNullOrBlank()) return null
+            return runCatching {
+                val uri = URI(value)
+                if (uri.scheme != "sarangsho" || uri.host != "app" ||
+                    uri.rawQuery != null || uri.rawFragment != null
+                ) return null
+                val path = uri.rawPath ?: return null
+                if (!path.startsWith("/") || path.count { it == '/' } != 1) return null
+                fromRoute(path.removePrefix("/"))
+            }.getOrNull()
+        }
     }
 }
