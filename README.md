@@ -8,9 +8,9 @@ This repository contains the Android client. The editorial engine lives separate
 
 Sarangsho Plus helps readers move from a verified news event to understanding, context, and exam practice.
 
-The current Compose prototype contains 47 navigation destinations across:
+The current Compose prototype contains 48 navigation destinations across:
 - First-run goals and topic interests
-- Home briefing, feed, archive, edition and article reading
+- Today briefing, Learn hub, feed, archive, edition and article reading
 - Three-depth summaries, timelines, publication perspectives, sources
 - Bangladesh and world affairs, topic detail, knowledge graph and data explorer
 - Vocabulary, practice setup, question session, answer feedback and result shell
@@ -29,11 +29,11 @@ This is an expanding screen inventory, not a required count. A route is added on
 - Unit and Compose instrumentation test dependencies
 - GitHub Actions build, unit-test and emulator smoke-test workflow
 
-Open the project in Android Studio, allow Gradle sync and run the app configuration on a device or emulator. The current repository does not yet include a committed Gradle Wrapper; CI uses Gradle 8.9 directly.
+Open the project in Android Studio, allow Gradle sync and run the app configuration on a device or emulator. The Gradle Wrapper is committed and the GitHub Actions workflow uses it. The routine pull-request workflow runs the JVM tests, compiles the 41 authored Android instrumentation tests into a test APK, and assembles a debug APK. A separate emulator job executes the instrumentation suite on API 28 AOSP using software CPU emulation. Latest verification: [GitHub Actions run 45832521965](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45832521965), with all 41 instrumentation tests passing.
 
 ## Design principles
 
-- Bengali-first typography with explicit font fallback and tested line height.
+- Bengali-first typography with readable line-height choices; font fallback, enlarged text and device rendering still require a hardware accessibility pass.
 - A restrained ink / warm-paper / deep-teal palette; no generic gradient-heavy dashboard.
 - Strong editorial hierarchy: headlines, metadata, evidence, context and learning actions remain distinct.
 - Reading surfaces prioritize line length, contrast, spacing and adjustable text size.
@@ -51,7 +51,7 @@ Open the project in Android Studio, allow Gradle sync and run the app configurat
 
 ## Current limitations
 
-The UI is still a prototype. Authentication, persistence, engine/API integration, downloads, push notifications, real source comparisons, interactive knowledge graph data and learning analytics are not connected. Sample content is labelled as sample. Build status must be taken from GitHub Actions, not inferred from committed source.
+The UI is still a prototype. Authentication, cloud sync, engine/API integration, offline edition downloads, push delivery, live source comparisons, interactive knowledge-graph data and production analytics are not connected. Several learning and reader features do persist locally with SharedPreferences; this is not account sync or a production data layer. Sample content is labelled as sample. Build status must be taken from GitHub Actions, not inferred from committed source.
 
 ## Related projects and guidance
 

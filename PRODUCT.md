@@ -27,18 +27,26 @@ The product connects a source-aware daily briefing to a reusable study system: t
 - Primarily used on Android phones in Bangladesh, often in short reading sessions and sometimes with unreliable connectivity.
 - Bangla is the primary explanatory language; standard English terms, abbreviations and official names remain visible with explanations.
 - The home surface prioritizes the current daily edition and a clear next learning action.
-- Reading, search, practice, saved items and profile/settings are the five primary navigation destinations.
+- Reading, search, practice, saved items and profile/settings are the four primary navigation destinations (Today, Learn, Library, Explore), with Profile/settings available from the top bar.
 - Deep links should open a specific edition, story, topic, word or practice set.
 
 ## Capabilities and Constraints
 
 - The current branch contains an early Compose screen prototype, not a complete verified application.
-- The repository requires a real Gradle Android project scaffold before build status can be claimed.
+- The repository has a working Gradle Android project scaffold. Routine CI runs one JVM smoke test, compiles the 41 authored Android instrumentation tests into a test APK and assembles a debug APK. A separate API 28 AOSP emulator job executes the instrumentation suite. Latest verification run `45832521965` passed all 41 tests; this does not replace physical-device, visual or accessibility testing.
 - The separate editorial engine and its rights/verification rules remain authoritative for news content.
 - Sample content must be labelled as sample. Never fabricate live stories, source comparisons, user activity, progress, scores or data values.
-- Authentication, persistence, synchronization, offline editions, push notifications, analytics and engine APIs are not yet connected unless separately implemented and verified.
+- Authentication, cloud persistence/synchronization, offline editions, push delivery, analytics and engine APIs are not connected unless separately implemented and verified. Several prototype features persist locally with SharedPreferences; local storage must not be mistaken for account sync or a production data layer.
 - The client must not publish or approve editorial content.
 - Prefer a free/open-source implementation and avoid paid service dependencies by default.
+
+## Topic study guides
+
+Selecting a Bangladesh or World Affairs topic now opens a topic-specific local study guide. Each guide contains a concise overview, core concepts, exam-reading cautions and a written reflection prompt. These are learning scaffolds, not verified current-affairs content. Live topic feeds and topic-specific question banks remain future integrations.
+
+## First-run preferences
+
+The onboarding flow saves a learner's primary goal and topic interests locally on the device. The Today screen reflects those choices. They are not account-synced and do not yet filter editorial content.
 
 ## Brand Commitments
 

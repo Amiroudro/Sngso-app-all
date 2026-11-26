@@ -59,7 +59,7 @@ All UI colors are centralized in SarangshoTheme.kt. Screens should use MaterialT
 
 ## Navigation and interaction
 
-- Five primary destinations: Home, Discover, Practice, Saved, Profile.
+- Four primary destinations: Today, Learn, Library, Explore. Profile and settings remain available from the top bar.
 - Detail screens retain a predictable back path to their parent.
 - Use in-place segmented controls for summary depth; do not create redundant pages for each depth.
 - Use a filter sheet for advanced discovery filters rather than crowding the feed.
