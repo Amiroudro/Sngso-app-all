@@ -19,6 +19,24 @@ class AppDestinationTest {
     }
 
     @Test
+    fun everyDestinationRoundTripsThroughItsAppDeepLink() {
+        AppDestination.entries.forEach { destination ->
+            assertEquals(destination, AppDestination.fromDeepLink(destination.toDeepLink()))
+        }
+    }
+
+    @Test
+    fun deepLinksRejectForeignHostsSchemesAndExtraComponents() {
+        assertNull(AppDestination.fromDeepLink(null))
+        assertNull(AppDestination.fromDeepLink("https://sarangsho.app/article"))
+        assertNull(AppDestination.fromDeepLink("sarangsho://other/article"))
+        assertNull(AppDestination.fromDeepLink("sarangsho://app/not-a-screen"))
+        assertNull(AppDestination.fromDeepLink("sarangsho://app/article/extra"))
+        assertNull(AppDestination.fromDeepLink("sarangsho://app/article?source=external"))
+        assertNull(AppDestination.fromDeepLink("sarangsho://app/article#section"))
+    }
+
+    @Test
     fun unknownOrMissingRoutesAreRejected() {
         assertNull(AppDestination.fromRoute(null))
         assertNull(AppDestination.fromRoute(""))
