@@ -93,14 +93,14 @@ class HomeScreenTest {
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .performScrollTo().assertIsDisplayed()
 
-        composeRule.onNodeWithTag("feed-filter-world").performClick()
+        composeRule.onNodeWithTag("feed-filter-world").performScrollTo().performClick()
         composeRule.waitForIdle()
         composeRule.onNodeWithTag("feed-active-filter").assertTextEquals("ফিল্টার: বিশ্ব")
         composeRule.onNodeWithText("জাতিসংঘ ও জলবায়ু আলোচনার প্রেক্ষাপট").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .assertDoesNotExist()
 
-        composeRule.onNodeWithTag("feed-filter-all").performClick()
+        composeRule.onNodeWithTag("feed-filter-all").performScrollTo().performClick()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("বিস্তারিত পড়ুন").performScrollTo().performClick()
@@ -109,7 +109,7 @@ class HomeScreenTest {
             .performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
 
-        composeRule.onNodeWithTag("feed-filter-economy").performClick()
+        composeRule.onNodeWithTag("feed-filter-economy").performScrollTo().performClick()
         composeRule.onNodeWithText("এই বিষয়ের পূর্ণ পাঠ ও সারাংশ এখনো যুক্ত হয়নি।")
             .performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
