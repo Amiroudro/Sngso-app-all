@@ -14,6 +14,8 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +26,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.sarangsho.plus.ui.theme.SarangshoPalette
 import com.sarangsho.plus.data.LocalLearningStore
+import com.sarangsho.plus.data.ReaderPreferencesRepository
+import com.sarangsho.plus.data.ReaderSettings
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
@@ -45,27 +49,26 @@ import androidx.compose.ui.semantics.semantics
 
 @Composable internal fun ReadingSettings() {
     val context = LocalContext.current
-    var fontSize by rememberSaveable { mutableFloatStateOf(LocalLearningStore.getReadingFontSize(context)) }
-    var lineSpacing by rememberSaveable { mutableFloatStateOf(LocalLearningStore.getReadingLineSpacing(context)) }
-    var sepia by rememberSaveable { mutableStateOf(LocalLearningStore.isReadingSepia(context)) }
+    val readerSettings by ReaderPreferencesRepository.observe(context).collectAsState(initial = ReaderSettings())
+    val scope = rememberCoroutineScope()
+    val fontSize = readerSettings.fontSize
+    val lineSpacing = readerSettings.lineSpacing
+    val sepia = readerSettings.sepia
     Scroll {
         Intro("পড়ার পছন্দ", "দীর্ঘ লেখা আরাম করে পড়ার জন্য নিজের মতো সাজান।")
         Panel {
             Text("লেখার আকার: ${fontSize.toInt()} sp", fontWeight = FontWeight.SemiBold)
             Slider(value = fontSize, modifier = Modifier.testTag("reader-font-size-slider").semantics { contentDescription = "লেখার আকার" }, onValueChange = {
-                fontSize = it
-                LocalLearningStore.setReadingFontSize(context, it)
+                scope.launch { ReaderPreferencesRepository.setFontSize(context, it) }
             }, valueRange = 16f..26f)
             Text("লাইন স্পেসিং: " + "%.1f".format(lineSpacing), fontWeight = FontWeight.SemiBold)
             Slider(value = lineSpacing, modifier = Modifier.testTag("reader-line-spacing-slider").semantics { contentDescription = "লাইন স্পেসিং" }, onValueChange = {
-                lineSpacing = it
-                LocalLearningStore.setReadingLineSpacing(context, it)
+                scope.launch { ReaderPreferencesRepository.setLineSpacing(context, it) }
             }, valueRange = 1.2f..2.0f)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("উষ্ণ কাগজের নমুনা", Modifier.weight(1f))
                 Switch(checked = sepia, modifier = Modifier.testTag("reader-sepia-switch").semantics { contentDescription = "উষ্ণ কাগজের নমুনা" }, onCheckedChange = {
-                    sepia = it
-                    LocalLearningStore.setReadingSepia(context, it)
+                    scope.launch { ReaderPreferencesRepository.setSepia(context, it) }
                 })
             }
         }
