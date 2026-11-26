@@ -32,11 +32,16 @@ class HomeScreenTest {
 
     @Before
     fun clearLocalLearningState() {
-        InstrumentationRegistry.getInstrumentation().targetContext
-            .getSharedPreferences("sarangsho_learning", android.content.Context.MODE_PRIVATE)
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        context.getSharedPreferences("sarangsho_learning", android.content.Context.MODE_PRIVATE)
             .edit()
             .clear()
             .commit()
+        runBlocking {
+            ReaderPreferencesRepository.setFontSize(context, 18f)
+            ReaderPreferencesRepository.setLineSpacing(context, 1.5f)
+            ReaderPreferencesRepository.setSepia(context, false)
+        }
     }
 
     private fun completeOnboarding() {
