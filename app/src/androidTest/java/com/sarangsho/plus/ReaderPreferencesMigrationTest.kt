@@ -1,5 +1,7 @@
 package com.sarangsho.plus
 
+import com.sarangsho.plus.data.LegacyReaderPreferencesMigration
+
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
