@@ -5,6 +5,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
+import java.net.URI
 import java.time.Instant
 
 /**
@@ -127,6 +128,17 @@ object EditionFeedRepository {
 
     suspend fun loadEdition(context: Context, date: String): Snapshot {
         require(Regex("^\\d{4}-\\d{2}-\\d{2}$").matches(date)) { "Invalid edition date" }
+        val index = JSONObject(fetchText(INDEX_PATH))
+        val publishedDates = index.optJSONArray("editions")
+            ?: error("Edition index has no editions array")
+        val isPublished = (0 until publishedDates.length()).any { index ->
+            val item = publishedDates.optJSONObject(index) ?: return@any false
+            item.optString("edition_date") == date &&
+                item.optString("status") == "published" &&
+                item.optString("file") == "data-$date.json"
+        }
+        require(isPublished) { "Requested edition is not listed as published" }
+
         val data = fetchText("editions/data-$date.json")
         val overlay = try {
             fetchText("editions/bn-$date.json")
@@ -199,6 +211,7 @@ object EditionFeedRepository {
                 "Edition feed URL is outside the configured HTTPS host"
             }
             val connection = (url.openConnection() as HttpURLConnection).apply {
+                instanceFollowRedirects = false
                 requestMethod = "GET"
                 connectTimeout = 10_000
                 readTimeout = 15_000
@@ -209,7 +222,9 @@ object EditionFeedRepository {
             try {
                 val status = connection.responseCode
                 require(status in 200..299) { "Edition feed returned HTTP $status" }
-                connection.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+                val bytes = connection.inputStream.use { it.readNBytes(8 * 1024 * 1024 + 1) }
+                require(bytes.size <= 8 * 1024 * 1024) { "Edition feed response exceeds the 8 MiB limit" }
+                String(bytes, Charsets.UTF_8)
             } finally {
                 connection.disconnect()
             }
@@ -250,7 +265,11 @@ object EditionFeedRepository {
             val sources = (0 until sourcesJson.length()).mapNotNull { sourceIndex ->
                 val source = sourcesJson.optJSONObject(sourceIndex) ?: return@mapNotNull null
                 val url = source.optString("url")
-                if (!url.startsWith("https://")) return@mapNotNull null
+                val uri = runCatching { URI(url) }.getOrNull()
+                if (uri?.scheme?.equals("https", ignoreCase = true) != true ||
+                    uri.host.isNullOrBlank() || uri.userInfo != null || uri.fragment != null) {
+                    return@mapNotNull null
+                }
                 Source(
                     publication = source.optString("publication"),
                     headline = source.optString("headline"),
