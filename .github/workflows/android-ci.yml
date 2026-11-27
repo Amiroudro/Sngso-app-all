@@ -99,14 +99,15 @@ jobs:
         uses: android-actions/setup-android@v4
         with:
           cmdline-tools-version: 12266719
-          packages: 'platform-tools platforms;android-28 platforms;android-36 build-tools;36.0.0'
+          packages: 'platform-tools platforms;android-28 platforms;android-35 platforms;android-36 build-tools;36.0.0'
           accept-android-sdk-licenses: true
       - name: Run Compose smoke test on emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          # Android 16 emulator verifies the current target-SDK behavior.
-          # The app still compiles against SDK 35 and supports API 26+.
-          api-level: 36
+          # Keep compileSdk/targetSdk at Android 16 (API 36). Use the stable
+          # Android 15 (API 35) emulator image for instrumentation because the
+          # current hosted API 36 image boots but reports Unknown API Level.
+          api-level: 35
           target: default
           arch: x86_64
           profile: pixel_2
