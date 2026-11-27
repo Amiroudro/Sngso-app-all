@@ -15,7 +15,8 @@ import java.time.Instant
  */
 object EditionFeedRepository {
     private const val PREFS = "sarangsho_edition_feed"
-    private const val KEY_INDEX = "edition_index"\n    private const val KEY_DATA = "edition_data"
+    private const val KEY_INDEX = "edition_index"
+    private const val KEY_DATA = "edition_data"
     private const val KEY_BN = "edition_bn"
     private const val KEY_FETCHED_AT = "fetched_at"
     private const val KEY_SELECTED_STORY = "selected_story_id"
