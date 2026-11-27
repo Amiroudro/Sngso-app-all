@@ -31,6 +31,10 @@ Compute SHA-256 over the UTF-8 bytes of the JSON object after removing the top-l
 
 The sample fixture's hash was computed using this rule.
 
+## Android parser status
+
+The Android repository now contains an isolated, read-only Kotlin parser and unit tests for this proposed shape. It rejects unknown contract fields and versions, non-published editions, unapproved summaries, invalid source URLs, and content-hash mismatches. The parser is not called by a screen, repository refresh job, or network client. It is a compatibility spike only; it does not make this proposal an engine-approved contract or replace full JSON Schema validation.
+
 ## Mapping from engine domain
 
 | Client projection | Engine source |
