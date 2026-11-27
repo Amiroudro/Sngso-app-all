@@ -79,8 +79,9 @@ class HomeScreenTest {
 
     @Test
     fun returningUserLaunchesDirectlyIntoTodayBriefing() {
+        completeOnboarding()
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        LocalLearningStore.setOnboardingCompleted(context, true)
+        assertEquals(true, LocalLearningStore.hasCompletedOnboarding(context))
 
         composeRule.activityRule.scenario.recreate()
         composeRule.waitForIdle()
