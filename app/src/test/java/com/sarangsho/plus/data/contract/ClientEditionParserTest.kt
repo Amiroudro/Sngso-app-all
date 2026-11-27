@@ -101,4 +101,52 @@ class ClientEditionParserTest {
             ClientEditionParser.parse(rehash(root))
         }
     }
+
+    @Test
+    fun rejectsDuplicateEditionLanguagesEvenWhenHashMatches() {
+        val root = JsonParser.parseString(fixture()).asJsonObject
+        root.getAsJsonObject("edition").getAsJsonArray("languages").add("bn")
+
+        assertThrows(IllegalArgumentException::class.java) {
+            ClientEditionParser.parse(rehash(root))
+        }
+    }
+
+    @Test
+    fun rejectsStoryTitleLanguageNotDeclaredByEdition() {
+        val root = JsonParser.parseString(fixture()).asJsonObject
+        root.getAsJsonArray("stories").first.asJsonObject
+            .getAsJsonObject("title").addProperty("fr", "Titre")
+
+        assertThrows(IllegalArgumentException::class.java) {
+            ClientEditionParser.parse(rehash(root))
+        }
+    }
+
+    @Test
+    fun parsesAndPreservesValidCorrectionMetadata() {
+        val root = JsonParser.parseString(fixture()).asJsonObject
+        root.getAsJsonArray("stories").first.asJsonObject.add(
+            "correction",
+            JsonParser.parseString("""{"note":"Corrected publication time","corrected_at":"2026-11-27T10:30:00Z"}""")
+        )
+        val edition = ClientEditionParser.parse(rehash(root))
+
+        assertEquals("Corrected publication time", edition.stories.single().correction?.note)
+        assertEquals("2026-11-27T10:30:00Z", edition.stories.single().correction?.correctedAt)
+    }
+
+    @Test
+    fun rejectsMalformedCorrectionMetadata() {
+        val root = JsonParser.parseString(fixture()).asJsonObject
+        root.getAsJsonArray("stories").first.asJsonObject.add(
+            "correction",
+            JsonParser.parseString("""{"note":"","corrected_at":"not-a-date"}""")
+        )
+
+        assertThrows(IllegalArgumentException::class.java) {
+            ClientEditionParser.parse(rehash(root))
+        }
+    }
+
 }
