@@ -2,7 +2,7 @@
 
 A Bangla-first editorial intelligence and exam-preparation app for Bangladesh.
 
-This repository contains the Android client. The editorial engine lives separately in [Amiroudro/new-sngso](https://github.com/Amiroudro/new-sngso). The client is designed to consume versioned, validated edition artifacts in a future integration; the current Android prototype uses labelled local sample content. It does not scrape publishers or generate editorial claims itself.
+This repository contains the Android client. The editorial engine lives separately in [Amiroudro/new-sngso](https://github.com/Amiroudro/new-sngso). The app now reads published daily editions from the public [Sarangsho Plus editions feed](https://github.com/Amiroudro/sarangsho-plus-editions), including the Bengali overlay and publisher source links. It caches the last valid edition for offline reading. It does not scrape publishers or generate editorial claims itself.
 
 ## Product experience
 
@@ -51,7 +51,7 @@ Open the project in Android Studio, allow Gradle sync and run the app configurat
 
 ## Current limitations
 
-The UI is still a prototype. Authentication, cloud sync, engine/API integration, offline edition downloads, push delivery, live source comparisons, interactive knowledge-graph data and production analytics are not connected. The adaptive launcher icon is implemented, but physical-device visual and accessibility checks remain outstanding. Several learning and reader features do persist locally with SharedPreferences; this is not account sync or a production data layer. Sample content is labelled as sample. Build status must be taken from GitHub Actions, not inferred from committed source.
+The UI remains an evolving product build. The Home, Feed and Article screens consume the published daily-edition feed with a 15-minute cache freshness window, manual refresh, and visible offline fallback. Account authentication, cloud sync, push delivery, live multi-publication perspective analysis, interactive knowledge-graph data and production analytics are not connected. The new engine's separate client-edition v1 projection is not yet wired to the production publisher workflow. The adaptive launcher icon is implemented, but physical-device visual and accessibility checks remain outstanding. Several learning and reader features persist locally; this is not account sync. Build status must be taken from GitHub Actions, not inferred from committed source.
 
 ## Related projects and guidance
 
