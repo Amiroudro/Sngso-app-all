@@ -26,7 +26,7 @@ jobs:
         uses: android-actions/setup-android@v4
         with:
           cmdline-tools-version: 12266719
-          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
           accept-android-sdk-licenses: true
 
       - name: Validate signing secrets and materialize keystore
@@ -69,7 +69,7 @@ jobs:
           set -euo pipefail
           APK="$(find app/build/outputs/apk/release -maxdepth 1 -name '*.apk' -print -quit)"
           test -n "$APK"
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK"
           sha256sum "$APK" > "$APK.sha256"
           echo "Verified signed APK: $APK"
 

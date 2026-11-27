@@ -32,11 +32,11 @@ The product connects a source-aware daily briefing to a reusable study system: t
 
 ## Capabilities and Constraints
 
-- The current branch contains an early Compose screen prototype, not a complete verified application.
+- The current branch contains a Compose application with a live read-only connection to the published daily-edition feed for Home, Feed, Article, Summary, Sources and Archive. This is not yet a complete verified product release.
 - The repository has a working Gradle Android project scaffold. Routine CI runs JVM unit tests, compiles the Android instrumentation test APK and assembles debug and unsigned release APKs. A separate API 28 AOSP emulator job executes the instrumentation suite. Latest verification run [`45984631554`](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45984631554) on commit `9553c45c9bd834d798170556cfa8ad46698f5100` passed all 46 authored instrumentation tests (0 failures, 0 skipped), including the launcher-icon declaration/resolution test; this does not replace physical-device, visual or accessibility testing.
 - The separate editorial engine and its rights/verification rules remain authoritative for news content.
 - Sample content must be labelled as sample. Never fabricate live stories, source comparisons, user activity, progress, scores or data values.
-- Authentication, cloud persistence/synchronization, offline editions, push delivery, analytics and engine APIs are not connected unless separately implemented and verified. Several prototype features persist locally with SharedPreferences; local storage must not be mistaken for account sync or a production data layer.
+- The public daily-edition feed is connected with local cache and offline fallback. Authentication, cloud persistence/synchronization, background push delivery, analytics and the new engine's authenticated publication API are not connected. Several prototype features persist locally with SharedPreferences; local storage must not be mistaken for account sync or a production data layer.
 - The client must not publish or approve editorial content.
 - Prefer a free/open-source implementation and avoid paid service dependencies by default.
 

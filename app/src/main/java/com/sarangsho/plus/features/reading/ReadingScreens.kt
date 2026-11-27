@@ -4,6 +4,9 @@ import com.sarangsho.plus.navigation.AppDestination
 import com.sarangsho.plus.ui.components.*
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import kotlinx.coroutines.launch
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import com.sarangsho.plus.data.LocalLearningStore
+import com.sarangsho.plus.data.edition.EditionFeedRepository
 import com.sarangsho.plus.data.ReaderPreferencesRepository
 import com.sarangsho.plus.data.ReaderSettings
 import com.sarangsho.plus.features.learning.searchVocabulary
@@ -151,8 +155,75 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
     }
 }
 
+
+private data class PublishedFeedUiState(
+    val snapshot: EditionFeedRepository.Snapshot?,
+    val loading: Boolean,
+    val failed: Boolean,
+    val refresh: () -> Unit
+)
+
+@Composable
+private fun rememberPublishedFeed(editionDate: String? = null): PublishedFeedUiState {
+    val context = LocalContext.current
+    val initialSnapshot = remember(context, editionDate) {
+        if (editionDate == null) EditionFeedRepository.cached(context)
+        else EditionFeedRepository.cachedEdition(context, editionDate)
+    }
+    var snapshot by remember(context, editionDate) { mutableStateOf(initialSnapshot) }
+    var loading by remember(context, editionDate) { mutableStateOf(initialSnapshot == null || initialSnapshot.stale) }
+    var failed by remember { mutableStateOf(false) }
+    var refreshToken by remember(context, editionDate) { mutableIntStateOf(0) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner, context, editionDate) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME &&
+                (if (editionDate == null) EditionFeedRepository.cached(context)
+                 else EditionFeedRepository.cachedEdition(context, editionDate))?.stale == true) {
+                refreshToken += 1
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+    LaunchedEffect(refreshToken, editionDate) {
+        val cached = if (editionDate == null) EditionFeedRepository.cached(context)
+            else EditionFeedRepository.cachedEdition(context, editionDate)
+        if (cached != null && !cached.stale && refreshToken == 0) {
+            snapshot = cached
+            loading = false
+            return@LaunchedEffect
+        }
+        loading = true
+        failed = false
+        try {
+             snapshot = if (editionDate == null) EditionFeedRepository.refresh(context)
+                else EditionFeedRepository.loadEdition(context, editionDate)
+        } catch (_: Exception) {
+            snapshot = if (editionDate == null) EditionFeedRepository.cached(context)
+                else EditionFeedRepository.cachedEdition(context, editionDate)
+            failed = true
+        } finally {
+            loading = false
+        }
+    }
+    val refresh = remember { { refreshToken += 1 } }
+    return PublishedFeedUiState(snapshot, loading, failed, refresh)
+}
+
+private fun categoryLabel(category: String): String = when (category) {
+    "Bangladesh" -> "বাংলাদেশ"
+    "Economy & Banking" -> "অর্থনীতি ও ব্যাংকিং"
+    "World" -> "বিশ্ব"
+    "Editorial & Opinion" -> "সম্পাদকীয় ও মতামত"
+    else -> category
+}
+
+
 @Composable internal fun Home(nav: NavHostController) {
     val context = LocalContext.current
+    val feed = rememberPublishedFeed()
+    val snapshot = feed.snapshot
     val learningGoal = LocalLearningStore.getOnboardingGoal(context)
     val learningInterests = LocalLearningStore.getOnboardingInterests(context).sorted()
     Scroll {
@@ -166,18 +237,27 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
                 Text("পড়ুন • বুঝুন • প্রস্তুতি নিন", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Surface(color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(50.dp)) {
-                Text(
-                    "DAILY BRIEFING",
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                    fontSize = 9.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.sp,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+                Text("DAILY BRIEFING", Modifier.padding(horizontal = 12.dp, vertical = 8.dp), fontSize = 9.sp,
+                    fontWeight = FontWeight.Bold, letterSpacing = 1.sp, color = MaterialTheme.colorScheme.onPrimaryContainer)
             }
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-        Intro("আজকের ব্রিফিং", "গুরুত্বপূর্ণ ঘটনা থেকে প্রেক্ষাপট, ধারণা ও পরীক্ষার প্রস্তুতি।")
+        Intro("আজকের ব্রিফিং", "প্রকাশিত দৈনিক সংস্করণ থেকে সর্বশেষ সংবাদ ও পরীক্ষার উপযোগী ব্যাখ্যা।")
+        Panel {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Kicker("প্রকাশিত সংস্করণ")
+                    Text(snapshot?.let { "সংস্করণ ${it.date}" } ?: "দৈনিক সংবাদ", fontWeight = FontWeight.Bold, fontSize = 17.sp)
+                    Text(snapshot?.coverage ?: "প্রকাশিত সংস্করণ লোড হচ্ছে", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                }
+                IconButton(onClick = feed.refresh, enabled = !feed.loading) {
+                    Icon(Icons.Default.Refresh, contentDescription = "সংবাদ হালনাগাদ করুন")
+                }
+            }
+            if (feed.loading) LinearProgressIndicator(Modifier.fillMaxWidth())
+            if (snapshot?.stale == true) Text("ইন্টারনেট সংযোগ না থাকায় সংরক্ষিত সংস্করণ দেখানো হচ্ছে।", color = MaterialTheme.colorScheme.secondary, fontSize = 11.sp)
+            if (feed.failed && snapshot == null) Text("সংবাদ লোড করা যায়নি। ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
+        }
         Surface(
             color = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -190,48 +270,46 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
                 Text(
                     if (learningInterests.isEmpty()) "আপনার আগ্রহের বিষয় বেছে নিন।"
                     else "আপনার বিষয়: ${learningInterests.joinToString(" • ")}",
-                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.82f),
-                    fontSize = 12.sp,
-                    lineHeight = 19.sp
+                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.82f), fontSize = 12.sp, lineHeight = 19.sp
                 )
-                Button(
-                    onClick = { nav.navigate(AppDestination.OnboardingGoals.route) },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondary,
-                        contentColor = MaterialTheme.colorScheme.onSecondary
-                    )
-                ) {
+                Button(onClick = { nav.navigate(AppDestination.OnboardingGoals.route) },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary, contentColor = MaterialTheme.colorScheme.onSecondary)) {
                     Text("পছন্দ পরিবর্তন করুন")
                     Spacer(Modifier.width(6.dp))
                     Icon(Icons.AutoMirrored.Filled.ArrowForward, null, modifier = Modifier.size(16.dp))
                 }
             }
         }
-        Panel {
-            Kicker("প্রধান প্রতিবেদন • নমুনা পাঠ")
-            Text(
-                "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন",
-                fontSize = 23.sp,
-                lineHeight = 32.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Spacer(Modifier.height(4.dp))
-            Text(
-                "আন্তর্জাতিক আদালতের এখতিয়ার, রাষ্ট্রের দায়বদ্ধতা এবং রোহিঙ্গা সংকটের আইনি প্রেক্ষাপট।",
-                fontSize = 14.sp,
-                lineHeight = 23.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                AssistChip(onClick = {}, enabled = false, label = { Text("আন্তর্জাতিক আইন") })
-                AssistChip(onClick = {}, enabled = false, label = { Text("নমুনা কনটেন্ট") })
+        Text("আজকের গুরুত্বপূর্ণ প্রতিবেদন", fontSize = 19.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+        if (snapshot == null) {
+            Panel {
+                if (feed.loading) CircularProgressIndicator()
+                Text(if (feed.loading) "প্রকাশিত সংবাদ আনা হচ্ছে…" else "এখনো কোনো সংস্করণ পাওয়া যায়নি", fontWeight = FontWeight.SemiBold)
+                Text("সংযোগ ফিরে এলে আবার চেষ্টা করুন।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                TextButton(onClick = feed.refresh) { Text("আবার চেষ্টা করুন") }
             }
-            Primary("প্রতিবেদনটি পড়ুন") { nav.navigate(AppDestination.Article.route) }
+        } else {
+            snapshot.stories.take(4).forEachIndexed { index, story ->
+                Panel {
+                    Kicker("${index + 1}. ${categoryLabel(story.category)}")
+                    Text(story.headline, fontSize = 20.sp, lineHeight = 28.sp, fontWeight = FontWeight.Bold)
+                    Text(story.oneLiner.ifBlank { story.summary }, fontSize = 13.sp, lineHeight = 21.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("${story.sources.size}টি তথ্যসূত্র", fontSize = 11.sp, color = MaterialTheme.colorScheme.secondary)
+                    if (index == 0) {
+                        Primary("প্রতিবেদনটি পড়ুন") {
+                            EditionFeedRepository.selectStory(context, story.id, snapshot.date)
+                            nav.navigate(AppDestination.Article.route)
+                        }
+                    } else {
+                        TextButton(onClick = {
+                            EditionFeedRepository.selectStory(context, story.id)
+                            nav.navigate(AppDestination.Article.route)
+                        }) { Text("বিস্তারিত পড়ুন") }
+                    }
+                }
+            }
         }
-        RowLink("সব প্রতিবেদন দেখুন", "বিষয় অনুযায়ী সংবাদ ও ব্যাখ্যা", Icons.AutoMirrored.Filled.ArrowForward) {
-            nav.navigate(AppDestination.Feed.route)
-        }
+        RowLink("সব প্রতিবেদন দেখুন", "প্রকাশিত সংস্করণের সব সংবাদ", Icons.AutoMirrored.Filled.ArrowForward) { nav.navigate(AppDestination.Feed.route) }
         RowLink("পুরোনো সংস্করণ", "আগের দিনের ব্রিফিং ও প্রকাশনা", Icons.Default.CalendarMonth) { nav.navigate(AppDestination.Archive.route) }
         Text("সংবাদ থেকে শেখা", fontSize = 19.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
         Text("একটি ঘটনার পেছনের তথ্য, সময়রেখা ও উৎস আলাদা করে দেখুন.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
@@ -244,37 +322,43 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
         RowLink("Vocabulary Lab", "শব্দ, অর্থ, collocation ও ব্যবহার", Icons.Default.Translate) { nav.navigate(AppDestination.Vocabulary.route) }
         RowLink("BCS ও Bank অনুশীলন", "প্রশ্নের ধরন বেছে প্রস্তুতি নিন", Icons.Default.EditNote) { nav.navigate(AppDestination.QuizSetup.route) }
         RowLink("পড়ার পরিকল্পনা", "নিজের সময় অনুযায়ী প্রস্তুতি", Icons.Default.CalendarToday) { nav.navigate(AppDestination.StudyPlan.route) }
-        Text(
-            "এই হোম স্ক্রিনে প্রদর্শিত প্রতিবেদন ও বিষয়বস্তু নমুনা। লাইভ সংবাদ, ব্যক্তিগত অগ্রগতি বা পরীক্ষার ফল হিসেবে এগুলো ব্যবহার করবেন না।",
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontSize = 11.sp,
-            lineHeight = 17.sp
-        )
     }
 }
+
+
 @Composable internal fun Feed(nav: NavHostController) {
-    var selectedFilter by remember { mutableStateOf("সব") }
+    val context = LocalContext.current
+    val feed = rememberPublishedFeed()
+    var selectedFilter by rememberSaveable { mutableStateOf("সব") }
     var query by rememberSaveable { mutableStateOf("") }
-    val stories = listOf(
-        FeedStory("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন", "আন্তর্জাতিক আইন", "নমুনা পাঠ • ৮ মিনিট", hasFullArticle = true),
-        FeedStory("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি", "অর্থনীতি", "নমুনা পাঠ • ৬ মিনিট"),
-        FeedStory("জাতিসংঘ ও জলবায়ু আলোচনার প্রেক্ষাপট", "বিশ্ব", "নমুনা পাঠ • ৫ মিনিট"),
-        FeedStory("আন্তর্জাতিক আদালতের এখতিয়ার ও বিচারিক প্রক্রিয়া", "আইন ও বিচার", "নমুনা পাঠ • ৭ মিনিট"),
-        FeedStory("সংবিধান, সংসদ ও রাষ্ট্রীয় প্রতিষ্ঠান", "বাংলাদেশ", "নমুনা পাঠ • ৪ মিনিট")
-    )
+    val stories = feed.snapshot?.stories.orEmpty()
     val filtered = stories.filter { story ->
-        val categoryMatches = selectedFilter == "সব" ||
-            (selectedFilter == "বাংলাদেশ" && story.category in listOf("বাংলাদেশ", "অর্থনীতি", "আইন ও বিচার")) ||
-            (selectedFilter == "বিশ্ব" && story.category == "বিশ্ব") ||
-            (selectedFilter == "অর্থনীতি" && story.category == "অর্থনীতি")
-        val queryMatches = query.isBlank() || story.title.contains(query, ignoreCase = true)
+        val categoryMatches = when (selectedFilter) {
+            "বাংলাদেশ" -> story.category in listOf("Bangladesh", "Economy & Banking")
+            "বিশ্ব" -> story.category == "World"
+            "অর্থনীতি" -> story.category == "Economy & Banking"
+            else -> true
+        }
+        val queryMatches = query.isBlank() ||
+            story.headline.contains(query, ignoreCase = true) ||
+            story.summary.contains(query, ignoreCase = true) ||
+            categoryLabel(story.category).contains(query, ignoreCase = true)
         categoryMatches && queryMatches
     }
     Scroll {
-        Intro("সকল সংবাদ", "বিষয় অনুযায়ী পড়ুন, প্রেক্ষাপট দেখুন এবং উৎস যাচাই করুন।")
+        Intro("সকল সংবাদ", "প্রকাশিত দৈনিক সংস্করণের প্রতিবেদন, ব্যাখ্যা ও মূল তথ্যসূত্র।")
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(feed.snapshot?.let { "সংস্করণ ${it.date}" } ?: "প্রকাশিত সংবাদ", fontWeight = FontWeight.Bold)
+                Text(feed.snapshot?.coverage ?: "সংবাদ লোড হচ্ছে", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            IconButton(onClick = feed.refresh, enabled = !feed.loading) {
+                Icon(Icons.Default.Refresh, contentDescription = "সংবাদ হালনাগাদ করুন")
+            }
+        }
+        if (feed.snapshot?.stale == true) Text("অফলাইন সংরক্ষিত সংস্করণ", color = MaterialTheme.colorScheme.secondary, fontSize = 11.sp)
+        if (feed.loading) LinearProgressIndicator(Modifier.fillMaxWidth())
         OutlinedTextField(query, { query = it }, Modifier.fillMaxWidth(), placeholder = { Text("শিরোনাম বা বিষয় খুঁজুন") }, leadingIcon = { Icon(Icons.Default.Search, null) }, singleLine = true)
-        // Two rows keep every filter fully visible on narrow phones.
-        // A single unscrollable Row clipped the final chips beyond the viewport.
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             listOf(
                 listOf("সব" to "feed-filter-all", "বাংলাদেশ" to "feed-filter-bangladesh"),
@@ -282,27 +366,22 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
             ).forEach { filterRow ->
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     filterRow.forEach { (label, tag) ->
-                        FilterChip(
-                            selected = selectedFilter == label,
-                            onClick = { selectedFilter = label },
-                            modifier = Modifier.testTag(tag),
-                            label = { Text(label) }
-                        )
+                        FilterChip(selected = selectedFilter == label, onClick = { selectedFilter = label },
+                            modifier = Modifier.testTag(tag), label = { Text(label) })
                     }
                 }
             }
         }
-        Text(
-            "ফিল্টার: $selectedFilter",
-            modifier = Modifier.testTag("feed-active-filter"),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontSize = 12.sp
-        )
-        Panel {
-            Kicker("সম্পাদকীয় নির্দেশনা")
-            Text("প্রতিটি প্রতিবেদনে প্রকাশের সময়, মূল উৎস, যাচাইয়ের অবস্থা ও প্রাসঙ্গিকতা আলাদা করে দেখানো হবে।", fontSize = 13.sp, lineHeight = 21.sp)
-        }
-        if (filtered.isEmpty()) {
+        Text("ফিল্টার: $selectedFilter", modifier = Modifier.testTag("feed-active-filter"),
+            color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        if (feed.snapshot == null) {
+            Panel {
+                if (feed.loading) CircularProgressIndicator()
+                Text(if (feed.loading) "প্রকাশিত সংবাদ আনা হচ্ছে…" else "সংবাদ পাওয়া যায়নি", fontWeight = FontWeight.SemiBold)
+                Text("ইন্টারনেট সংযোগ পরীক্ষা করে হালনাগাদ করুন।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                TextButton(onClick = feed.refresh) { Text("আবার চেষ্টা করুন") }
+            }
+        } else if (filtered.isEmpty()) {
             Panel {
                 Icon(Icons.Default.SearchOff, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
                 Text("কোনো ফল পাওয়া যায়নি", fontWeight = FontWeight.SemiBold)
@@ -313,94 +392,128 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
                 Panel {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Surface(color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(8.dp)) {
-                            Text("০${index + 1}", Modifier.padding(horizontal = 9.dp, vertical = 7.dp), color = MaterialTheme.colorScheme.onPrimaryContainer, fontWeight = FontWeight.Bold)
+                            Text((index + 1).toString().padStart(2, '0'), Modifier.padding(horizontal = 9.dp, vertical = 7.dp),
+                                color = MaterialTheme.colorScheme.onPrimaryContainer, fontWeight = FontWeight.Bold)
                         }
-                        Kicker(story.category)
+                        Kicker(categoryLabel(story.category))
                         Spacer(Modifier.weight(1f))
-                        AssistChip(onClick = {}, enabled = false, label = { Text("নমুনা", fontSize = 10.sp) })
+                        AssistChip(onClick = {}, enabled = false, label = { Text("প্রকাশিত", fontSize = 10.sp) })
                     }
-                    Text(story.title, fontSize = 18.sp, fontWeight = FontWeight.Bold, lineHeight = 26.sp)
-                    Text(story.detail, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
-                    if (story.hasFullArticle) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            TextButton(onClick = { nav.navigate(AppDestination.Article.route) }) { Text("বিস্তারিত পড়ুন") }
-                            TextButton(onClick = { nav.navigate(AppDestination.Summary.route) }) { Text("সারাংশ") }
-                        }
-                    } else {
-                        Text(
-                            "এই বিষয়ের পূর্ণ পাঠ ও সারাংশ এখনো যুক্ত হয়নি।",
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontSize = 12.sp
-                        )
-                    }
+                    Text(story.headline, fontSize = 18.sp, fontWeight = FontWeight.Bold, lineHeight = 26.sp)
+                    Text(story.oneLiner.ifBlank { story.summary }, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, lineHeight = 19.sp)
+                    Text("${story.sources.size}টি তথ্যসূত্র", color = MaterialTheme.colorScheme.secondary, fontSize = 11.sp)
+                    TextButton(onClick = {
+                        EditionFeedRepository.selectStory(context, story.id, feed.snapshot?.date)
+                        nav.navigate(AppDestination.Article.route)
+                    }) { Text("বিস্তারিত পড়ুন") }
                 }
             }
         }
-        Text("এই তালিকার শিরোনামগুলো ইন্টারফেস পরীক্ষার নমুনা, লাইভ সংবাদ নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
     }
 }
 
+
 @Composable internal fun Article(nav: NavHostController) {
     val context = LocalContext.current
-    LaunchedEffect(context) { LocalLearningStore.recordArticleRead(context, "sample-international-justice") }
+    val storyId = EditionFeedRepository.selectedStoryId(context)
+    val story = EditionFeedRepository.story(context, storyId)
     val readerPreferences = rememberReaderPreferences(context)
     val readerFontSize = readerPreferences.fontSize
     val readerLineHeight = readerPreferences.lineHeight
     val sepia = readerPreferences.sepia
-    var saved by rememberSaveable { mutableStateOf(LocalLearningStore.isArticleSaved(context, "sample-international-justice")) }
+    var saved by rememberSaveable(storyId) {
+        mutableStateOf(story?.let { LocalLearningStore.isArticleSaved(context, it.id) } ?: false)
+    }
+    LaunchedEffect(story?.id) {
+        story?.let { LocalLearningStore.recordArticleRead(context, it.id) }
+    }
     Scroll {
-        Surface(
-            color = if (sepia) SarangshoPalette.Paper else MaterialTheme.colorScheme.background,
-            contentColor = if (sepia) SarangshoPalette.Ink else MaterialTheme.colorScheme.onBackground,
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-        Column(Modifier.padding(if (sepia) 12.dp else 0.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                "বিশ্লেষণ • নমুনা নিবন্ধ".uppercase(),
-                fontSize = 10.sp,
-                color = if (sepia) SarangshoPalette.Teal else MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 1.sp
-            )
+        if (story == null) {
+            Panel {
+                Text("প্রতিবেদনটি পাওয়া যায়নি", fontWeight = FontWeight.Bold)
+                Text("সংস্করণটি হালনাগাদ করুন অথবা সংবাদ তালিকা থেকে আবার খুলুন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Primary("সব সংবাদ") { nav.navigate(AppDestination.Feed.route) }
+            }
+        } else {
             Surface(
-                color = if (sepia) SarangshoPalette.Soft else MaterialTheme.colorScheme.surfaceVariant,
-                shape = RoundedCornerShape(8.dp)
+                color = if (sepia) SarangshoPalette.Paper else MaterialTheme.colorScheme.background,
+                contentColor = if (sepia) SarangshoPalette.Ink else MaterialTheme.colorScheme.onBackground,
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
-                    "নমুনা",
-                    Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                    fontSize = 10.sp,
-                    color = if (sepia) SarangshoPalette.Teal else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            IconButton(onClick = {
-                saved = !saved
-                LocalLearningStore.setArticleSaved(context, "sample-international-justice", saved)
-            }) {
-                Icon(if (saved) Icons.Default.Bookmark else Icons.Default.BookmarkBorder, contentDescription = if (saved) "সংরক্ষিত" else "সংরক্ষণ করুন")
-            }
-        }
-        Text("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন", fontSize = 25.sp, lineHeight = 34.sp, fontWeight = FontWeight.Bold, color = if (sepia) SarangshoPalette.Ink else MaterialTheme.colorScheme.onBackground)
-        Text("আন্তর্জাতিক আইন • রোহিঙ্গা সংকট • বিচারিক প্রক্রিয়া", color = if (sepia) SarangshoPalette.Muted else MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
-        Panel {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Icon(Icons.Default.VerifiedUser, null, tint = MaterialTheme.colorScheme.primary)
-                Column(Modifier.weight(1f)) {
-                    Text("উৎস যাচাইয়ের অবস্থা", fontWeight = FontWeight.SemiBold)
-                    Text("এই স্ক্রিনে প্রকৃত উৎস-নথি সংযুক্ত নেই", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                Column(Modifier.padding(if (sepia) 12.dp else 0.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                        Column(Modifier.weight(1f)) {
+                            Kicker(categoryLabel(story.category))
+                            Text("প্রকাশিত দৈনিক সংস্করণ", fontSize = 10.sp, color = MaterialTheme.colorScheme.secondary)
+                        }
+                        IconButton(onClick = {
+                            saved = !saved
+                            LocalLearningStore.setArticleSaved(context, story.id, saved)
+                        }) {
+                            Icon(if (saved) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                                contentDescription = if (saved) "সংরক্ষিত" else "সংরক্ষণ করুন")
+                        }
+                    }
+                    Text(story.headline, fontSize = 25.sp, lineHeight = 34.sp, fontWeight = FontWeight.Bold,
+                        color = if (sepia) SarangshoPalette.Ink else MaterialTheme.colorScheme.onBackground)
+                    Panel {
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Icon(Icons.Default.VerifiedUser, null, tint = MaterialTheme.colorScheme.primary)
+                            Column(Modifier.weight(1f)) {
+                                Text("উৎস যাচাইয়ের অবস্থা", fontWeight = FontWeight.SemiBold)
+                                Text("প্রকাশিত দৈনিক সংস্করণ থেকে", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                            }
+                            AssistChip(onClick = {}, enabled = false, label = { Text("প্রকাশিত") })
+                        }
+                    }
+                    Panel {
+                        Kicker("সংক্ষিপ্ত সারাংশ")
+                        Text(story.summary.ifBlank { story.oneLiner }, fontSize = readerFontSize, lineHeight = readerLineHeight)
+                    }
+                    if (story.whyItMatters.isNotBlank()) Panel {
+                        Kicker("কেন গুরুত্বপূর্ণ")
+                        Text(story.whyItMatters, fontSize = readerFontSize, lineHeight = readerLineHeight)
+                    }
+                    if (story.examFacts.isNotBlank()) Panel {
+                        Kicker("পরীক্ষার জন্য তথ্য")
+                        Text(story.examFacts, fontSize = readerFontSize, lineHeight = readerLineHeight)
+                    }
+                    if (story.detail.isNotBlank()) Panel {
+                        Kicker("বিস্তারিত পাঠ")
+                        Text(story.detail, fontSize = readerFontSize, lineHeight = readerLineHeight)
+                    }
+                    if (story.keyFacts.isNotEmpty()) {
+                        Text("মূল তথ্য", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        story.keyFacts.forEach { fact ->
+                            Panel {
+                                Text(fact.label, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                                Text(fact.value, fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                                if (fact.original.isNotBlank()) Text(fact.original, fontSize = 12.sp, lineHeight = 19.sp)
+                            }
+                        }
+                    }
+                    Text("মূল তথ্যসূত্র", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    if (story.sources.isEmpty()) {
+                        Text("এই প্রতিবেদনের সঙ্গে প্রকাশ্য উৎস-লিংক সংযুক্ত নেই।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                    } else story.sources.forEach { source ->
+                        Panel {
+                            Kicker(source.publication)
+                            Text(source.headline, fontWeight = FontWeight.SemiBold)
+                            Text(source.date, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                            TextButton(onClick = {
+                                runCatching {
+                                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(source.url)))
+                                }
+                            }) {
+                                Icon(Icons.Default.OpenInNew, null, modifier = Modifier.size(15.dp))
+                                Spacer(Modifier.width(5.dp))
+                                Text("মূল প্রতিবেদন খুলুন")
+                            }
+                        }
+                    }
                 }
-                AssistChip(onClick = {}, enabled = false, label = { Text("যাচাই হয়নি") })
             }
-        }
-        Text("প্রথমে বুঝুন", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-        Panel {
-            Kicker("মূল বিষয়")
-            Text("রাষ্ট্রের বিরুদ্ধে আন্তর্জাতিক আদালতে দায়বদ্ধতার প্রশ্ন কীভাবে উত্থাপিত হয়, তা বুঝতে মামলার পক্ষ, আদালতের এখতিয়ার এবং প্রযোজ্য আন্তর্জাতিক আইন আলাদা করে দেখতে হয়।", fontSize = readerFontSize, lineHeight = readerLineHeight)
-            Text("নমুনা ব্যাখ্যা • যাচাইকৃত সংবাদ প্রতিবেদন নয়", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
-        }
-        }
         }
         Text("এই প্রতিবেদনের পাঠ-সরঞ্জাম", fontSize = 18.sp, fontWeight = FontWeight.Bold)
         RowLink("পড়ার পছন্দ", "ফন্ট ও লাইন স্পেসিং বদলান", Icons.Default.TextFields) { nav.navigate(AppDestination.ReadingSettings.route) }
@@ -420,9 +533,15 @@ internal fun Summary(nav: NavHostController) {
     val readerFontSize = readerPreferences.fontSize
     val readerLineHeight = readerPreferences.lineHeight
     val sepia = readerPreferences.sepia
+    val story = EditionFeedRepository.story(context, EditionFeedRepository.selectedStoryId(context))
     var level by rememberSaveable { mutableIntStateOf(0) }
     val labels = listOf("৩০ সেকেন্ড", "২ মিনিট", "বিস্তারিত")
-    val texts = listOf("ঘটনাটির মূল বিষয় এক বাক্যে বুঝুন।", "মূল সিদ্ধান্ত, সংশ্লিষ্ট প্রতিষ্ঠান এবং বাংলাদেশের জন্য সম্ভাব্য তাৎপর্য সংক্ষেপে পড়ুন।", "বিস্তারিত সংস্করণে পটভূমি, প্রক্রিয়া, মূল তথ্য, সংশ্লিষ্ট পক্ষের অবস্থান, অনিশ্চয়তা এবং পরীক্ষায় প্রাসঙ্গিক ধারণা থাকবে।")
+    val texts = listOf(
+        story?.oneLiner?.takeIf { it.isNotBlank() } ?: "ঘটনাটির মূল বিষয় এক বাক্যে বুঝুন।",
+        story?.summary?.takeIf { it.isNotBlank() } ?: "মূল সিদ্ধান্ত, সংশ্লিষ্ট প্রতিষ্ঠান এবং বাংলাদেশের জন্য সম্ভাব্য তাৎপর্য সংক্ষেপে পড়ুন.",
+        story?.detail?.takeIf { it.isNotBlank() } ?: story?.examFacts?.takeIf { it.isNotBlank() }
+            ?: "বিস্তারিত সংস্করণে পটভূমি, প্রক্রিয়া, মূল তথ্য, সংশ্লিষ্ট পক্ষের অবস্থান, অনিশ্চয়তা এবং পরীক্ষায় প্রাসঙ্গিক ধারণা থাকবে।"
+    )
     Scroll {
         Intro("একই ঘটনা, তিনভাবে বুঝুন", "আপনার হাতে যত সময় আছে, সেই অনুযায়ী পড়ুন।")
         SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) { labels.forEachIndexed { i, label -> SegmentedButton(level == i, { level = i }, SegmentedButtonDefaults.itemShape(i, labels.size)) { Text(label, fontSize = 11.sp) } } }
@@ -443,7 +562,7 @@ internal fun Summary(nav: NavHostController) {
                 )
                 Text(texts[level], fontSize = readerFontSize, lineHeight = readerLineHeight)
                 Text(
-                    "নমুনা লেখা • যাচাইকৃত সংবাদ সারাংশ নয়",
+                    story?.headline ?: "প্রকাশিত সংস্করণ থেকে নির্বাচিত পাঠ",
                     color = if (sepia) SarangshoPalette.Muted else MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 11.sp
                 )
@@ -733,8 +852,10 @@ internal fun Summary(nav: NavHostController) {
     }
     val normalizedQuery = query.trim()
     val visibleArticles = if (filter == "শব্দ") emptyList() else savedArticles.filter { id ->
+        val title = EditionFeedRepository.story(context, id)?.headline
+            ?: if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার আন্তর্জাতিক বিচারিক প্রক্রিয়া" else id
         normalizedQuery.isBlank() || id.contains(normalizedQuery, ignoreCase = true) ||
-            (id == "sample-international-justice" && "গাম্বিয়া বনাম মিয়ানমার আন্তর্জাতিক বিচারিক প্রক্রিয়া".contains(normalizedQuery, ignoreCase = true))
+            title.contains(normalizedQuery, ignoreCase = true)
     }
     val visibleWords = if (filter == "নিবন্ধ") emptyList() else bookmarkedWords.filter { word ->
         normalizedQuery.isBlank() || word.contains(normalizedQuery, ignoreCase = true)
@@ -780,12 +901,17 @@ internal fun Summary(nav: NavHostController) {
                 }
             }
             visibleArticles.forEach { id ->
+                val story = EditionFeedRepository.story(context, id)
                 Panel {
-                    Kicker("সংরক্ষিত নিবন্ধ • নমুনা")
-                    Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
-                    if (id == "sample-international-justice") {
+                    Kicker("সংরক্ষিত নিবন্ধ")
+                    Text(story?.headline ?: if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id,
+                        fontWeight = FontWeight.SemiBold)
+                    if (story != null || id == "sample-international-justice") {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            TextButton(onClick = { nav.navigate(AppDestination.Article.route) }) { Text("পড়ুন") }
+                            TextButton(onClick = {
+                                EditionFeedRepository.selectStory(context, if (story != null) id else id)
+                                nav.navigate(AppDestination.Article.route)
+                            }) { Text("পড়ুন") }
                             TextButton(onClick = {
                                 LocalLearningStore.setArticleSaved(context, id, false)
                                 savedArticles.remove(id)
@@ -995,25 +1121,79 @@ internal fun Summary(nav: NavHostController) {
     }
 }
 
+
 @Composable internal fun Archive(nav: NavHostController) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val feed = rememberPublishedFeed()
+    var editions by remember { mutableStateOf(EditionFeedRepository.publishedEditions(context)) }
+    LaunchedEffect(feed.snapshot) { editions = EditionFeedRepository.publishedEditions(context) }
     Scroll {
-        Intro("দৈনিক সংস্করণ", "আগের দিনের ব্রিফিং খুঁজুন এবং পরে পড়ার জন্য খুলুন।")
-        Panel { Text("সাম্প্রতিক সংস্করণ", fontWeight = FontWeight.Bold); Text("প্রকাশিত সংস্করণের তালিকা ইঞ্জিন থেকে যুক্ত হলে এখানে তারিখ, ভাষা ও অবস্থা দেখানো হবে।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
-        RowLink("আজকের সংস্করণ", "লাইভ কনটেন্ট সংযুক্ত নয়", Icons.Default.Today) { nav.navigate(AppDestination.Edition.route) }
-        RowLink("গতকালের সংস্করণ", "আর্কাইভ ডেটা অপেক্ষমাণ", Icons.Default.CalendarMonth) { nav.navigate(AppDestination.Edition.route) }
+        Intro("দৈনিক সংস্করণ", "প্রকাশিত দৈনিক ব্রিফিং খুলুন এবং আগের দিনের সংস্করণে ফিরে যান।")
+        if (feed.snapshot != null) {
+            Panel {
+                Kicker("সর্বশেষ প্রকাশিত সংস্করণ")
+                Text(feed.snapshot.date, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(feed.snapshot.coverage, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                TextButton(onClick = { nav.navigate(AppDestination.Edition.route) }) { Text("বর্তমান সংস্করণ খুলুন") }
+            }
+        }
+        if (editions.isEmpty()) {
+            Panel {
+                Text("সংস্করণের তালিকা লোড হচ্ছে", fontWeight = FontWeight.SemiBold)
+                Text("ইন্টারনেট সংযোগ থাকলে প্রকাশিত আর্কাইভ এখানে দেখা যাবে।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+            }
+        } else {
+            editions.forEachIndexed { index, edition ->
+                Panel {
+                    Kicker(if (index == 0) "সর্বশেষ" else "আর্কাইভ")
+                    Text(edition.date, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                    Text("${edition.stories}টি প্রতিবেদন • ${edition.coverage}", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                    TextButton(onClick = {
+                        scope.launch {
+                            EditionFeedRepository.selectEditionDate(context, edition.date)
+                            if (EditionFeedRepository.cachedEdition(context, edition.date) == null) {
+                                runCatching { EditionFeedRepository.loadEdition(context, edition.date) }
+                            }
+                            nav.navigate(AppDestination.Edition.route)
+                        }
+                    }) { Text(when (index) { 0 -> "আজকের সংস্করণ"; 1 -> "গতকালের সংস্করণ"; else -> "এই সংস্করণ খুলুন" }) }
+                }
+            }
+        }
     }
 }
 
 @Composable internal fun Edition(nav: NavHostController) {
+    val context = LocalContext.current
+    val feed = rememberPublishedFeed(EditionFeedRepository.selectedEditionDate(context))
+    val snapshot = feed.snapshot
     Scroll {
-        Intro("দৈনিক ব্রিফিং", "একটি সংস্করণের সব পাঠ, অনুশীলন ও তথ্যসূত্র এক জায়গায়।")
-        Panel { Text("সংস্করণের অবস্থা", fontWeight = FontWeight.Bold); Text("এই প্রোটোটাইপে কোনো প্রকাশিত সংস্করণ লোড হয়নি।", color = MaterialTheme.colorScheme.onSurfaceVariant); AssistChip(onClick = {}, enabled = false, label = { Text("কনটেন্ট অপেক্ষমাণ") }) }
-        Panel {
-            Kicker("প্রধান সংবাদ")
-            Text(
-                "প্রকাশিত সংস্করণ লোড হলে এখানে তার যাচাইকৃত প্রতিবেদন দেখানো হবে।",
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+        Intro("দৈনিক ব্রিফিং", "একটি প্রকাশিত সংস্করণের সব প্রতিবেদন ও তথ্যসূত্র এক জায়গায়।")
+        if (snapshot == null) {
+            Panel {
+                if (feed.loading) CircularProgressIndicator()
+                Text(if (feed.loading) "সংস্করণ লোড হচ্ছে…" else "প্রকাশিত সংস্করণ পাওয়া যায়নি", fontWeight = FontWeight.SemiBold)
+                TextButton(onClick = feed.refresh) { Text("আবার চেষ্টা করুন") }
+            }
+        } else {
+            Panel {
+                Kicker("প্রকাশিত সংস্করণ")
+                Text(snapshot.date, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                Text(snapshot.coverage, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                Text("${snapshot.stories.size}টি প্রতিবেদন", color = MaterialTheme.colorScheme.secondary, fontSize = 12.sp)
+            }
+            snapshot.stories.forEach { story ->
+                Panel {
+                    Kicker(categoryLabel(story.category))
+                    Text(story.headline, fontWeight = FontWeight.Bold, fontSize = 17.sp, lineHeight = 24.sp)
+                    Text(story.oneLiner.ifBlank { story.summary }, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                    TextButton(onClick = {
+                        EditionFeedRepository.selectStory(context, story.id, snapshot.date)
+                        nav.navigate(AppDestination.Article.route)
+                    }) { Text("প্রতিবেদন পড়ুন") }
+                }
+            }
         }
         RowLink("বাংলাদেশ বিষয়াবলি", "দেশের গুরুত্বপূর্ণ ঘটনা", Icons.Default.Flag) { nav.navigate(AppDestination.Bangladesh.route) }
         RowLink("বিশ্ব বিষয়াবলি", "আন্তর্জাতিক প্রেক্ষাপট", Icons.Default.Public) { nav.navigate(AppDestination.World.route) }
@@ -1153,13 +1333,32 @@ private fun topicGuide(topic: String): TopicGuide {
 }
 
 @Composable internal fun Sources(nav: NavHostController) {
+    val context = LocalContext.current
+    val story = EditionFeedRepository.story(context, EditionFeedRepository.selectedStoryId(context))
     Scroll {
-        Intro("উৎস ও যাচাই", "প্রতিটি তথ্য কোথা থেকে এসেছে এবং কীভাবে যাচাই হয়েছে তা দেখুন।")
-        Panel { Text("উৎস-তথ্য", fontWeight = FontWeight.Bold); Text("প্রকৃত সংস্করণ যুক্ত হলে প্রকাশক, শিরোনাম, মূল URL, প্রকাশকাল, হালনাগাদ সময়, প্রবেশযোগ্যতা ও যাচাইয়ের অবস্থা দেখানো হবে।") }
-        RowLink("উৎসের রেকর্ড", "প্রকাশক, অনুমতি ও মূল URL", Icons.Default.Link) { nav.navigate(AppDestination.SourceDetail.route) }
-        listOf("প্রাথমিক সরকারি নথি", "আদালত ও আইনগত নথি", "আন্তর্জাতিক সংস্থা", "সংবাদ প্রকাশনা").forEach {
-            Panel { Text(it, fontWeight = FontWeight.SemiBold); Text("উৎস-রেজিস্ট্রি থেকে তথ্য আসবে", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp) }
+        Intro("উৎস ও যাচাই", "নির্বাচিত প্রতিবেদনের মূল প্রকাশনা ও লিংক দেখুন।")
+        if (story == null || story.sources.isEmpty()) {
+            Panel {
+                Text("এই প্রতিবেদনের উৎস-তালিকা পাওয়া যায়নি", fontWeight = FontWeight.SemiBold)
+                Text("প্রতিবেদন থেকে আবার খুলুন অথবা প্রকাশিত সংস্করণ হালনাগাদ করুন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        } else {
+            story.sources.forEach { source ->
+                Panel {
+                    Kicker(source.publication)
+                    Text(source.headline, fontWeight = FontWeight.SemiBold)
+                    Text(source.date, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                    TextButton(onClick = {
+                        runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(source.url))) }
+                    }) {
+                        Icon(Icons.Default.OpenInNew, null, modifier = Modifier.size(15.dp))
+                        Spacer(Modifier.width(5.dp))
+                        Text("মূল প্রতিবেদন খুলুন")
+                    }
+                }
+            }
         }
+        RowLink("উৎসের রেকর্ড", "প্রকাশক, অনুমতি ও মূল URL", Icons.Default.Link) { nav.navigate(AppDestination.SourceDetail.route) }
     }
 }
 
@@ -1183,11 +1382,16 @@ private fun topicGuide(topic: String): TopicGuide {
             Panel { Text("এখনো কোনো পড়ার ইতিহাস নেই", fontWeight = FontWeight.Bold); Text("কোনো নিবন্ধ খুললে সেটি এখানে দেখা যাবে।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
         } else {
             recent.forEach { id ->
+                val story = EditionFeedRepository.story(context, id)
                 Panel {
-                    Kicker("সম্প্রতি পড়া • নমুনা")
-                    Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
-                    if (id == "sample-international-justice") {
-                        TextButton(onClick = { nav.navigate(AppDestination.Article.route) }) { Text("নিবন্ধটি খুলুন") }
+                    Kicker("সম্প্রতি পড়া")
+                    Text(story?.headline ?: if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id,
+                        fontWeight = FontWeight.SemiBold)
+                    if (story != null || id == "sample-international-justice") {
+                        TextButton(onClick = {
+                            EditionFeedRepository.selectStory(context, id)
+                            nav.navigate(AppDestination.Article.route)
+                        }) { Text("নিবন্ধটি খুলুন") }
                     } else {
                         Text("এই পাঠের বিস্তারিত এখন আর উপলভ্য নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
                     }
@@ -1225,16 +1429,21 @@ private fun topicGuide(topic: String): TopicGuide {
         Text("সংরক্ষিত নিবন্ধ • ${articles.size}", fontWeight = FontWeight.Bold, fontSize = 17.sp)
         if (articles.isEmpty()) Panel { Text("কোনো নিবন্ধ সংরক্ষিত নেই", color = MaterialTheme.colorScheme.onSurfaceVariant) }
         articles.forEach { id ->
+            val story = EditionFeedRepository.story(context, id)
             Panel {
-                Kicker("নিবন্ধ • নমুনা")
-                Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
-                if (id == "sample-international-justice") {
+                Kicker("সংরক্ষিত নিবন্ধ")
+                Text(story?.headline ?: if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id,
+                    fontWeight = FontWeight.SemiBold)
+                if (story != null || id == "sample-international-justice") {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         TextButton(
-                            onClick = { nav.navigate(AppDestination.Article.route) },
+                            onClick = {
+                                EditionFeedRepository.selectStory(context, id)
+                                nav.navigate(AppDestination.Article.route)
+                            },
                             modifier = Modifier.fillMaxWidth().testTag("saved-article-open")
                         ) { Text("নিবন্ধটি খুলুন") }
                         TextButton(

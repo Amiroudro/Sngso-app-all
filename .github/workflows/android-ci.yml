@@ -24,6 +24,8 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      - name: Verify public latest published edition feed
+        run: python scripts/validate_live_edition_feed.py
       - name: Validate proposed client-edition contract and fixture
         run: |
           python -m pip install --requirement scripts/requirements-contract.txt
@@ -39,7 +41,7 @@ jobs:
           cmdline-tools-version: 12266719
           # Explicitly override the action's legacy default ("tools"), which
           # sdkmanager no longer provides. Install only current SDK packages.
-          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
           accept-android-sdk-licenses: true
       - name: Verify toolchain
         run: |
@@ -82,8 +84,9 @@ jobs:
         needs.unit-and-build.result == 'success'))
     runs-on: ubuntu-24.04
     timeout-minutes: 30
-    # GitHub-hosted Linux runners may not expose KVM. Recent Android Emulator
-    # builds reject TCG software CPU emulation unless this explicit opt-in is set.
+    # GitHub-hosted Linux runners do not expose KVM in this workflow. Android
+    # 15's Google APIs image is used as a stable instrumentation runtime;
+    # compileSdk/targetSdk remain Android 16 (API 36).
     env:
       ANDROID_I_WANT_MY_TCG: 'yes'
     steps:
@@ -97,24 +100,22 @@ jobs:
         uses: android-actions/setup-android@v4
         with:
           cmdline-tools-version: 12266719
-          packages: 'platform-tools platforms;android-28 platforms;android-35 build-tools;35.0.0'
+          packages: 'platform-tools platforms;android-34 platforms;android-36 build-tools;36.0.0'
           accept-android-sdk-licenses: true
       - name: Run Compose smoke test on emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          # API 28 AOSP keeps the guest system lighter on TCG-only hosted runners.
-          # The app still compiles against SDK 35 and supports API 26+.
-          api-level: 28
-          target: default
+          # API 35's default image became unstable under software CPU
+          # emulation (system-service ANRs and instrumentation process death).
+          # API 34 Google APIs is the fallback runtime, not the app target SDK.
+          api-level: 34
+          target: google_apis
           arch: x86_64
           profile: pixel_2
           cores: 2
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -memory 4096
           emulator-boot-timeout: 900
           disable-animations: true
-          # The emulator action executes script lines in separate shells. Keep
-          # PID and exit-code handling in one shell command so cleanup cannot
-          # turn a successful test run into a false failure.
           script: |
             set +e; adb logcat -c; adb logcat -v threadtime > emulator-logcat.txt & LOGCAT_PID=$!; ./gradlew --no-daemon --stacktrace :app:connectedDebugAndroidTest; TEST_EXIT=$?; kill "$LOGCAT_PID" 2>/dev/null || true; wait "$LOGCAT_PID" 2>/dev/null || true; exit "$TEST_EXIT"
       - name: Upload emulator diagnostics
