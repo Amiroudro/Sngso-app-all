@@ -33,7 +33,7 @@ The sample fixture's hash was computed using this rule.
 
 ## Android parser status
 
-The Android repository now contains an isolated, read-only Kotlin parser and unit tests for this proposed shape. It rejects unknown contract fields and versions, non-published editions, unapproved summaries, invalid source URLs, and content-hash mismatches. The parser is not called by a screen, repository refresh job, or network client. It is a compatibility spike only; it does not make this proposal an engine-approved contract or replace full JSON Schema validation.
+The Android repository now contains an isolated, read-only Kotlin parser and unit tests for this proposed shape. It verifies the canonical SHA-256 hash, rejects unknown fields and versions, enforces published-edition and approved-summary states, validates IDs, timestamps, language membership, source URLs, correction metadata, and duplicate IDs/languages. The parser is not called by a screen, repository refresh job, or network client. It is a compatibility spike only; it does not make this proposal an engine-approved contract or replace full JSON Schema validation.
 
 ## Mapping from engine domain
 
@@ -50,8 +50,8 @@ The engine must define and validate the exact mapping before this proposal is ad
 ## Decisions still required
 
 - Whether the engine will emit this projection directly or an exporter will transform validated domain records.
-- How the edition's ordered story list is represented and whether it needs an explicit rank.
-- Whether multiple sources per story should be represented as a list rather than the single-source MVP shape.
+- The edition's `story_ids` order is authoritative for display order; the exporter must preserve that order exactly. If stories are emitted as an array, its order must match `story_ids`.
+- The projection currently exposes one editorially selected primary source per story. The engine must define the deterministic editorial selection rule and preserve all article/source relationships in its own records. If the client must display multiple citations, v1 must change to a `sources[]` list before approval; the client must never infer or silently select a source.
 - Where artifacts are hosted and how the client discovers the latest published edition.
 - Cache retention limits and the user-visible freshness policy.
 
