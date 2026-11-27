@@ -179,7 +179,7 @@ class HomeScreenTest {
         composeRule.onNodeWithTag("feed-filter-all").performScrollTo().performClick()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .performScrollTo().assertIsDisplayed()
-        composeRule.onNodeWithText("বিস্তারিত পড়ুন").performScrollTo().performClick()
+        composeRule.onAllNodesWithText("বিস্তারিত পড়ুন")[0].performScrollTo().performClick()
         composeRule.onNodeWithText("উৎস যাচাইয়ের অবস্থা").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .performScrollTo().assertIsDisplayed()
@@ -188,7 +188,7 @@ class HomeScreenTest {
         composeRule.onNodeWithTag("feed-filter-economy").performScrollTo().performClick()
         composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .performScrollTo().assertIsDisplayed()
-        composeRule.onNodeWithText("বিস্তারিত পড়ুন").performScrollTo().performClick()
+        composeRule.onAllNodesWithText("বিস্তারিত পড়ুন")[0].performScrollTo().performClick()
         composeRule.onNodeWithText("অর্থনীতির সারাংশ।").performScrollTo().assertIsDisplayed()
     }
 
