@@ -20,6 +20,11 @@ object EditionFeedRepository {
     private const val KEY_BN = "edition_bn"
     private const val KEY_FETCHED_AT = "fetched_at"
     private const val KEY_SELECTED_STORY = "selected_story_id"
+    private const val KEY_SELECTED_STORY_DATE = "selected_story_date"
+    private const val KEY_SELECTED_EDITION_DATE = "selected_edition_date"
+    private const val ARCHIVE_DATA_PREFIX = "archive_data_"
+    private const val ARCHIVE_BN_PREFIX = "archive_bn_"
+    private const val ARCHIVE_FETCHED_PREFIX = "archive_fetched_at_"
     private const val BASE = "https://amiroudro.github.io/sarangsho-plus-editions/"
     private const val INDEX_PATH = "editions/index.json"
 
@@ -132,24 +137,60 @@ object EditionFeedRepository {
         val snapshot = parseEdition(data, overlay, fetchedAt, stale = false)
         require(snapshot.date == date) { "Requested edition date does not match the published file" }
         context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
-            .putString(KEY_DATA, data)
-            .putString(KEY_BN, overlay)
-            .putString(KEY_FETCHED_AT, fetchedAt)
+            .putString(ARCHIVE_DATA_PREFIX + date, data)
+            .putString(ARCHIVE_BN_PREFIX + date, overlay)
+            .putString(ARCHIVE_FETCHED_PREFIX + date, fetchedAt)
             .apply()
         return snapshot
+    }
+
+    fun cachedEdition(context: Context, date: String): Snapshot? {
+        require(Regex("^\\\\d{4}-\\\\d{2}-\\\\d{2}$").matches(date)) { "Invalid edition date" }
+        val prefs = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        val data = prefs.getString(ARCHIVE_DATA_PREFIX + date, null) ?: return null
+        val bn = prefs.getString(ARCHIVE_BN_PREFIX + date, null)
+        val fetchedAt = prefs.getString(ARCHIVE_FETCHED_PREFIX + date, null) ?: return null
+        return try {
+            val ageMillis = (Instant.now().toEpochMilli() - Instant.parse(fetchedAt).toEpochMilli()).coerceAtLeast(0L)
+            parseEdition(data, bn, fetchedAt, stale = ageMillis > 15 * 60 * 1000L)
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    fun selectedEditionDate(context: Context): String? =
+        context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .getString(KEY_SELECTED_EDITION_DATE, null)
+
+    fun selectEditionDate(context: Context, date: String?) {
+        val editor = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+        if (date == null) editor.remove(KEY_SELECTED_EDITION_DATE)
+        else {
+            require(Regex("^\\\\d{4}-\\\\d{2}-\\\\d{2}$").matches(date)) { "Invalid edition date" }
+            editor.putString(KEY_SELECTED_EDITION_DATE, date)
+        }
+        editor.apply()
     }
 
     fun selectedStoryId(context: Context): String =
         context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             .getString(KEY_SELECTED_STORY, "").orEmpty()
 
-    fun selectStory(context: Context, storyId: String) {
-        context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-            .edit().putString(KEY_SELECTED_STORY, storyId).apply()
+    fun selectStory(context: Context, storyId: String, editionDate: String? = null) {
+        val prefs = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        prefs.edit()
+            .putString(KEY_SELECTED_STORY, storyId)
+            .putString(KEY_SELECTED_STORY_DATE, editionDate)
+            .apply()
     }
 
-    fun story(context: Context, storyId: String): Story? =
-        cached(context)?.stories?.firstOrNull { it.id == storyId }
+    fun story(context: Context, storyId: String): Story? {
+        val prefs = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        val selectedDate = prefs.getString(KEY_SELECTED_STORY_DATE, null)
+        val selected = selectedDate?.let { cachedEdition(context, it) }
+        return selected?.stories?.firstOrNull { it.id == storyId }
+            ?: cached(context)?.stories?.firstOrNull { it.id == storyId }
+    }
 
     private suspend fun fetchText(path: String): String =
         kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
