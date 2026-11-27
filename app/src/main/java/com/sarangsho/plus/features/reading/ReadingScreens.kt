@@ -175,7 +175,7 @@ private fun rememberPublishedFeed(editionDate: String? = null): PublishedFeedUiS
     var failed by remember { mutableStateOf(false) }
     var refreshToken by remember(context, editionDate) { mutableIntStateOf(0) }
     val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(lifecycleOwner, context) {
+    DisposableEffect(lifecycleOwner, context, editionDate) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME &&
                 (if (editionDate == null) EditionFeedRepository.cached(context)
