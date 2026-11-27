@@ -27,7 +27,7 @@ object ClientEditionParser {
         } catch (error: Exception) {
             throw IllegalArgumentException("Edition payload must be a JSON object", error)
         }
-        requireKeys(root, setOf("contract_version", "content_hash", "edition", "stories"), "root")
+        requireKeys(root, setOf("contract_version", "content_hash", "edition", "stories"), path = "root")
         require(root.string("contract_version") == "1.0.0") {
             "Unsupported client-edition contract version"
         }
