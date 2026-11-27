@@ -29,7 +29,7 @@ This is an expanding screen inventory, not a required count. A route is added on
 - Unit and Compose instrumentation test dependencies
 - GitHub Actions build, unit-test and emulator smoke-test workflow
 
-Open the project in Android Studio, allow Gradle sync and run the app configuration on a device or emulator. The Gradle Wrapper is committed and the GitHub Actions workflow uses it. The routine pull-request workflow runs JVM tests, compiles the Android instrumentation test APK, and assembles debug and unsigned release APKs. A separate emulator job executes the instrumentation suite on API 28 AOSP using software CPU emulation. Latest verification: [GitHub Actions run 45970572515](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45968013536) on commit `6042b1c005521e15c5f327cf05e360756a4e8041`; all 44 instrumentation tests passed (0 failures, 0 skipped), and debug plus unsigned release APKs were assembled.
+Open the project in Android Studio, allow Gradle sync and run the app configuration on a device or emulator. The Gradle Wrapper is committed and the GitHub Actions workflow uses it. The routine pull-request workflow runs JVM tests, compiles the Android instrumentation test APK, and assembles debug and unsigned release APKs. A separate emulator job executes the instrumentation suite on API 28 AOSP using software CPU emulation. Latest verification: [GitHub Actions run 45984631554](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45984631554) on commit `9553c45c9bd834d798170556cfa8ad46698f5100`; all 46 instrumentation tests passed (0 failures, 0 skipped), and debug plus unsigned release APKs were assembled. The run includes the adaptive launcher-icon regression test.
 
 ## Design principles
 
@@ -51,7 +51,7 @@ Open the project in Android Studio, allow Gradle sync and run the app configurat
 
 ## Current limitations
 
-The UI is still a prototype. Authentication, cloud sync, engine/API integration, offline edition downloads, push delivery, live source comparisons, interactive knowledge-graph data and production analytics are not connected. Several learning and reader features do persist locally with SharedPreferences; this is not account sync or a production data layer. Sample content is labelled as sample. Build status must be taken from GitHub Actions, not inferred from committed source.
+The UI is still a prototype. Authentication, cloud sync, engine/API integration, offline edition downloads, push delivery, live source comparisons, interactive knowledge-graph data and production analytics are not connected. The adaptive launcher icon is implemented, but physical-device visual and accessibility checks remain outstanding. Several learning and reader features do persist locally with SharedPreferences; this is not account sync or a production data layer. Sample content is labelled as sample. Build status must be taken from GitHub Actions, not inferred from committed source.
 
 ## Related projects and guidance
 
