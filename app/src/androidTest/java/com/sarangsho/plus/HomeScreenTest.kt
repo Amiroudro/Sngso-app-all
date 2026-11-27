@@ -61,6 +61,7 @@ class HomeScreenTest {
         context.getSharedPreferences("sarangsho_edition_feed", android.content.Context.MODE_PRIVATE)
             .edit()
             .clear()
+            .putString("edition_index", """{"editions":[{"edition_date":"2026-11-27","file":"data-2026-11-27.json","status":"published","coverage":"Test coverage window","stories":4}]}""")
             .putString("edition_data", editionFixture)
             .putString("edition_bn", bengaliFixture)
             .putString("fetched_at", Instant.now().toString())
@@ -330,14 +331,14 @@ class HomeScreenTest {
     }
 
     @Test
-    fun todayBriefingOpensTheEditionArchive() {
+    fun todayBriefingOpensThePublishedEditionArchive() {
         completeOnboarding()
 
         composeRule.onNodeWithText("পুরোনো সংস্করণ").performScrollTo().assertHasClickAction().performClick()
         composeRule.onNodeWithText("দৈনিক সংস্করণ").assertIsDisplayed()
-        composeRule.onNodeWithText("গতকালের সংস্করণ").assertHasClickAction().performClick()
+        composeRule.onNodeWithText("আজকের সংস্করণ").assertHasClickAction().performClick()
         composeRule.onNodeWithText("দৈনিক ব্রিফিং").assertIsDisplayed()
-        composeRule.onNodeWithText("প্রকাশিত সংস্করণ লোড হলে এখানে তার যাচাইকৃত প্রতিবেদন দেখানো হবে।")
+        composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
             .performScrollTo().assertIsDisplayed()
     }
 
