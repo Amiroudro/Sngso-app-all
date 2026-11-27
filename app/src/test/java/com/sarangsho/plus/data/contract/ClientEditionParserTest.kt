@@ -52,8 +52,8 @@ class ClientEditionParserTest {
     @Test
     fun rejectsUnapprovedSummaryEvenWhenHashMatches() {
         val root = JsonParser.parseString(fixture()).asJsonObject
-        root.getAsJsonArray("stories").first.asJsonObject
-            .getAsJsonArray("summaries").first.asJsonObject
+        root.getAsJsonArray("stories").get(0).asJsonObject
+            .getAsJsonArray("summaries").get(0).asJsonObject
             .addProperty("status", "draft")
 
         assertThrows(IllegalArgumentException::class.java) {
@@ -64,7 +64,7 @@ class ClientEditionParserTest {
     @Test
     fun rejectsMissingSourceAttributionEvenWhenHashMatches() {
         val root = JsonParser.parseString(fixture()).asJsonObject
-        root.getAsJsonArray("stories").first.asJsonObject.remove("source")
+        root.getAsJsonArray("stories").get(0).asJsonObject.remove("source")
 
         assertThrows(IllegalArgumentException::class.java) {
             ClientEditionParser.parse(rehash(root))
@@ -84,7 +84,7 @@ class ClientEditionParserTest {
     @Test
     fun rejectsNonHttpSourceUrls() {
         val root = JsonParser.parseString(fixture()).asJsonObject
-        root.getAsJsonArray("stories").first.asJsonObject
+        root.getAsJsonArray("stories").get(0).asJsonObject
             .getAsJsonObject("source").addProperty("url", "javascript:alert(1)")
 
         assertThrows(IllegalArgumentException::class.java) {
@@ -95,7 +95,7 @@ class ClientEditionParserTest {
     @Test
     fun rejectsMissingStoryIdEvenWhenHashMatches() {
         val root = JsonParser.parseString(fixture()).asJsonObject
-        root.getAsJsonArray("stories").first.asJsonObject.remove("id")
+        root.getAsJsonArray("stories").get(0).asJsonObject.remove("id")
 
         assertThrows(IllegalArgumentException::class.java) {
             ClientEditionParser.parse(rehash(root))
@@ -115,7 +115,7 @@ class ClientEditionParserTest {
     @Test
     fun rejectsStoryTitleLanguageNotDeclaredByEdition() {
         val root = JsonParser.parseString(fixture()).asJsonObject
-        root.getAsJsonArray("stories").first.asJsonObject
+        root.getAsJsonArray("stories").get(0).asJsonObject
             .getAsJsonObject("title").addProperty("fr", "Titre")
 
         assertThrows(IllegalArgumentException::class.java) {
@@ -126,7 +126,7 @@ class ClientEditionParserTest {
     @Test
     fun parsesAndPreservesValidCorrectionMetadata() {
         val root = JsonParser.parseString(fixture()).asJsonObject
-        root.getAsJsonArray("stories").first.asJsonObject.add(
+        root.getAsJsonArray("stories").get(0).asJsonObject.add(
             "correction",
             JsonParser.parseString("""{"note":"Corrected publication time","corrected_at":"2026-11-27T10:30:00Z"}""")
         )
@@ -139,7 +139,7 @@ class ClientEditionParserTest {
     @Test
     fun rejectsMalformedCorrectionMetadata() {
         val root = JsonParser.parseString(fixture()).asJsonObject
-        root.getAsJsonArray("stories").first.asJsonObject.add(
+        root.getAsJsonArray("stories").get(0).asJsonObject.add(
             "correction",
             JsonParser.parseString("""{"note":"","corrected_at":"not-a-date"}""")
         )
