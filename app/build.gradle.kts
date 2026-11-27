@@ -17,6 +17,44 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            val keystorePath = System.getenv("SNGSO_KEYSTORE_PATH")
+            val keystorePassword = System.getenv("SNGSO_KEYSTORE_PASSWORD")
+            val keyAliasValue = System.getenv("SNGSO_KEY_ALIAS")
+            val keyPasswordValue = System.getenv("SNGSO_KEY_PASSWORD")
+            if (!keystorePath.isNullOrBlank() &&
+                !keystorePassword.isNullOrBlank() &&
+                !keyAliasValue.isNullOrBlank() &&
+                !keyPasswordValue.isNullOrBlank()
+            ) {
+                storeFile = file(keystorePath)
+                storePassword = keystorePassword
+                keyAlias = keyAliasValue
+                keyPassword = keyPasswordValue
+            }
+        }
+    }
+
+    buildTypes {
+        getByName("release") {
+            // Keep shrinking disabled until release mapping and diagnostics are validated.
+            isMinifyEnabled = false
+            isShrinkResources = false
+            val releaseSigningConfigured = listOf(
+                System.getenv("SNGSO_KEYSTORE_PATH"),
+                System.getenv("SNGSO_KEYSTORE_PASSWORD"),
+                System.getenv("SNGSO_KEY_ALIAS"),
+                System.getenv("SNGSO_KEY_PASSWORD")
+            ).all { !it.isNullOrBlank() }
+            signingConfig = if (releaseSigningConfigured) {
+                signingConfigs.getByName("release")
+            } else {
+                null
+            }
+        }
+    }
+
     buildFeatures {
         compose = true
         buildConfig = true
@@ -45,6 +83,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.10.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("androidx.navigation:navigation-compose:2.8.5")
 
     implementation("androidx.compose.ui:ui")

@@ -1,14 +1,14 @@
 # Sarangsho Plus — Screen map and interaction contract
 
 ## Navigation model
-Five persistent destinations form the primary navigation: Home, Explore, Practice, Saved, Profile. Detail experiences are pushed onto the navigation stack and retain a clear back path. Search is reachable from Home and Explore. Do not place every feature in the bottom bar.
+Four persistent destinations form the primary navigation: Today, Learn, Library and Explore. Profile, notifications and settings are reached from the top bar. Detail experiences are pushed onto the navigation stack and retain a clear back path. Today links to the edition archive, and Vocabulary Lab opens a detail view for the selected word. Search is reachable from primary surfaces. Do not place every feature in the bottom bar.
 
 ## Twenty primary screens
 | ID | Screen | Entry | Primary action | Essential states |
 |---|---|---|---|---|
 | 01 | Welcome / onboarding | First launch | Continue / skip | First run, returning |
 | 02 | Sign in | Profile / gated sync | Sign in / continue locally | Validation, loading, failure |
-| 03 | Home briefing | Home tab | Open briefing | Fresh, quiet day, stale, offline |
+| 03 | Home briefing | Today tab | Open briefing | Fresh, quiet day, stale, offline |
 | 04 | News feed | Explore tab | Filter and open story | Loading, empty filter, offline |
 | 05 | Article reader | Feed item | Save, share, open summary | Full, metadata-only, unavailable |
 | 06 | Three-level summary | Article action | Change depth | Available, partial, unavailable |
@@ -18,14 +18,14 @@ Five persistent destinations form the primary navigation: Home, Explore, Practic
 | 10 | World affairs explorer | Explore | Select region / issue | Region selected, no results |
 | 11 | Knowledge graph | Article / topic | Follow relationship | Graph, no connected evidence |
 | 12 | Data & fact explorer | Article / topic | Inspect indicator | Data available, revised, conflict |
-| 13 | Vocabulary lab | Practice | Reveal meaning / save word | New, known, review |
-| 14 | BCS & Bank challenge | Practice | Submit answer | In progress, submitted, expired |
+| 13 | Vocabulary lab | Learn hub | Reveal meaning / save word | New, known, review |
+| 14 | BCS & Bank challenge | Learn hub | Submit answer | In progress, submitted, expired |
 | 15 | Answer explanation | After answer | Review evidence / next | Correct, incorrect, disputed |
-| 16 | Written practice | Practice | Save draft | Empty, editing, saved |
-| 17 | Revision deck | Practice | Reveal / rate recall | Due, complete, no cards |
-| 18 | Search & sources | Search entry | Search / filter | Recent, results, no results |
-| 19 | Saved items | Saved tab | Open / remove | Saved, empty, offline |
-| 20 | Profile & analytics | Profile tab | Settings / review progress | New learner, populated |
+| 16 | Written practice | Learn hub | Save draft | Empty, editing, saved |
+| 17 | Revision deck | Learn hub | Reveal / rate recall | Due, complete, no cards |
+| 18 | Search & sources | Top-bar search | Search / filter | Recent, results, no results |
+| 19 | Saved items | Library tab | Open / remove | Saved, empty, offline |
+| 20 | Profile | Top-bar profile action | Settings / review progress | New learner, populated |
 
 ## Shared interaction requirements
 - Back returns to the previous meaningful context.

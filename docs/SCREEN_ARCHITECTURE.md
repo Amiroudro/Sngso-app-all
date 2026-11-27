@@ -1,16 +1,38 @@
 # Sarangsho Plus screen architecture
 
-This is a product inventory, not a target screen count. The current prototype exposes 47 navigation destinations, while several capabilities remain honest empty or disabled shells until their services exist. A route should exist only when it supports a distinct user task, a meaningful decision, or a necessary system state. Related content belongs in a detail section or bottom sheet when that is clearer than another page.
+This is a product inventory, not a target screen count. The current prototype exposes 48 navigation destinations, while several capabilities remain honest empty or disabled shells until their services exist. A route should exist only when it supports a distinct user task, a meaningful decision, or a necessary system state. Related content belongs in a detail section or bottom sheet when that is clearer than another page.
 
 ## Primary navigation
 
-The app keeps five top-level destinations, matching the most frequent jobs:
+The app keeps four top-level destinations, matching the most frequent jobs:
 
-1. **Home** — today's edition, reading continuation, study plan and key learning shortcuts.
-2. **Discover** — news feed, topics, publications and search.
-3. **Practice** — BCS/Bank question sets, timed sessions, written practice and results.
-4. **Saved** — saved stories, vocabulary, revision cards and downloaded editions.
-5. **Profile** — learning preferences, progress, notifications, settings and help.
+1. **Today** — today's edition, reading continuation and the next useful learning action.
+2. **Learn** — vocabulary, exam practice, written practice, revision and study planning.
+3. **Library** — saved stories, vocabulary, revision cards and downloaded editions.
+4. **Explore** — news feed, topics, publications and search.
+
+Profile, notifications and settings are reached from the top bar.
+
+## Topic study guides
+
+- Bangladesh and World Affairs lists store the selected topic locally before opening the shared topic-detail route.
+- The detail screen resolves the selected topic into a locally authored guide with an overview, core concepts, exam-reading cautions, and a written reflection prompt.
+- The prototype includes guides for all twelve listed topics. The guides are conceptual study scaffolds, not current-affairs reporting or source-verified legal/statistical reference material.
+- The detail screen links to the sample feed, knowledge map, data explorer and general practice flow. Topic-specific live news and topic-filtered question banks are not yet connected.
+
+## Local search behavior
+
+- The search screen currently indexes the prototype's one sample article, the explicitly listed topic terms, and the five vocabulary entries bundled in the learning module.
+- Results are filtered by all, news, vocabulary, or topic scope. Empty states are shown when the local index has no match.
+- Search suggestions populate and run a local query. Opening a vocabulary result leads to Vocabulary Lab; opening the sample article leads to its article screen.
+- This is not a live editorial or source search. Server-backed search, complete feed indexing, source metadata, and query analytics remain unimplemented.
+
+## First-run preference behavior
+
+- The learning goal and selected topic interests are stored on-device using the local learning preference store.
+- Returning to onboarding preselects the saved values; completing the flow returns to Today and the briefing surfaces the chosen goal and topics.
+- These preferences are device-local. They are not attached to an account or synchronized.
+- The prototype does not yet use these preferences to filter live editorial content.
 
 ## Screen families
 

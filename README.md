@@ -2,15 +2,15 @@
 
 A Bangla-first editorial intelligence and exam-preparation app for Bangladesh.
 
-This repository contains the Android client. The editorial engine lives separately in [Amiroudro/new-sngso](https://github.com/Amiroudro/new-sngso). The client consumes versioned, validated edition artifacts; it does not scrape publishers or generate editorial claims itself.
+This repository contains the Android client. The editorial engine lives separately in [Amiroudro/new-sngso](https://github.com/Amiroudro/new-sngso). The client is designed to consume versioned, validated edition artifacts in a future integration; the current Android prototype uses labelled local sample content. It does not scrape publishers or generate editorial claims itself.
 
 ## Product experience
 
 Sarangsho Plus helps readers move from a verified news event to understanding, context, and exam practice.
 
-The current Compose prototype contains 47 navigation destinations across:
+The current Compose prototype contains 48 navigation destinations across:
 - First-run goals and topic interests
-- Home briefing, feed, archive, edition and article reading
+- Today briefing, Learn hub, feed, archive, edition and article reading
 - Three-depth summaries, timelines, publication perspectives, sources
 - Bangladesh and world affairs, topic detail, knowledge graph and data explorer
 - Vocabulary, practice setup, question session, answer feedback and result shell
@@ -29,11 +29,11 @@ This is an expanding screen inventory, not a required count. A route is added on
 - Unit and Compose instrumentation test dependencies
 - GitHub Actions build, unit-test and emulator smoke-test workflow
 
-Open the project in Android Studio, allow Gradle sync and run the app configuration on a device or emulator. The current repository does not yet include a committed Gradle Wrapper; CI uses Gradle 8.9 directly.
+Open the project in Android Studio, allow Gradle sync and run the app configuration on a device or emulator. The Gradle Wrapper is committed and the GitHub Actions workflow uses it. The routine pull-request workflow runs JVM tests, compiles the Android instrumentation test APK, and assembles debug and unsigned release APKs. A separate emulator job executes the instrumentation suite on API 28 AOSP using software CPU emulation. Latest verification: [GitHub Actions run 45984631554](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45984631554) on commit `9553c45c9bd834d798170556cfa8ad46698f5100`; all 46 instrumentation tests passed (0 failures, 0 skipped), and debug plus unsigned release APKs were assembled. The run includes the adaptive launcher-icon regression test.
 
 ## Design principles
 
-- Bengali-first typography with explicit font fallback and tested line height.
+- Bengali-first typography with readable line-height choices; font fallback, enlarged text and device rendering still require a hardware accessibility pass.
 - A restrained ink / warm-paper / deep-teal palette; no generic gradient-heavy dashboard.
 - Strong editorial hierarchy: headlines, metadata, evidence, context and learning actions remain distinct.
 - Reading surfaces prioritize line length, contrast, spacing and adjustable text size.
@@ -51,7 +51,7 @@ Open the project in Android Studio, allow Gradle sync and run the app configurat
 
 ## Current limitations
 
-The UI is still a prototype. Authentication, persistence, engine/API integration, downloads, push notifications, real source comparisons, interactive knowledge graph data and learning analytics are not connected. Sample content is labelled as sample. Build status must be taken from GitHub Actions, not inferred from committed source.
+The UI is still a prototype. Authentication, cloud sync, engine/API integration, offline edition downloads, push delivery, live source comparisons, interactive knowledge-graph data and production analytics are not connected. The adaptive launcher icon is implemented, but physical-device visual and accessibility checks remain outstanding. Several learning and reader features do persist locally with SharedPreferences; this is not account sync or a production data layer. Sample content is labelled as sample. Build status must be taken from GitHub Actions, not inferred from committed source.
 
 ## Related projects and guidance
 

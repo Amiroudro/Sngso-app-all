@@ -2,50 +2,122 @@ name: Android UI CI
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
-  push:
-    branches: [main, feat/compose-ui-foundation]
+
+# Keep only the newest verification run for a PR. This prevents multiple
+# queued builds from consuming the same limited Actions allowance.
+concurrency:
+  group: android-ui-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
   unit-and-build:
+    # Routine PR gate. Manual dispatch is reserved for the emulator job.
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
-      - uses: gradle/actions/setup-gradle@v4
+          cache: gradle
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
         with:
-          gradle-version: '8.9'
+          cmdline-tools-version: 12266719
+          # Explicitly override the action's legacy default ("tools"), which
+          # sdkmanager no longer provides. Install only current SDK packages.
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+          accept-android-sdk-licenses: true
+      - name: Verify toolchain
+        run: |
+          ./gradlew --version
+          java -version
+          sdkmanager --list_installed
       - name: Run unit tests
-        run: gradle --no-daemon :app:testDebugUnitTest
+        run: ./gradlew --no-daemon --stacktrace :app:testDebugUnitTest
+      - name: Compile and assemble instrumentation test APK
+        run: ./gradlew --no-daemon --stacktrace :app:assembleDebugAndroidTest
       - name: Assemble debug APK
-        run: gradle --no-daemon :app:assembleDebug
+        run: ./gradlew --no-daemon --stacktrace :app:assembleDebug
+      - name: Assemble unsigned release APK
+        run: ./gradlew --no-daemon --stacktrace :app:assembleRelease
+      - name: Upload unsigned release APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: sarangsho-plus-unsigned-release-apk
+          path: app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+          retention-days: 7
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: sarangsho-plus-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 1
 
+  # Emulator boot is comparatively expensive. For an unmerged PR this job
+  # runs only for non-draft PRs and only after the routine build succeeds.
+  # workflow_dispatch is also available for deliberate manual reruns.
   compose-instrumentation:
-    runs-on: ubuntu-latest
+    needs: unit-and-build
+    if: >-
+      always() &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event_name == 'pull_request' &&
+        !github.event.pull_request.draft &&
+        needs.unit-and-build.result == 'success'))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    # GitHub-hosted Linux runners may not expose KVM. Recent Android Emulator
+    # builds reject TCG software CPU emulation unless this explicit opt-in is set.
+    env:
+      ANDROID_I_WANT_MY_TCG: 'yes'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
-      - uses: gradle/actions/setup-gradle@v4
+          cache: gradle
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
         with:
-          gradle-version: '8.9'
+          cmdline-tools-version: 12266719
+          packages: 'platform-tools platforms;android-28 platforms;android-35 build-tools;35.0.0'
+          accept-android-sdk-licenses: true
       - name: Run Compose smoke test on emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 35
-          target: google_apis
+          # API 28 AOSP keeps the guest system lighter on TCG-only hosted runners.
+          # The app still compiles against SDK 35 and supports API 26+.
+          api-level: 28
+          target: default
           arch: x86_64
           profile: pixel_2
-          emulator-options: -no-window -no-audio -no-boot-anim
+          cores: 2
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          emulator-boot-timeout: 900
           disable-animations: true
-          script: gradle --no-daemon :app:connectedDebugAndroidTest
+          # The emulator action executes script lines in separate shells. Keep
+          # PID and exit-code handling in one shell command so cleanup cannot
+          # turn a successful test run into a false failure.
+          script: |
+            set +e; adb logcat -c; adb logcat -v threadtime > emulator-logcat.txt & LOGCAT_PID=$!; ./gradlew --no-daemon --stacktrace :app:connectedDebugAndroidTest; TEST_EXIT=$?; kill "$LOGCAT_PID" 2>/dev/null || true; wait "$LOGCAT_PID" 2>/dev/null || true; exit "$TEST_EXIT"
+      - name: Upload emulator diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: compose-instrumentation-diagnostics
+          path: |
+            emulator-logcat.txt
+            app/build/reports/androidTests/connected/debug/
+            app/build/outputs/androidTest-results/connected/
+          if-no-files-found: warn
+          retention-days: 7
