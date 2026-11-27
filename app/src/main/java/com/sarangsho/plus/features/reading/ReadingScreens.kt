@@ -507,9 +507,15 @@ internal fun Summary(nav: NavHostController) {
     val readerFontSize = readerPreferences.fontSize
     val readerLineHeight = readerPreferences.lineHeight
     val sepia = readerPreferences.sepia
+    val story = EditionFeedRepository.story(context, EditionFeedRepository.selectedStoryId(context))
     var level by rememberSaveable { mutableIntStateOf(0) }
     val labels = listOf("৩০ সেকেন্ড", "২ মিনিট", "বিস্তারিত")
-    val texts = listOf("ঘটনাটির মূল বিষয় এক বাক্যে বুঝুন।", "মূল সিদ্ধান্ত, সংশ্লিষ্ট প্রতিষ্ঠান এবং বাংলাদেশের জন্য সম্ভাব্য তাৎপর্য সংক্ষেপে পড়ুন।", "বিস্তারিত সংস্করণে পটভূমি, প্রক্রিয়া, মূল তথ্য, সংশ্লিষ্ট পক্ষের অবস্থান, অনিশ্চয়তা এবং পরীক্ষায় প্রাসঙ্গিক ধারণা থাকবে।")
+    val texts = listOf(
+        story?.oneLiner?.takeIf { it.isNotBlank() } ?: "ঘটনাটির মূল বিষয় এক বাক্যে বুঝুন।",
+        story?.summary?.takeIf { it.isNotBlank() } ?: "মূল সিদ্ধান্ত, সংশ্লিষ্ট প্রতিষ্ঠান এবং বাংলাদেশের জন্য সম্ভাব্য তাৎপর্য সংক্ষেপে পড়ুন.",
+        story?.detail?.takeIf { it.isNotBlank() } ?: story?.examFacts?.takeIf { it.isNotBlank() }
+            ?: "বিস্তারিত সংস্করণে পটভূমি, প্রক্রিয়া, মূল তথ্য, সংশ্লিষ্ট পক্ষের অবস্থান, অনিশ্চয়তা এবং পরীক্ষায় প্রাসঙ্গিক ধারণা থাকবে।"
+    )
     Scroll {
         Intro("একই ঘটনা, তিনভাবে বুঝুন", "আপনার হাতে যত সময় আছে, সেই অনুযায়ী পড়ুন।")
         SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) { labels.forEachIndexed { i, label -> SegmentedButton(level == i, { level = i }, SegmentedButtonDefaults.itemShape(i, labels.size)) { Text(label, fontSize = 11.sp) } } }
@@ -530,7 +536,7 @@ internal fun Summary(nav: NavHostController) {
                 )
                 Text(texts[level], fontSize = readerFontSize, lineHeight = readerLineHeight)
                 Text(
-                    "নমুনা লেখা • যাচাইকৃত সংবাদ সারাংশ নয়",
+                    story?.headline ?: "প্রকাশিত সংস্করণ থেকে নির্বাচিত পাঠ",
                     color = if (sepia) SarangshoPalette.Muted else MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 11.sp
                 )
@@ -1297,13 +1303,32 @@ private fun topicGuide(topic: String): TopicGuide {
 }
 
 @Composable internal fun Sources(nav: NavHostController) {
+    val context = LocalContext.current
+    val story = EditionFeedRepository.story(context, EditionFeedRepository.selectedStoryId(context))
     Scroll {
-        Intro("উৎস ও যাচাই", "প্রতিটি তথ্য কোথা থেকে এসেছে এবং কীভাবে যাচাই হয়েছে তা দেখুন।")
-        Panel { Text("উৎস-তথ্য", fontWeight = FontWeight.Bold); Text("প্রকৃত সংস্করণ যুক্ত হলে প্রকাশক, শিরোনাম, মূল URL, প্রকাশকাল, হালনাগাদ সময়, প্রবেশযোগ্যতা ও যাচাইয়ের অবস্থা দেখানো হবে।") }
-        RowLink("উৎসের রেকর্ড", "প্রকাশক, অনুমতি ও মূল URL", Icons.Default.Link) { nav.navigate(AppDestination.SourceDetail.route) }
-        listOf("প্রাথমিক সরকারি নথি", "আদালত ও আইনগত নথি", "আন্তর্জাতিক সংস্থা", "সংবাদ প্রকাশনা").forEach {
-            Panel { Text(it, fontWeight = FontWeight.SemiBold); Text("উৎস-রেজিস্ট্রি থেকে তথ্য আসবে", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp) }
+        Intro("উৎস ও যাচাই", "নির্বাচিত প্রতিবেদনের মূল প্রকাশনা ও লিংক দেখুন।")
+        if (story == null || story.sources.isEmpty()) {
+            Panel {
+                Text("এই প্রতিবেদনের উৎস-তালিকা পাওয়া যায়নি", fontWeight = FontWeight.SemiBold)
+                Text("প্রতিবেদন থেকে আবার খুলুন অথবা প্রকাশিত সংস্করণ হালনাগাদ করুন।", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        } else {
+            story.sources.forEach { source ->
+                Panel {
+                    Kicker(source.publication)
+                    Text(source.headline, fontWeight = FontWeight.SemiBold)
+                    Text(source.date, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                    TextButton(onClick = {
+                        runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(source.url))) }
+                    }) {
+                        Icon(Icons.Default.OpenInNew, null, modifier = Modifier.size(15.dp))
+                        Spacer(Modifier.width(5.dp))
+                        Text("মূল প্রতিবেদন খুলুন")
+                    }
+                }
+            }
         }
+        RowLink("উৎসের রেকর্ড", "প্রকাশক, অনুমতি ও মূল URL", Icons.Default.Link) { nav.navigate(AppDestination.SourceDetail.route) }
     }
 }
 
