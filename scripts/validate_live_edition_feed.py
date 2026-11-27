@@ -42,7 +42,7 @@ def main() -> None:
         if isinstance(item, dict)
         and item.get("status") == "published"
         and isinstance(item.get("edition_date"), str)
-        and re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", item["edition_date"])
+        and re.fullmatch(r"\d{4}-\d{2}-\d{2}", item["edition_date"])
     ]
     if not published:
         raise RuntimeError("published index has no valid published edition")
