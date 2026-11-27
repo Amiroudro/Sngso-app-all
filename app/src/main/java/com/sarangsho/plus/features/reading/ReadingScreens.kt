@@ -170,10 +170,10 @@ private fun rememberPublishedFeed(editionDate: String? = null): PublishedFeedUiS
         if (editionDate == null) EditionFeedRepository.cached(context)
         else EditionFeedRepository.cachedEdition(context, editionDate)
     }
-    var snapshot by remember(context) { mutableStateOf(initialSnapshot) }
-    var loading by remember(context) { mutableStateOf(initialSnapshot == null || initialSnapshot.stale) }
+    var snapshot by remember(context, editionDate) { mutableStateOf(initialSnapshot) }
+    var loading by remember(context, editionDate) { mutableStateOf(initialSnapshot == null || initialSnapshot.stale) }
     var failed by remember { mutableStateOf(false) }
-    var refreshToken by remember { mutableIntStateOf(0) }
+    var refreshToken by remember(context, editionDate) { mutableIntStateOf(0) }
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner, context) {
         val observer = LifecycleEventObserver { _, event ->
