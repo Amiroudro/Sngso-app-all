@@ -1124,7 +1124,9 @@ internal fun Summary(nav: NavHostController) {
                     Text("${edition.stories}টি প্রতিবেদন • ${edition.coverage}", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
                     TextButton(onClick = {
                         scope.launch {
-                            runCatching { EditionFeedRepository.loadEdition(context, edition.date) }
+                            if (feed.snapshot?.date != edition.date) {
+                                runCatching { EditionFeedRepository.loadEdition(context, edition.date) }
+                            }
                             nav.navigate(AppDestination.Edition.route)
                         }
                     }) { Text(when (index) { 0 -> "আজকের সংস্করণ"; 1 -> "গতকালের সংস্করণ"; else -> "এই সংস্করণ খুলুন" }) }
