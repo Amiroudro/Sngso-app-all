@@ -1100,7 +1100,8 @@ internal fun Summary(nav: NavHostController) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val feed = rememberPublishedFeed()
-    val editions = EditionFeedRepository.publishedEditions(context)
+    var editions by remember { mutableStateOf(EditionFeedRepository.publishedEditions(context)) }
+    LaunchedEffect(feed.snapshot) { editions = EditionFeedRepository.publishedEditions(context) }
     Scroll {
         Intro("দৈনিক সংস্করণ", "প্রকাশিত দৈনিক ব্রিফিং খুলুন এবং আগের দিনের সংস্করণে ফিরে যান।")
         if (feed.snapshot != null) {
