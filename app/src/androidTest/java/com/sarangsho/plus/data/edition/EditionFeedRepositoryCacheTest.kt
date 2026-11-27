@@ -23,7 +23,10 @@ class EditionFeedRepositoryCacheTest {
             "why_it_matters":"Context",
             "exam_facts":"Exam facts",
             "detail":"Detailed story",
-            "sources":[{"publication":"Test Publisher","headline":"Original","date":"$date","url":"https://example.org/$date"}],
+            "sources":[
+              {"publication":"Test Publisher","headline":"Original","date":"$date","url":"https://example.org/$date"},
+              {"publication":"Second Publisher","headline":"Independent confirmation","date":"$date","url":"https://example.org/second-$date"}
+            ],
             "key_facts":[]
           }]
         }
@@ -47,6 +50,7 @@ class EditionFeedRepositoryCacheTest {
         assertNotNull(archive)
         assertEquals("2026-11-27", latest?.date)
         assertEquals("Latest edition headline", latest?.stories?.single()?.headline)
+        assertEquals(2, latest?.stories?.single()?.sources?.size)
         assertEquals("2026-11-26", archive?.date)
         assertEquals("Latest edition headline", EditionFeedRepository.cached(context)?.stories?.single()?.headline)
 
