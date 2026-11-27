@@ -41,7 +41,7 @@ jobs:
           cmdline-tools-version: 12266719
           # Explicitly override the action's legacy default ("tools"), which
           # sdkmanager no longer provides. Install only current SDK packages.
-          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
           accept-android-sdk-licenses: true
       - name: Verify toolchain
         run: |
@@ -99,14 +99,14 @@ jobs:
         uses: android-actions/setup-android@v4
         with:
           cmdline-tools-version: 12266719
-          packages: 'platform-tools platforms;android-28 platforms;android-35 build-tools;35.0.0'
+          packages: 'platform-tools platforms;android-28 platforms;android-36 build-tools;36.0.0'
           accept-android-sdk-licenses: true
       - name: Run Compose smoke test on emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          # API 28 AOSP keeps the guest system lighter on TCG-only hosted runners.
+          # Android 16 emulator verifies the current target-SDK behavior.
           # The app still compiles against SDK 35 and supports API 26+.
-          api-level: 28
+          api-level: 36
           target: default
           arch: x86_64
           profile: pixel_2
