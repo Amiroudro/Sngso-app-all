@@ -100,6 +100,9 @@ class HomeScreenTest {
         composeRule.onNodeWithText("নমুনা কার্ড").assertIsDisplayed()
         composeRule.onNodeWithText("এই ডেমো সেশনে ব্যক্তিগত অগ্রগতি গণনা বা সংরক্ষণ করা হচ্ছে না।")
             .assertIsDisplayed()
+        composeRule.onNodeWithText(
+            "সম্পূর্ণ রিভিশন সেশন, কার্ডের সংখ্যা ও শেখার অগ্রগতি ব্যক্তিগত স্টাডি ডেটা সংযুক্ত হলে দেখানো হবে।"
+        ).assertIsDisplayed()
         composeRule.onNodeWithText("কার্ড ৭ / ২০ • নমুনা সেশন").assertDoesNotExist()
     }
 
