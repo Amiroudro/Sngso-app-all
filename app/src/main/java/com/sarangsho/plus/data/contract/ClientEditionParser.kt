@@ -105,7 +105,7 @@ object ClientEditionParser {
         requireKeys(
             value,
             setOf("id", "title", "published_at", "source", "summaries"),
-            setOf("topic_tags", "correction"),
+            setOf("topic_tags", "correction", "additional_sources"),
             path
         )
         val id = value.string("id").also { requireId(it, "$path.id") }
@@ -145,6 +145,47 @@ object ClientEditionParser {
         }
         val sourcePublishedAt = sourceJson.string("published_at")
             .also { requireTimestamp(it, "$path.source.published_at") }
+
+        val additionalSources = value.get("additional_sources")?.let { element ->
+            require(element.isJsonArray) { "$path.additional_sources must be an array" }
+            element.asJsonArray.mapIndexed { sourceIndex, sourceElement ->
+                require(sourceElement.isJsonObject) {
+                    "$path.additional_sources[$sourceIndex] must be an object"
+                }
+                val additionalPath = "$path.additional_sources[$sourceIndex]"
+                val additional = sourceElement.asJsonObject
+                requireKeys(
+                    additional,
+                    setOf("id", "name", "url", "published_at"),
+                    path = additionalPath
+                )
+                val additionalId = additional.string("id").also {
+                    requireId(it, "$additionalPath.id")
+                }
+                require(additionalId != sourceId) {
+                    "$additionalPath duplicates the primary source"
+                }
+                val additionalName = additional.string("name").also {
+                    require(it.isNotBlank() && it.length <= 300) {
+                        "$additionalPath.name is invalid"
+                    }
+                }
+                val additionalUrl = additional.string("url").also { raw ->
+                    val uri = try { URI(raw) } catch (error: Exception) {
+                        throw IllegalArgumentException("$additionalPath.url is invalid", error)
+                    }
+                    require(uri.isAbsolute && uri.scheme in setOf("http", "https") && !uri.host.isNullOrBlank()) {
+                        "$additionalPath.url must be an absolute HTTP(S) URL"
+                    }
+                }
+                val additionalPublishedAt = additional.string("published_at")
+                    .also { requireTimestamp(it, "$additionalPath.published_at") }
+                ClientSource(additionalId, additionalName, additionalUrl, additionalPublishedAt)
+            }
+        } ?: emptyList()
+        require(additionalSources.map { it.id }.distinct().size == additionalSources.size) {
+            "$path.additional_sources must have unique source IDs"
+        }
 
         val summaries = value.arrayValue("summaries").mapIndexed { summaryIndex, summaryElement ->
             val summaryPath = "$path.summaries[$summaryIndex]"
@@ -187,6 +228,7 @@ object ClientEditionParser {
             topicTags = tags,
             publishedAt = publishedAt,
             source = ClientSource(sourceId, sourceName, sourceUrl, sourcePublishedAt),
+            additionalSources = additionalSources,
             summaries = summaries,
             correction = correction
         )
@@ -271,6 +313,7 @@ data class ClientStory(
     val topicTags: List<String>,
     val publishedAt: String,
     val source: ClientSource,
+    val additionalSources: List<ClientSource>,
     val summaries: List<ClientSummary>,
     val correction: ClientCorrection?
 )
