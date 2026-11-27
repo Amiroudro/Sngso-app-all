@@ -24,6 +24,8 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      - name: Verify public latest published edition feed
+        run: python scripts/validate_live_edition_feed.py
       - name: Validate proposed client-edition contract and fixture
         run: |
           python -m pip install --requirement scripts/requirements-contract.txt
