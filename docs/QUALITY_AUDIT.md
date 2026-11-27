@@ -9,16 +9,17 @@
 - Shared screen components are separated from reading, learning and settings feature files.
 - Semantic light and dark color schemes are centralized.
 - Search and category filters work against explicitly labelled local sample stories. In Explore, only the Gambia/Myanmar sample headline opens its matching article and summary; other sample headlines disclose that full reading pages are not yet available.
-- Compose instrumentation tests cover onboarding, Explore filtering, Library empty/search states, article and vocabulary bookmarks, the Learn-hub activity shortcuts, language settings persistence, the quiz-to-history journey, reader font, line-spacing and sepia preference persistence through Article settings, and local learning-store persistence. The latest API 28 AOSP emulator run (workflow `45984631554`, PR head `9553c45c9bd834d798170556cfa8ad46698f5100`) executed all 46 authored instrumentation tests: **46 passed, 0 failed, 0 skipped**. The previously failing Explore category-filter interaction now passes.
-- The routine pull-request job runs the JVM test, compiles/packages the instrumentation APK using `:app:assembleDebugAndroidTest`, and assembles the debug APK. The separate `compose-instrumentation` job executes the instrumentation suite on an API 28 AOSP emulator; compilation alone is not runtime verification.
-- Emulator instrumentation runs on non-draft pull-request updates after the routine build succeeds. The hosted runner uses TCG software CPU emulation. Earlier API 35 and API 30 attempts exposed guest-performance and SDK setup problems; the API 28 configuration completed the full 44-test suite successfully in workflow `45984631554`. The emulator workflow's shell wrapper keeps PID and exit-code variables in one shell so logcat cleanup cannot mask the test result.
+- The latest API 28 AOSP emulator run (workflow `45984631554`, PR head `9553c45c9bd834d798170556cfa8ad46698f5100`) executed all 46 authored instrumentation tests: **46 passed, 0 failed, 0 skipped**. This includes the adaptive launcher-icon declaration/resolution test.
+- The routine pull-request job runs JVM tests, compiles/packages the instrumentation APK using `:app:assembleDebugAndroidTest`, and assembles debug and unsigned release APKs. The separate `compose-instrumentation` job executes the suite on an API 28 AOSP emulator; compilation alone is not runtime verification.
+- Emulator instrumentation runs on non-draft pull-request updates after the routine build succeeds. The hosted runner uses TCG software CPU emulation. Earlier API 35 and API 30 attempts exposed guest-performance and SDK setup problems; the API 28 configuration completed all 46 tests successfully in workflow `45984631554`. The emulator workflow's shell wrapper keeps PID and exit-code variables in one shell so logcat cleanup cannot mask the test result.
 - Vocabulary Lab has a searchable five-entry sample word list with per-word bookmark controls; search matches the term, part of speech, pronunciation, Bengali meaning, definition, synonyms, antonym and example, trims surrounding whitespace, and supports bookmarking from the selected-word detail screen. Reader font size, line spacing and sepia preferences are stored in Preferences DataStore. A non-destructive, idempotent migration copies only those three settings from the legacy `sarangsho_learning` SharedPreferences file and deliberately retains the source file and unrelated values. Other learning data (saved words and articles, language and onboarding preferences, notification preferences, writing and feedback drafts, reading history, practice history, and the study checklist) remains in device-local SharedPreferences. The study checklist resets by local calendar date. These features are device-only and do not sync.
 - Vocabulary definitions and examples are prototype learning content; dictionary/source references and a maintained exam vocabulary feed are not connected.
 - Android Auto Backup is disabled for the prototype so local drafts, bookmarks and reading activity are not silently included in the platform backup flow. A deliberate export/restore feature is not implemented.
 - Authentication, downloads, feedback submission and production user analytics are not connected. Saved articles are stored locally on-device; they are not account-synced.
-- Article and three-level summary reading controls now refresh font size, line spacing and sepia mode when the reader returns from Reading Settings; this avoids leaving an already-open reading surface with stale preferences.
+- Article and three-level summary reading controls refresh font size, line spacing and sepia mode when the reader returns from Reading Settings.
 - Empty and unavailable states explain when their data/service is not connected.
 - Sample stories and sample vocabulary are labelled as such.
+- A native adaptive launcher icon and monochrome icon layer are declared in the manifest and covered by instrumentation. Emulator resolution passed; physical launcher rendering has not yet been inspected on hardware.
 
 ## Release blockers
 
@@ -68,16 +69,16 @@ A source-level scan of the current branch found:
 
 This source scan predates the typed-destination migration. `AppDestination` is now the canonical registry for all 48 routes, and the activity plus feature navigation call sites reference its typed entries. Navigation Compose still receives each destination's stable string route at its API boundary. The deep-link parser accepts only the exact `sarangsho://app/{known-route}` form and rejects user-info, ports, unknown routes, encoded route aliases, extra path segments, query strings and fragments. JVM tests exercise every destination's route and deep-link round trip plus malformed inputs. This does not prove every screen renders or every back-stack journey works. One Activity recreation after onboarding is covered; process-death/relaunch recovery and broader device-level navigation coverage remain outstanding.
 
-## Test coverage inventory (updated`HomeScreenTest.kt` | 2126-11-26)
+## Test coverage inventory (updated 2026-11-27)
 
-A source review found one JVM unit test (`ExampleUnitTest.applicationIdIsStable`) and 44 authored Android instrumentation test methods. The 44 Android tests are:
+A source review found one JVM unit test (`ExampleUnitTest.applicationIdIsStable`) and 46 authored Android instrumentation test methods.
 
 | Test file | Test methods | What they cover |
 |---|---:|---|
-| `HomeScreenTest.kt` |`HomeScreenTest.kt` | 21 | Welcome, first-run and returning-user onboarding; Explore filters, matching article navigation and unavailable sample-story states; Library empty/search states; article and vocabulary bookmarks; Saved Collections opening, refresh and removal; unknown saved article handling; Learn-hub shortcuts and practice history; archive navigation; language persistence; reader font, line-spacing and sepia preferences; vocabulary detail/search; and profile navigation state |
-| `LocalLearningStoreTest.kt` | 22 | Topic, vocabulary search, bookmarks, writing/feedback/story-report drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration/bounds, practice-history validation/bounds, and daily study-task persistence/reset |
-| `AppPrivacyManifestTest.kt` |`AppPrivacyManifestTest.kt` | 2 | Confirms Android Auto Backup is disabled for the app package |
-| `ReaderPreferencesMigrationTest.kt` |`AppPrivacyManifestTest.kt` | 2 | Confirms reader settings migrate from legacy SharedPreferences without deleting the source or unrelated values |
+| `HomeScreenTest.kt` | 21 | Welcome, first-run and returning-user onboarding; Explore filters, matching article navigation and unavailable sample-story states; Library empty/search states; article and vocabulary bookmarks; Saved Collections opening, refresh and removal; unknown saved article handling; Learn-hub shortcuts and practice history; archive navigation; language persistence; reader font, line-spacing and sepia preferences; vocabulary detail/search; profile navigation; revision-deck disclosure. |
+| `LocalLearningStoreTest.kt` | 22 | Topic and vocabulary search, bookmarks, writing/feedback/story-report drafts, reader preferences, onboarding and notification preferences, reading history ordering/migration/bounds, practice-history validation/bounds, and daily study-task persistence/reset. |
+| `AppPrivacyManifestTest.kt` | 2 | Confirms Android Auto Backup is disabled and the launcher icon is declared and resolvable. |
+| `ReaderPreferencesMigrationTest.kt` | 1 | Confirms reader settings migrate from legacy SharedPreferences without deleting the source or unrelated values. |
 
 Coverage limits:
 
@@ -85,7 +86,7 @@ Coverage limits:
 - All 22 local-store tests clear their test preferences before and after each test.
 - The test source uses Compose UI test APIs and AndroidX instrumentation APIs declared in the app module.
 - No test currently verifies all 48 routes, all article/summary navigation paths, process-death/relaunch recovery, or accessibility behavior.
-- The current source contains 46 authored instrumentation tests (21 HomeScreen, 22 local-store, 2 privacy-manifest,`AppPrivacyManifestTest.kt` | 2 reader-preferences migration). Workflow `45984631554` passed all 46 tests, including the returning-user Activity-recreation test. This is emulator evidence, not a physical-device visual or accessibility audit.
+- Workflow `45984631554` passed all 46 tests, including the returning-user Activity-recreation test and launcher-icon declaration/resolution test. This is emulator evidence, not a physical-device visual or accessibility audit.
 - The routine CI step `:app:assembleDebugAndroidTest` only compiles/packages the instrumentation APK. It is not a substitute for `:app:connectedDebugAndroidTest`.
 
 The next test expansion should follow actual user journeys and stable data contracts, not attempt to create one shallow test for every screen.
