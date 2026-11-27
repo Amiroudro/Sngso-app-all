@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -80,7 +81,7 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(15.dp)) {
             Surface(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(30.dp), modifier = Modifier.size(112.dp)) {
                 Box(contentAlignment = Alignment.Center) {
-                    Icon(Icons.Default.MenuBook, null, tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(58.dp))
+                    Icon(Icons.AutoMirrored.Filled.MenuBook, null, tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(58.dp))
                 }
             }
             Text("Sarangsho+", fontSize = 34.sp, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.ExtraBold)
@@ -202,7 +203,7 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
                 ) {
                     Text("পছন্দ পরিবর্তন করুন")
                     Spacer(Modifier.width(6.dp))
-                    Icon(Icons.Default.ArrowForward, null, modifier = Modifier.size(16.dp))
+                    Icon(Icons.AutoMirrored.Filled.ArrowForward, null, modifier = Modifier.size(16.dp))
                 }
             }
         }
@@ -228,15 +229,15 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
             }
             Primary("প্রতিবেদনটি পড়ুন") { nav.navigate(AppDestination.Article.route) }
         }
-        RowLink("সব প্রতিবেদন দেখুন", "বিষয় অনুযায়ী সংবাদ ও ব্যাখ্যা", Icons.Default.ArrowForward) {
+        RowLink("সব প্রতিবেদন দেখুন", "বিষয় অনুযায়ী সংবাদ ও ব্যাখ্যা", Icons.AutoMirrored.Filled.ArrowForward) {
             nav.navigate(AppDestination.Feed.route)
         }
         RowLink("পুরোনো সংস্করণ", "আগের দিনের ব্রিফিং ও প্রকাশনা", Icons.Default.CalendarMonth) { nav.navigate(AppDestination.Archive.route) }
         Text("সংবাদ থেকে শেখা", fontSize = 19.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
         Text("একটি ঘটনার পেছনের তথ্য, সময়রেখা ও উৎস আলাদা করে দেখুন.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
-        RowLink("তিন-স্তরের সারাংশ", "৩০ সেকেন্ড, ২ মিনিট অথবা বিস্তারিত", Icons.Default.Subject) { nav.navigate(AppDestination.Summary.route) }
+        RowLink("তিন-স্তরের সারাংশ", "৩০ সেকেন্ড, ২ মিনিট অথবা বিস্তারিত", Icons.AutoMirrored.Filled.Subject) { nav.navigate(AppDestination.Summary.route) }
         RowLink("ঘটনার টাইমলাইন", "তারিখ ও প্রেক্ষাপট আলাদা করে দেখুন", Icons.Default.Timeline) { nav.navigate(AppDestination.Timeline.route) }
-        RowLink("পত্রিকার দৃষ্টিভঙ্গি", "উপলভ্য ও অনুমোদিত উৎস তুলনা", Icons.Default.CompareArrows) { nav.navigate(AppDestination.Perspectives.route) }
+        RowLink("পত্রিকার দৃষ্টিভঙ্গি", "উপলভ্য ও অনুমোদিত উৎস তুলনা", Icons.AutoMirrored.Filled.CompareArrows) { nav.navigate(AppDestination.Perspectives.route) }
         RowLink("তথ্য ও পরিসংখ্যান", "সংজ্ঞা, একক, সময়কাল ও মূল উৎস", Icons.Default.BarChart) { nav.navigate(AppDestination.Data.route) }
         Text("প্রস্তুতি চালিয়ে যান", fontSize = 19.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
         Text("পড়া বিষয়কে শব্দভান্ডার ও পরীক্ষার অনুশীলনের সঙ্গে যুক্ত করুন.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
@@ -403,9 +404,9 @@ private fun rememberReaderPreferences(context: Context): ReaderPreferences {
         }
         Text("এই প্রতিবেদনের পাঠ-সরঞ্জাম", fontSize = 18.sp, fontWeight = FontWeight.Bold)
         RowLink("পড়ার পছন্দ", "ফন্ট ও লাইন স্পেসিং বদলান", Icons.Default.TextFields) { nav.navigate(AppDestination.ReadingSettings.route) }
-        RowLink("তিন-স্তরের সারাংশ", "৩০ সেকেন্ড, ২ মিনিট ও বিস্তারিত পাঠ", Icons.Default.Subject) { nav.navigate(AppDestination.Summary.route) }
+        RowLink("তিন-স্তরের সারাংশ", "৩০ সেকেন্ড, ২ মিনিট ও বিস্তারিত পাঠ", Icons.AutoMirrored.Filled.Subject) { nav.navigate(AppDestination.Summary.route) }
         RowLink("ঘটনার টাইমলাইন", "তারিখ ও ঘটনার সম্পর্ক যাচাই করে পড়ুন", Icons.Default.Timeline) { nav.navigate(AppDestination.Timeline.route) }
-        RowLink("পত্রিকার দৃষ্টিভঙ্গি", "উৎস পাওয়া গেলে তুলনা করুন", Icons.Default.CompareArrows) { nav.navigate(AppDestination.Perspectives.route) }
+        RowLink("পত্রিকার দৃষ্টিভঙ্গি", "উৎস পাওয়া গেলে তুলনা করুন", Icons.AutoMirrored.Filled.CompareArrows) { nav.navigate(AppDestination.Perspectives.route) }
         RowLink("জ্ঞান মানচিত্র", "প্রতিষ্ঠান, আইন ও ধারণার সম্পর্ক", Icons.Default.Hub) { nav.navigate(AppDestination.Graph.route) }
         RowLink("উৎস ও যাচাই", "মূল নথি ও প্রকাশনার তথ্য", Icons.Default.Source) { nav.navigate(AppDestination.Sources.route) }
         RowLink("তথ্য সংশোধনের অনুরোধ", "ভুল বা অস্পষ্ট তথ্য জানান", Icons.Default.Flag) { nav.navigate(AppDestination.ReportStory.route) }
@@ -500,7 +501,7 @@ internal fun Summary(nav: NavHostController) {
         Intro("পত্রিকার দৃষ্টিভঙ্গি", "একই ঘটনা বিভিন্ন প্রকাশনা কীভাবে তুলে ধরে, তা পাশাপাশি বিচার করুন।")
         Panel {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.CompareArrows, null, tint = MaterialTheme.colorScheme.primary)
+                Icon(Icons.AutoMirrored.Filled.CompareArrows, null, tint = MaterialTheme.colorScheme.primary)
                 Spacer(Modifier.width(8.dp))
                 Text("তুলনার অবস্থা", fontWeight = FontWeight.Bold)
                 Spacer(Modifier.weight(1f))
@@ -566,7 +567,7 @@ internal fun Summary(nav: NavHostController) {
                         Text(node.first, fontWeight = FontWeight.SemiBold)
                         Text(node.second, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
-                    Icon(Icons.Default.ArrowForward, null, tint = MaterialTheme.colorScheme.outline)
+                    Icon(Icons.AutoMirrored.Filled.ArrowForward, null, tint = MaterialTheme.colorScheme.outline)
                 }
                 if (index != nodes.lastIndex) HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             }
@@ -662,7 +663,7 @@ internal fun Summary(nav: NavHostController) {
                     Modifier.fillMaxWidth().clickable { query = item; searched = true }.padding(vertical = 10.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.Default.TrendingUp, null, tint = MaterialTheme.colorScheme.primary)
+                    Icon(Icons.AutoMirrored.Filled.TrendingUp, null, tint = MaterialTheme.colorScheme.primary)
                     Spacer(Modifier.width(10.dp))
                     Text(item, Modifier.weight(1f))
                     Icon(Icons.Default.NorthWest, null, tint = MaterialTheme.colorScheme.outline, modifier = Modifier.size(16.dp))
@@ -884,11 +885,11 @@ internal fun Summary(nav: NavHostController) {
         RowLink("রিভিশন ডেক", "মনে রাখার অনুশীলন", Icons.Default.Style) { nav.navigate(AppDestination.Revision.route) }
         RowLink("লিখিত অনুশীলন", "আপনার উত্তর ও খসড়া", Icons.Default.EditNote) { nav.navigate(AppDestination.Writing.route) }
         RowLink("অনুশীলনের ইতিহাস", "আগের সেশন ও ভুলের তালিকা", Icons.Default.History) { nav.navigate(AppDestination.PracticeHistory.route) }
-        RowLink("পড়ার ইতিহাস", "সম্প্রতি খোলা পাঠ", Icons.Default.MenuBook) { nav.navigate(AppDestination.ReadingHistory.route) }
+        RowLink("পড়ার ইতিহাস", "সম্প্রতি খোলা পাঠ", Icons.AutoMirrored.Filled.MenuBook) { nav.navigate(AppDestination.ReadingHistory.route) }
         Text("অ্যাপ ও পছন্দ", fontWeight = FontWeight.Bold, fontSize = 17.sp)
         RowLink("নোটিফিকেশন", "আপডেট ও রিভিশন স্মরণ", Icons.Default.Notifications) { nav.navigate(AppDestination.Notifications.route) }
         RowLink("সেটিংস ও পছন্দ", "ভাষা, ফন্ট, ডাউনলোড ও গোপনীয়তা", Icons.Default.Settings) { nav.navigate(AppDestination.Settings.route) }
-        RowLink("সহায়তা", "প্রশ্ন, সমস্যা ও মতামত", Icons.Default.HelpOutline) { nav.navigate(AppDestination.Help.route) }
+        RowLink("সহায়তা", "প্রশ্ন, সমস্যা ও মতামত", Icons.AutoMirrored.Filled.HelpOutline) { nav.navigate(AppDestination.Help.route) }
         RowLink("Sarangsho Plus সম্পর্কে", "সংস্করণ ও অ্যাপের নীতিমালা", Icons.Default.Info) { nav.navigate(AppDestination.About.route) }
         Panel {
             Kicker("গোপনীয়তা ও অগ্রগতি")
@@ -1144,7 +1145,7 @@ private fun topicGuide(topic: String): TopicGuide {
             Primary("লিখিত অনুশীলন খুলুন") { nav.navigate(AppDestination.Writing.route) }
         }
         Text("এই গাইডটি অ্যাপের স্থানীয় শিক্ষামূলক কাঠামো। নির্দিষ্ট আইন, পরিসংখ্যান, সাম্প্রতিক ঘটনা ও উৎসের লিংক আলাদাভাবে যাচাই করে যুক্ত করতে হবে.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, lineHeight = 17.sp)
-        RowLink("সংশ্লিষ্ট সংবাদ", "এই বিষয়ের সাম্প্রতিক ঘটনা", Icons.Default.Article) { nav.navigate(AppDestination.Feed.route) }
+        RowLink("সংশ্লিষ্ট সংবাদ", "এই বিষয়ের সাম্প্রতিক ঘটনা", Icons.AutoMirrored.Filled.Article) { nav.navigate(AppDestination.Feed.route) }
         RowLink("জ্ঞান মানচিত্র", "প্রতিষ্ঠান ও ধারণার সম্পর্ক", Icons.Default.Hub) { nav.navigate(AppDestination.Graph.route) }
         RowLink("তথ্য ও পরিসংখ্যান", "উৎসসহ প্রাসঙ্গিক সূচক", Icons.Default.BarChart) { nav.navigate(AppDestination.Data.route) }
         RowLink("অনুশীলন", "সাধারণ BCS ও Bank নমুনা অনুশীলন", Icons.Default.EditNote) { nav.navigate(AppDestination.QuizSetup.route) }
