@@ -426,7 +426,7 @@ class HomeScreenTest {
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
         composeRule.onNodeWithText("তিন-স্তরের সারাংশ").performScrollTo().performClick()
         composeRule.onNodeWithText("একই ঘটনা, তিনভাবে বুঝুন").assertIsDisplayed()
-        composeRule.onNodeWithText("ঘটনাটির মূল বিষয় এক বাক্যে বুঝুন।").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText("এক বাক্যে মূল বিষয়।").performScrollTo().assertIsDisplayed()
     }
 
     @Test
