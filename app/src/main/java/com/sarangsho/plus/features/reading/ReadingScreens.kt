@@ -819,8 +819,10 @@ internal fun Summary(nav: NavHostController) {
     }
     val normalizedQuery = query.trim()
     val visibleArticles = if (filter == "শব্দ") emptyList() else savedArticles.filter { id ->
+        val title = EditionFeedRepository.story(context, id)?.headline
+            ?: if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার আন্তর্জাতিক বিচারিক প্রক্রিয়া" else id
         normalizedQuery.isBlank() || id.contains(normalizedQuery, ignoreCase = true) ||
-            (id == "sample-international-justice" && "গাম্বিয়া বনাম মিয়ানমার আন্তর্জাতিক বিচারিক প্রক্রিয়া".contains(normalizedQuery, ignoreCase = true))
+            title.contains(normalizedQuery, ignoreCase = true)
     }
     val visibleWords = if (filter == "নিবন্ধ") emptyList() else bookmarkedWords.filter { word ->
         normalizedQuery.isBlank() || word.contains(normalizedQuery, ignoreCase = true)
@@ -866,12 +868,17 @@ internal fun Summary(nav: NavHostController) {
                 }
             }
             visibleArticles.forEach { id ->
+                val story = EditionFeedRepository.story(context, id)
                 Panel {
-                    Kicker("সংরক্ষিত নিবন্ধ • নমুনা")
-                    Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
-                    if (id == "sample-international-justice") {
+                    Kicker("সংরক্ষিত নিবন্ধ")
+                    Text(story?.headline ?: if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id,
+                        fontWeight = FontWeight.SemiBold)
+                    if (story != null || id == "sample-international-justice") {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            TextButton(onClick = { nav.navigate(AppDestination.Article.route) }) { Text("পড়ুন") }
+                            TextButton(onClick = {
+                                EditionFeedRepository.selectStory(context, if (story != null) id else id)
+                                nav.navigate(AppDestination.Article.route)
+                            }) { Text("পড়ুন") }
                             TextButton(onClick = {
                                 LocalLearningStore.setArticleSaved(context, id, false)
                                 savedArticles.remove(id)
@@ -1269,11 +1276,16 @@ private fun topicGuide(topic: String): TopicGuide {
             Panel { Text("এখনো কোনো পড়ার ইতিহাস নেই", fontWeight = FontWeight.Bold); Text("কোনো নিবন্ধ খুললে সেটি এখানে দেখা যাবে।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
         } else {
             recent.forEach { id ->
+                val story = EditionFeedRepository.story(context, id)
                 Panel {
-                    Kicker("সম্প্রতি পড়া • নমুনা")
-                    Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
-                    if (id == "sample-international-justice") {
-                        TextButton(onClick = { nav.navigate(AppDestination.Article.route) }) { Text("নিবন্ধটি খুলুন") }
+                    Kicker("সম্প্রতি পড়া")
+                    Text(story?.headline ?: if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id,
+                        fontWeight = FontWeight.SemiBold)
+                    if (story != null || id == "sample-international-justice") {
+                        TextButton(onClick = {
+                            EditionFeedRepository.selectStory(context, id)
+                            nav.navigate(AppDestination.Article.route)
+                        }) { Text("নিবন্ধটি খুলুন") }
                     } else {
                         Text("এই পাঠের বিস্তারিত এখন আর উপলভ্য নয়।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
                     }
@@ -1311,16 +1323,21 @@ private fun topicGuide(topic: String): TopicGuide {
         Text("সংরক্ষিত নিবন্ধ • ${articles.size}", fontWeight = FontWeight.Bold, fontSize = 17.sp)
         if (articles.isEmpty()) Panel { Text("কোনো নিবন্ধ সংরক্ষিত নেই", color = MaterialTheme.colorScheme.onSurfaceVariant) }
         articles.forEach { id ->
+            val story = EditionFeedRepository.story(context, id)
             Panel {
-                Kicker("নিবন্ধ • নমুনা")
-                Text(if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id, fontWeight = FontWeight.SemiBold)
-                if (id == "sample-international-justice") {
+                Kicker("সংরক্ষিত নিবন্ধ")
+                Text(story?.headline ?: if (id == "sample-international-justice") "গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন" else id,
+                    fontWeight = FontWeight.SemiBold)
+                if (story != null || id == "sample-international-justice") {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         TextButton(
-                            onClick = { nav.navigate(AppDestination.Article.route) },
+                            onClick = {
+                                EditionFeedRepository.selectStory(context, id)
+                                nav.navigate(AppDestination.Article.route)
+                            },
                             modifier = Modifier.fillMaxWidth().testTag("saved-article-open")
                         ) { Text("নিবন্ধটি খুলুন") }
                         TextButton(
