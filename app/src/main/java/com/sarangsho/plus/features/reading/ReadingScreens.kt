@@ -171,6 +171,16 @@ private fun rememberPublishedFeed(): PublishedFeedUiState {
     var loading by remember(context) { mutableStateOf(initialSnapshot == null || initialSnapshot.stale) }
     var failed by remember { mutableStateOf(false) }
     var refreshToken by remember { mutableIntStateOf(0) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner, context) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME && EditionFeedRepository.cached(context)?.stale == true) {
+                refreshToken += 1
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
     LaunchedEffect(refreshToken) {
         val cached = EditionFeedRepository.cached(context)
         if (cached != null && !cached.stale && refreshToken == 0) {
