@@ -59,7 +59,8 @@ object EditionFeedRepository {
         val bn = prefs.getString(KEY_BN, null)
         val fetchedAt = prefs.getString(KEY_FETCHED_AT, null) ?: return null
         return try {
-            parseEdition(data, bn, fetchedAt, stale = true)
+            val ageMillis = (Instant.now().toEpochMilli() - Instant.parse(fetchedAt).toEpochMilli()).coerceAtLeast(0L)
+            parseEdition(data, bn, fetchedAt, stale = ageMillis > 15 * 60 * 1000L)
         } catch (_: Exception) {
             null
         }
