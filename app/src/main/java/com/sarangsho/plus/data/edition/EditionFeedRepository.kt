@@ -15,7 +15,7 @@ import java.time.Instant
  */
 object EditionFeedRepository {
     private const val PREFS = "sarangsho_edition_feed"
-    private const val KEY_DATA = "edition_data"
+    private const val KEY_INDEX = "edition_index"\n    private const val KEY_DATA = "edition_data"
     private const val KEY_BN = "edition_bn"
     private const val KEY_FETCHED_AT = "fetched_at"
     private const val KEY_SELECTED_STORY = "selected_story_id"
@@ -52,6 +52,24 @@ object EditionFeedRepository {
     )
 
     data class KeyFact(val label: String, val value: String, val original: String)
+    data class EditionSummary(val date: String, val coverage: String, val stories: Int)
+
+    fun publishedEditions(context: Context): List<EditionSummary> {
+        val raw = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .getString(KEY_INDEX, null) ?: return emptyList()
+        return try {
+            val array = JSONObject(raw).optJSONArray("editions") ?: return emptyList()
+            (0 until array.length()).mapNotNull { index ->
+                val item = array.optJSONObject(index) ?: return@mapNotNull null
+                if (item.optString("status") != "published") return@mapNotNull null
+                val date = item.optString("edition_date")
+                if (!Regex("^\\d{4}-\\d{2}-\\d{2}$").matches(date)) return@mapNotNull null
+                EditionSummary(date, item.optString("coverage"), item.optInt("stories"))
+            }.sortedByDescending { it.date }
+        } catch (_: Exception) {
+            emptyList()
+        }
+    }
 
     fun cached(context: Context): Snapshot? {
         val prefs = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
@@ -68,7 +86,8 @@ object EditionFeedRepository {
 
     suspend fun refresh(context: Context): Snapshot {
         val prefs = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-        val index = JSONObject(fetchText(INDEX_PATH))
+        val indexText = fetchText(INDEX_PATH)
+        val index = JSONObject(indexText)
         val editions = index.optJSONArray("editions") ?: error("Edition index has no editions array")
         val latest = (0 until editions.length())
             .map { editions.getJSONObject(it) }
@@ -92,6 +111,26 @@ object EditionFeedRepository {
         require(snapshot.date == date) { "Edition file date does not match the published index" }
 
         prefs.edit()
+            .putString(KEY_INDEX, indexText)
+            .putString(KEY_DATA, data)
+            .putString(KEY_BN, overlay)
+            .putString(KEY_FETCHED_AT, fetchedAt)
+            .apply()
+        return snapshot
+    }
+
+    suspend fun loadEdition(context: Context, date: String): Snapshot {
+        require(Regex("^\\d{4}-\\d{2}-\\d{2}$").matches(date)) { "Invalid edition date" }
+        val data = fetchText("editions/data-$date.json")
+        val overlay = try {
+            fetchText("editions/bn-$date.json")
+        } catch (_: Exception) {
+            null
+        }
+        val fetchedAt = Instant.now().toString()
+        val snapshot = parseEdition(data, overlay, fetchedAt, stale = false)
+        require(snapshot.date == date) { "Requested edition date does not match the published file" }
+        context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
             .putString(KEY_DATA, data)
             .putString(KEY_BN, overlay)
             .putString(KEY_FETCHED_AT, fetchedAt)
