@@ -1121,7 +1121,7 @@ internal fun Summary(nav: NavHostController) {
                             runCatching { EditionFeedRepository.loadEdition(context, edition.date) }
                             nav.navigate(AppDestination.Edition.route)
                         }
-                    }) { Text(if (index == 0) "আজকের সংস্করণ" else "এই সংস্করণ খুলুন") }
+                    }) { Text(when (index) { 0 -> "আজকের সংস্করণ"; 1 -> "গতকালের সংস্করণ"; else -> "এই সংস্করণ খুলুন" }) }
                 }
             }
         }
