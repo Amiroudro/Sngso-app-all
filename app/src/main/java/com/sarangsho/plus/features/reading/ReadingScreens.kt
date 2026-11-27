@@ -166,8 +166,9 @@ private data class PublishedFeedUiState(
 @Composable
 private fun rememberPublishedFeed(): PublishedFeedUiState {
     val context = LocalContext.current
-    var snapshot by remember { mutableStateOf(EditionFeedRepository.cached(context)) }
-    var loading by remember { mutableStateOf(snapshot == null || snapshot.stale) }
+    val initialSnapshot = remember(context) { EditionFeedRepository.cached(context) }
+    var snapshot by remember(context) { mutableStateOf(initialSnapshot) }
+    var loading by remember(context) { mutableStateOf(initialSnapshot == null || initialSnapshot.stale) }
     var failed by remember { mutableStateOf(false) }
     var refreshToken by remember { mutableIntStateOf(0) }
     LaunchedEffect(refreshToken) {
