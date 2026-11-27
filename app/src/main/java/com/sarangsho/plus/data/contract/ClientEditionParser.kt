@@ -51,7 +51,22 @@ object ClientEditionParser {
         }
         require(editionJson.string("status") == "published") { "Only published editions are accepted" }
         val editionPublishedAt = editionJson.string("published_at").also { requireTimestamp(it, "edition.published_at") }
+        val supersedesEditionId = editionJson.get("supersedes_edition_id")?.let { element ->
+            require(element.isJsonPrimitive && element.asJsonPrimitive.isString) {
+                "edition.supersedes_edition_id must be a string"
+            }
+            element.asString.also { requireId(it, "edition.supersedes_edition_id") }
+        }
+        val correctionNote = editionJson.get("correction_note")?.let { element ->
+            require(element.isJsonPrimitive && element.asJsonPrimitive.isString) {
+                "edition.correction_note must be a string"
+            }
+            element.asString.also { require(it.length <= 4000) { "edition.correction_note is too long" } }
+        }
         val languages = editionJson.arrayValue("languages").mapIndexed { index, value ->
+            require(value.isJsonPrimitive && value.asJsonPrimitive.isString) {
+                "edition.languages[$index] must be a string"
+            }
             value.asString.also { requireLanguage(it, "edition.languages[$index]") }
         }
         require(languages.isNotEmpty() && languages.distinct().size == languages.size) {
@@ -59,13 +74,18 @@ object ClientEditionParser {
         }
 
         val stories = root.arrayValue("stories").mapIndexed { index, value ->
-            parseStory(value.asJsonObject, index)
+            parseStory(value.asJsonObject, index, languages.toSet())
+        }
+        require(stories.map { it.id }.distinct().size == stories.size) {
+            "stories must have unique IDs"
         }
         return ClientEdition(
             id = editionId,
             editionKey = editionKey,
             publishedAt = editionPublishedAt,
             languages = languages,
+            supersedesEditionId = supersedesEditionId,
+            correctionNote = correctionNote,
             contentHash = declaredHash,
             stories = stories
         )
@@ -80,7 +100,7 @@ object ClientEditionParser {
         return "sha256:$digest"
     }
 
-    private fun parseStory(value: JsonObject, index: Int): ClientStory {
+    private fun parseStory(value: JsonObject, index: Int, editionLanguages: Set<String>): ClientStory {
         val path = "stories[$index]"
         requireKeys(
             value,
@@ -93,14 +113,18 @@ object ClientEditionParser {
         require(titleObject.size() > 0) { "$path.title must contain at least one language" }
         val titles = titleObject.entrySet().associate { (language, text) ->
             requireLanguage(language, "$path.title key")
-            require(text.isJsonPrimitive && text.asJsonPrimitive.isString && text.asString.isNotBlank()) {
-                "$path.title.$language must be a non-empty string"
+            require(editionLanguages.contains(language)) { "$path.title.$language is not declared by the edition" }
+            require(text.isJsonPrimitive && text.asJsonPrimitive.isString && text.asString.isNotBlank() && text.asString.length <= 1000) {
+                "$path.title.$language must be a non-empty string of at most 1000 characters"
             }
             language to text.asString
         }
         val tags = value.get("topic_tags")?.let { element ->
             require(element.isJsonArray) { "$path.topic_tags must be an array" }
-            element.asJsonArray.map { it.asString }
+            element.asJsonArray.mapIndexed { tagIndex, tag ->
+                require(tag.isJsonPrimitive && tag.asJsonPrimitive.isString) { "$path.topic_tags[$tagIndex] must be a string" }
+                tag.asString.also { require(it.isNotEmpty() && it.length <= 80) { "$path.topic_tags[$tagIndex] is invalid" } }
+            }
         } ?: emptyList()
         require(tags.distinct().size == tags.size) { "$path.topic_tags must be unique" }
         val publishedAt = value.string("published_at").also { requireTimestamp(it, "$path.published_at") }
@@ -140,6 +164,22 @@ object ClientEditionParser {
         require(summaries.map { it.language }.distinct().size == summaries.size) {
             "$path.summaries languages must be unique"
         }
+        require(summaries.all { it.language in editionLanguages }) {
+            "$path.summaries contains a language not declared by the edition"
+        }
+        val correction = value.get("correction")?.let { element ->
+            if (element.isJsonNull) null else {
+                require(element.isJsonObject) { "$path.correction must be an object or null" }
+                val correctionJson = element.asJsonObject
+                requireKeys(correctionJson, setOf("note", "corrected_at"), path = "$path.correction")
+                val note = correctionJson.string("note").also {
+                    require(it.isNotBlank() && it.length <= 4000) { "$path.correction.note is invalid" }
+                }
+                val correctedAt = correctionJson.string("corrected_at")
+                    .also { requireTimestamp(it, "$path.correction.corrected_at") }
+                ClientCorrection(note, correctedAt)
+            }
+        }
 
         return ClientStory(
             id = id,
@@ -147,7 +187,8 @@ object ClientEditionParser {
             topicTags = tags,
             publishedAt = publishedAt,
             source = ClientSource(sourceId, sourceName, sourceUrl, sourcePublishedAt),
-            summaries = summaries
+            summaries = summaries,
+            correction = correction
         )
     }
 
@@ -195,7 +236,9 @@ object ClientEditionParser {
     }
 
     private fun requireId(value: String, path: String) {
-        require(value.length in 3..160) { "$path has an invalid length" }
+        require(value.length in 3..160 && Regex("^[a-z][a-z0-9_-]*:[A-Za-z0-9._~-]+$").matches(value)) {
+            "$path has an invalid ID"
+        }
     }
 
     private fun requireLanguage(value: String, path: String) {
@@ -216,6 +259,8 @@ data class ClientEdition(
     val editionKey: String,
     val publishedAt: String,
     val languages: List<String>,
+    val supersedesEditionId: String?,
+    val correctionNote: String?,
     val contentHash: String,
     val stories: List<ClientStory>
 )
@@ -226,7 +271,8 @@ data class ClientStory(
     val topicTags: List<String>,
     val publishedAt: String,
     val source: ClientSource,
-    val summaries: List<ClientSummary>
+    val summaries: List<ClientSummary>,
+    val correction: ClientCorrection?
 )
 
 data class ClientSource(
@@ -240,4 +286,9 @@ data class ClientSummary(
     val language: String,
     val brief: String,
     val detailed: String
+)
+
+data class ClientCorrection(
+    val note: String,
+    val correctedAt: String
 )
