@@ -41,7 +41,7 @@
 ## Next engineering sequence
 
 1. **Current-head CI passed:** workflow `45984631554` for PR head `9553c45c9bd834d798170556cfa8ad46698f5100` completed both CI jobs successfully. The API 28 AOSP emulator ran all 46 instrumentation tests: 46 passed, 0 failed, 0 skipped. Repeat this gate for every subsequent source change.
-2. **Completed on current head:** API 28 AOSP emulator suite passed all 44 instrumentation test methods with zero failures or skips in workflow `45984631554`.
+2. **Completed on current head:** API 28 AOSP emulator suite passed all 46 instrumentation test methods with zero failures or skips in workflow `45984631554`, including the launcher-icon check.
 3. **Completed:** centralize all 48 routes in typed `AppDestination` identifiers, migrate feature navigation call sites, and define a strict `sarangsho://app/{route}` deep-link contract. JVM tests cover route uniqueness, round-tripping and malformed-link rejection; the manifest exposes the app link. Navigation Compose still accepts route strings at its framework boundary.
 4. Introduce screen-level ViewModels and immutable UI state.
 5. Connect approved edition fixtures, then the real engine API.
