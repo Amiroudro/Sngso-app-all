@@ -6,6 +6,7 @@ import com.sarangsho.plus.ui.components.*
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import kotlinx.coroutines.launch
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -1088,25 +1089,75 @@ internal fun Summary(nav: NavHostController) {
     }
 }
 
+
 @Composable internal fun Archive(nav: NavHostController) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val feed = rememberPublishedFeed()
+    val editions = EditionFeedRepository.publishedEditions(context)
     Scroll {
-        Intro("দৈনিক সংস্করণ", "আগের দিনের ব্রিফিং খুঁজুন এবং পরে পড়ার জন্য খুলুন।")
-        Panel { Text("সাম্প্রতিক সংস্করণ", fontWeight = FontWeight.Bold); Text("প্রকাশিত সংস্করণের তালিকা ইঞ্জিন থেকে যুক্ত হলে এখানে তারিখ, ভাষা ও অবস্থা দেখানো হবে।", color = MaterialTheme.colorScheme.onSurfaceVariant) }
-        RowLink("আজকের সংস্করণ", "লাইভ কনটেন্ট সংযুক্ত নয়", Icons.Default.Today) { nav.navigate(AppDestination.Edition.route) }
-        RowLink("গতকালের সংস্করণ", "আর্কাইভ ডেটা অপেক্ষমাণ", Icons.Default.CalendarMonth) { nav.navigate(AppDestination.Edition.route) }
+        Intro("দৈনিক সংস্করণ", "প্রকাশিত দৈনিক ব্রিফিং খুলুন এবং আগের দিনের সংস্করণে ফিরে যান।")
+        if (feed.snapshot != null) {
+            Panel {
+                Kicker("সর্বশেষ প্রকাশিত সংস্করণ")
+                Text(feed.snapshot.date, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(feed.snapshot.coverage, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                TextButton(onClick = { nav.navigate(AppDestination.Edition.route) }) { Text("বর্তমান সংস্করণ খুলুন") }
+            }
+        }
+        if (editions.isEmpty()) {
+            Panel {
+                Text("সংস্করণের তালিকা লোড হচ্ছে", fontWeight = FontWeight.SemiBold)
+                Text("ইন্টারনেট সংযোগ থাকলে প্রকাশিত আর্কাইভ এখানে দেখা যাবে।", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+            }
+        } else {
+            editions.forEachIndexed { index, edition ->
+                Panel {
+                    Kicker(if (index == 0) "সর্বশেষ" else "আর্কাইভ")
+                    Text(edition.date, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                    Text("${edition.stories}টি প্রতিবেদন • ${edition.coverage}", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                    TextButton(onClick = {
+                        scope.launch {
+                            runCatching { EditionFeedRepository.loadEdition(context, edition.date) }
+                            nav.navigate(AppDestination.Edition.route)
+                        }
+                    }) { Text(if (index == 0) "আজকের সংস্করণ" else "এই সংস্করণ খুলুন") }
+                }
+            }
+        }
     }
 }
 
 @Composable internal fun Edition(nav: NavHostController) {
+    val context = LocalContext.current
+    val feed = rememberPublishedFeed()
+    val snapshot = feed.snapshot
     Scroll {
-        Intro("দৈনিক ব্রিফিং", "একটি সংস্করণের সব পাঠ, অনুশীলন ও তথ্যসূত্র এক জায়গায়।")
-        Panel { Text("সংস্করণের অবস্থা", fontWeight = FontWeight.Bold); Text("এই প্রোটোটাইপে কোনো প্রকাশিত সংস্করণ লোড হয়নি।", color = MaterialTheme.colorScheme.onSurfaceVariant); AssistChip(onClick = {}, enabled = false, label = { Text("কনটেন্ট অপেক্ষমাণ") }) }
-        Panel {
-            Kicker("প্রধান সংবাদ")
-            Text(
-                "প্রকাশিত সংস্করণ লোড হলে এখানে তার যাচাইকৃত প্রতিবেদন দেখানো হবে।",
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+        Intro("দৈনিক ব্রিফিং", "একটি প্রকাশিত সংস্করণের সব প্রতিবেদন ও তথ্যসূত্র এক জায়গায়।")
+        if (snapshot == null) {
+            Panel {
+                if (feed.loading) CircularProgressIndicator()
+                Text(if (feed.loading) "সংস্করণ লোড হচ্ছে…" else "প্রকাশিত সংস্করণ পাওয়া যায়নি", fontWeight = FontWeight.SemiBold)
+                TextButton(onClick = feed.refresh) { Text("আবার চেষ্টা করুন") }
+            }
+        } else {
+            Panel {
+                Kicker("প্রকাশিত সংস্করণ")
+                Text(snapshot.date, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                Text(snapshot.coverage, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                Text("${snapshot.stories.size}টি প্রতিবেদন", color = MaterialTheme.colorScheme.secondary, fontSize = 12.sp)
+            }
+            snapshot.stories.forEach { story ->
+                Panel {
+                    Kicker(categoryLabel(story.category))
+                    Text(story.headline, fontWeight = FontWeight.Bold, fontSize = 17.sp, lineHeight = 24.sp)
+                    Text(story.oneLiner.ifBlank { story.summary }, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                    TextButton(onClick = {
+                        EditionFeedRepository.selectStory(context, story.id)
+                        nav.navigate(AppDestination.Article.route)
+                    }) { Text("প্রতিবেদন পড়ুন") }
+                }
+            }
         }
         RowLink("বাংলাদেশ বিষয়াবলি", "দেশের গুরুত্বপূর্ণ ঘটনা", Icons.Default.Flag) { nav.navigate(AppDestination.Bangladesh.route) }
         RowLink("বিশ্ব বিষয়াবলি", "আন্তর্জাতিক প্রেক্ষাপট", Icons.Default.Public) { nav.navigate(AppDestination.World.route) }
