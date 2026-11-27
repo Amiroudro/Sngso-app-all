@@ -2,7 +2,7 @@
 
 A Bangla-first editorial intelligence and exam-preparation app for Bangladesh.
 
-This repository contains the Android client. The editorial engine lives separately in [Amiroudro/new-sngso](https://github.com/Amiroudro/new-sngso). The client consumes versioned, validated edition artifacts; it does not scrape publishers or generate editorial claims itself.
+This repository contains the Android client. The editorial engine lives separately in [Amiroudro/new-sngso](https://github.com/Amiroudro/new-sngso). The client is designed to consume versioned, validated edition artifacts in a future integration; the current Android prototype uses labelled local sample content. It does not scrape publishers or generate editorial claims itself.
 
 ## Product experience
 
@@ -29,7 +29,7 @@ This is an expanding screen inventory, not a required count. A route is added on
 - Unit and Compose instrumentation test dependencies
 - GitHub Actions build, unit-test and emulator smoke-test workflow
 
-Open the project in Android Studio, allow Gradle sync and run the app configuration on a device or emulator. The Gradle Wrapper is committed and the GitHub Actions workflow uses it. The routine pull-request workflow runs JVM tests, compiles the Android instrumentation test APK, and assembles debug and unsigned release APKs. A separate emulator job executes the instrumentation suite on API 28 AOSP using software CPU emulation. Latest verification: [GitHub Actions run 45888948067](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45888948067), with all 44 instrumentation tests passing (0 failures, 0 skipped).
+Open the project in Android Studio, allow Gradle sync and run the app configuration on a device or emulator. The Gradle Wrapper is committed and the GitHub Actions workflow uses it. The routine pull-request workflow runs JVM tests, compiles the Android instrumentation test APK, and assembles debug and unsigned release APKs. A separate emulator job executes the instrumentation suite on API 28 AOSP using software CPU emulation. Latest verification: [GitHub Actions run 45968013536](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45968013536) on commit `da6d951436272afa23903ece2828bdc0ac8c5f83`; all 44 instrumentation tests passed (0 failures, 0 skipped), and debug plus unsigned release APKs were assembled.
 
 ## Design principles
 
