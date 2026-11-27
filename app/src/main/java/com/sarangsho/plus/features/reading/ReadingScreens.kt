@@ -164,9 +164,12 @@ private data class PublishedFeedUiState(
 )
 
 @Composable
-private fun rememberPublishedFeed(): PublishedFeedUiState {
+private fun rememberPublishedFeed(editionDate: String? = null): PublishedFeedUiState {
     val context = LocalContext.current
-    val initialSnapshot = remember(context) { EditionFeedRepository.cached(context) }
+    val initialSnapshot = remember(context, editionDate) {
+        if (editionDate == null) EditionFeedRepository.cached(context)
+        else EditionFeedRepository.cachedEdition(context, editionDate)
+    }
     var snapshot by remember(context) { mutableStateOf(initialSnapshot) }
     var loading by remember(context) { mutableStateOf(initialSnapshot == null || initialSnapshot.stale) }
     var failed by remember { mutableStateOf(false) }
@@ -174,15 +177,18 @@ private fun rememberPublishedFeed(): PublishedFeedUiState {
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner, context) {
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME && EditionFeedRepository.cached(context)?.stale == true) {
+            if (event == Lifecycle.Event.ON_RESUME &&
+                (if (editionDate == null) EditionFeedRepository.cached(context)
+                 else EditionFeedRepository.cachedEdition(context, editionDate))?.stale == true) {
                 refreshToken += 1
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
-    LaunchedEffect(refreshToken) {
-        val cached = EditionFeedRepository.cached(context)
+    LaunchedEffect(refreshToken, editionDate) {
+        val cached = if (editionDate == null) EditionFeedRepository.cached(context)
+            else EditionFeedRepository.cachedEdition(context, editionDate)
         if (cached != null && !cached.stale && refreshToken == 0) {
             snapshot = cached
             loading = false
@@ -191,9 +197,11 @@ private fun rememberPublishedFeed(): PublishedFeedUiState {
         loading = true
         failed = false
         try {
-            snapshot = EditionFeedRepository.refresh(context)
+             snapshot = if (editionDate == null) EditionFeedRepository.refresh(context)
+                else EditionFeedRepository.loadEdition(context, editionDate)
         } catch (_: Exception) {
-            snapshot = EditionFeedRepository.cached(context)
+            snapshot = if (editionDate == null) EditionFeedRepository.cached(context)
+                else EditionFeedRepository.cachedEdition(context, editionDate)
             failed = true
         } finally {
             loading = false
@@ -289,7 +297,7 @@ private fun categoryLabel(category: String): String = when (category) {
                     Text("${story.sources.size}টি তথ্যসূত্র", fontSize = 11.sp, color = MaterialTheme.colorScheme.secondary)
                     if (index == 0) {
                         Primary("প্রতিবেদনটি পড়ুন") {
-                            EditionFeedRepository.selectStory(context, story.id)
+                            EditionFeedRepository.selectStory(context, story.id, snapshot.date)
                             nav.navigate(AppDestination.Article.route)
                         }
                     } else {
@@ -395,7 +403,7 @@ private fun categoryLabel(category: String): String = when (category) {
                     Text(story.oneLiner.ifBlank { story.summary }, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, lineHeight = 19.sp)
                     Text("${story.sources.size}টি তথ্যসূত্র", color = MaterialTheme.colorScheme.secondary, fontSize = 11.sp)
                     TextButton(onClick = {
-                        EditionFeedRepository.selectStory(context, story.id)
+                        EditionFeedRepository.selectStory(context, story.id, feed.snapshot?.date)
                         nav.navigate(AppDestination.Article.route)
                     }) { Text("বিস্তারিত পড়ুন") }
                 }
@@ -1143,7 +1151,8 @@ internal fun Summary(nav: NavHostController) {
                     Text("${edition.stories}টি প্রতিবেদন • ${edition.coverage}", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
                     TextButton(onClick = {
                         scope.launch {
-                            if (feed.snapshot?.date != edition.date) {
+                            EditionFeedRepository.selectEditionDate(context, edition.date)
+                            if (EditionFeedRepository.cachedEdition(context, edition.date) == null) {
                                 runCatching { EditionFeedRepository.loadEdition(context, edition.date) }
                             }
                             nav.navigate(AppDestination.Edition.route)
@@ -1157,7 +1166,7 @@ internal fun Summary(nav: NavHostController) {
 
 @Composable internal fun Edition(nav: NavHostController) {
     val context = LocalContext.current
-    val feed = rememberPublishedFeed()
+    val feed = rememberPublishedFeed(EditionFeedRepository.selectedEditionDate(context))
     val snapshot = feed.snapshot
     Scroll {
         Intro("দৈনিক ব্রিফিং", "একটি প্রকাশিত সংস্করণের সব প্রতিবেদন ও তথ্যসূত্র এক জায়গায়।")
@@ -1180,7 +1189,7 @@ internal fun Summary(nav: NavHostController) {
                     Text(story.headline, fontWeight = FontWeight.Bold, fontSize = 17.sp, lineHeight = 24.sp)
                     Text(story.oneLiner.ifBlank { story.summary }, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
                     TextButton(onClick = {
-                        EditionFeedRepository.selectStory(context, story.id)
+                        EditionFeedRepository.selectStory(context, story.id, snapshot.date)
                         nav.navigate(AppDestination.Article.route)
                     }) { Text("প্রতিবেদন পড়ুন") }
                 }
