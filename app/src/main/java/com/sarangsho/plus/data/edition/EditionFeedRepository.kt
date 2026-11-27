@@ -6,6 +6,7 @@ import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URI
+import java.io.ByteArrayOutputStream
 import java.time.Instant
 
 /**
@@ -222,8 +223,21 @@ object EditionFeedRepository {
             try {
                 val status = connection.responseCode
                 require(status in 200..299) { "Edition feed returned HTTP $status" }
-                val bytes = connection.inputStream.use { it.readNBytes(8 * 1024 * 1024 + 1) }
-                require(bytes.size <= 8 * 1024 * 1024) { "Edition feed response exceeds the 8 MiB limit" }
+                val bytes = connection.inputStream.use { input ->
+                    val output = ByteArrayOutputStream()
+                    val buffer = ByteArray(8 * 1024)
+                    var total = 0
+                    while (true) {
+                        val count = input.read(buffer)
+                        if (count < 0) break
+                        total += count
+                        require(total <= 8 * 1024 * 1024) {
+                            "Edition feed response exceeds the 8 MiB limit"
+                        }
+                        output.write(buffer, 0, count)
+                    }
+                    output.toByteArray()
+                }
                 String(bytes, Charsets.UTF_8)
             } finally {
                 connection.disconnect()
