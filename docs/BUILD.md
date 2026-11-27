@@ -57,16 +57,17 @@ The wrapper verifies the downloaded Gradle distribution against the pinned SHA-2
 
 ## Current verification status
 
-Latest completed current-head verification:
+Latest completed verification:
 
-- Workflow run: [45888948067](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45888948067)
+- Workflow run: [45970572515](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45970572515)
 - Branch: `fix/android-build-verification`
-- Tested commit: `1e0616608d146f8becb0d046bf24e0061a8ccc6f`.
+- PR head commit: `6042b1c005521e15c5f327cf05e360756a4e8041` (GitHub Actions checks out the PR merge ref for the workflow).
 - Overall workflow: **success**. Both `unit-and-build` and `compose-instrumentation` jobs completed successfully.
 - JVM unit tests passed; instrumentation APK compilation, debug APK assembly, and unsigned release APK assembly all passed.
-- API 28 AOSP emulator executed all 43 authored Android instrumentation tests: **43 passed, 0 failed, 0 skipped**.
-- Current-head debug APK: 17,709,246 bytes; SHA-256 `122b24455dbcd129b05e6034ce36834602b166f63e2aa1754e05c54724a82737`.
-- Current-head unsigned release APK: 11,622,158 bytes; SHA-256 `7397359ea58db3ef847cb50fd9cb70525c489bf5a3c8d53685ddb48b38d237b7`.
+- API 28 AOSP emulator executed all 44 authored Android instrumentation tests: **44 passed, 0 failed, 0 skipped**. The uploaded test report ends with `OK (44 tests)`.
+- Debug APK: 17,709,246 bytes; SHA-256 `7ee2a6ca0203895c32592a3d3588466845266376a60c53518bd8d345c6ecbc8e`.
+- Unsigned release APK: 11,622,158 bytes; SHA-256 `8a6910498e5995c6a3f954c74639a558b0bec4de59d4a87e8d8a4cb966bc1dc9`.
+- Artifact ZIP SHA-256 values: debug `7420e392696d604dcb7d28af991f9d78bddc706ac7a724265aad68eadfd32234`; unsigned release `eeaa672785a8a405e8271b42393a9ccdcd344716280e5a11edbc141a4b450833`.
 - Debug APK artifact retention is one day; unsigned release APK and emulator diagnostics are retained for seven days. Download artifacts promptly from the workflow run.
 - The debug APK is for local testing, not distribution. The release APK is unsigned and is not suitable for distribution.
 - No signed distribution APK has been generated. No physical-device visual or accessibility result is claimed.
