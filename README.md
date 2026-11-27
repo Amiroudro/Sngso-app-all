@@ -29,7 +29,7 @@ This is an expanding screen inventory, not a required count. A route is added on
 - Unit and Compose instrumentation test dependencies
 - GitHub Actions build, unit-test and emulator smoke-test workflow
 
-Open the project in Android Studio, allow Gradle sync and run the app configuration on a device or emulator. The Gradle Wrapper is committed and the GitHub Actions workflow uses it. The routine pull-request workflow runs JVM tests, compiles the Android instrumentation test APK, and assembles debug and unsigned release APKs. A separate emulator job executes the instrumentation suite on API 28 AOSP using software CPU emulation. Latest verification: [GitHub Actions run 45968013536](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45968013536) on commit `da6d951436272afa23903ece2828bdc0ac8c5f83`; all 44 instrumentation tests passed (0 failures, 0 skipped), and debug plus unsigned release APKs were assembled.
+Open the project in Android Studio, allow Gradle sync and run the app configuration on a device or emulator. The Gradle Wrapper is committed and the GitHub Actions workflow uses it. The routine pull-request workflow runs JVM tests, compiles the Android instrumentation test APK, and assembles debug and unsigned release APKs. A separate emulator job executes the instrumentation suite on API 28 AOSP using software CPU emulation. Latest verification: [GitHub Actions run 45970572515](https://github.com/Amiroudro/Sngso-app-all/actions/runs/45968013536) on commit `6042b1c005521e15c5f327cf05e360756a4e8041`; all 44 instrumentation tests passed (0 failures, 0 skipped), and debug plus unsigned release APKs were assembled.
 
 ## Design principles
 

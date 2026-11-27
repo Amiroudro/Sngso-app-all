@@ -20,15 +20,16 @@ jobs:
     if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
           cache: gradle
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
         with:
+          cmdline-tools-version: 12266719
           # Explicitly override the action's legacy default ("tools"), which
           # sdkmanager no longer provides. Install only current SDK packages.
           packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
@@ -47,14 +48,14 @@ jobs:
       - name: Assemble unsigned release APK
         run: ./gradlew --no-daemon --stacktrace :app:assembleRelease
       - name: Upload unsigned release APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: sarangsho-plus-unsigned-release-apk
           path: app/build/outputs/apk/release/*.apk
           if-no-files-found: error
           retention-days: 7
       - name: Upload debug APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: sarangsho-plus-debug-apk
           path: app/build/outputs/apk/debug/*.apk
@@ -79,15 +80,16 @@ jobs:
     env:
       ANDROID_I_WANT_MY_TCG: 'yes'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
           cache: gradle
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
         with:
+          cmdline-tools-version: 12266719
           packages: 'platform-tools platforms;android-28 platforms;android-35 build-tools;35.0.0'
           accept-android-sdk-licenses: true
       - name: Run Compose smoke test on emulator
@@ -110,7 +112,7 @@ jobs:
             set +e; adb logcat -c; adb logcat -v threadtime > emulator-logcat.txt & LOGCAT_PID=$!; ./gradlew --no-daemon --stacktrace :app:connectedDebugAndroidTest; TEST_EXIT=$?; kill "$LOGCAT_PID" 2>/dev/null || true; wait "$LOGCAT_PID" 2>/dev/null || true; exit "$TEST_EXIT"
       - name: Upload emulator diagnostics
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: compose-instrumentation-diagnostics
           path: |

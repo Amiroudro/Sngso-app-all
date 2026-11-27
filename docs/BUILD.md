@@ -3,6 +3,7 @@
 ## Required tools
 
 - JDK 17
+- Android SDK Command-line Tools 16.0 (build 12266719)
 - Android SDK Platform 35
 - Android SDK Build-Tools 35.0.0
 - Android SDK Platform-Tools
