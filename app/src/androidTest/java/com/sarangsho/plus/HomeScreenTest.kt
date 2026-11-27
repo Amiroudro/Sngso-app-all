@@ -160,7 +160,7 @@ class HomeScreenTest {
     }
 
     @Test
-    fun exploreTabAndCategoryFilterShowMatchingSampleStories() {
+    fun exploreTabAndCategoryFilterShowPublishedStories() {
         completeOnboarding()
 
         composeRule.onNodeWithText("এক্সপ্লোর").performClick()
@@ -185,10 +185,10 @@ class HomeScreenTest {
         composeRule.onNodeWithContentDescription("পেছনে").performClick()
 
         composeRule.onNodeWithTag("feed-filter-economy").performScrollTo().performClick()
-        composeRule.onNodeWithText("এই বিষয়ের পূর্ণ পাঠ ও সারাংশ এখনো যুক্ত হয়নি।")
+        composeRule.onNodeWithText("বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি")
             .performScrollTo().assertIsDisplayed()
-        composeRule.onNodeWithText("গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন")
-            .assertDoesNotExist()
+        composeRule.onNodeWithText("বিস্তারিত পড়ুন").performScrollTo().performClick()
+        composeRule.onNodeWithText("অর্থনীতির সারাংশ।").performScrollTo().assertIsDisplayed()
     }
 
     @Test
