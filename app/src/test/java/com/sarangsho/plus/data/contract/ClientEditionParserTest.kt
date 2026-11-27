@@ -136,6 +136,47 @@ class ClientEditionParserTest {
         assertEquals("2026-11-27T10:30:00Z", edition.stories.single().correction?.correctedAt)
     }
 
+
+    @Test
+    fun parsesAndPreservesAdditionalSourceCitationsInOrder() {
+        val root = JsonParser.parseString(fixture()).asJsonObject
+        root.getAsJsonArray("stories").get(0).asJsonObject.add(
+            "additional_sources",
+            JsonParser.parseString(
+                """[{"id":"source:second","name":"Second Publisher","url":"https://example.org/second","published_at":"2026-11-27T08:10:00Z"},{"id":"source:third","name":"Third Publisher","url":"https://example.org/third","published_at":"2026-11-27T08:11:00Z"}]"""
+            )
+        )
+        val story = ClientEditionParser.parse(rehash(root)).stories.single()
+        assertEquals(listOf("source:second", "source:third"), story.additionalSources.map { it.id })
+        assertEquals("Second Publisher", story.additionalSources.first().name)
+    }
+
+    @Test
+    fun rejectsAdditionalSourceThatDuplicatesPrimarySource() {
+        val root = JsonParser.parseString(fixture()).asJsonObject
+        val primary = root.getAsJsonArray("stories").get(0).asJsonObject
+            .getAsJsonObject("source").deepCopy()
+        root.getAsJsonArray("stories").get(0).asJsonObject.add(
+            "additional_sources",
+            JsonParser.parseString("[" + primary.toString() + "]")
+        )
+        assertThrows(IllegalArgumentException::class.java) {
+            ClientEditionParser.parse(rehash(root))
+        }
+    }
+
+    @Test
+    fun rejectsDuplicateAdditionalSourceIds() {
+        val root = JsonParser.parseString(fixture()).asJsonObject
+        val sources = JsonParser.parseString(
+            """[{"id":"source:second","name":"Second","url":"https://example.org/second","published_at":"2026-11-27T08:10:00Z"},{"id":"source:second","name":"Duplicate","url":"https://example.org/duplicate","published_at":"2026-11-27T08:11:00Z"}]"""
+        )
+        root.getAsJsonArray("stories").get(0).asJsonObject.add("additional_sources", sources)
+        assertThrows(IllegalArgumentException::class.java) {
+            ClientEditionParser.parse(rehash(root))
+        }
+    }
+
     @Test
     fun rejectsMalformedCorrectionMetadata() {
         val root = JsonParser.parseString(fixture()).asJsonObject
