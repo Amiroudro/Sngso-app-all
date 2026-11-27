@@ -158,7 +158,7 @@ object EditionFeedRepository {
     }
 
     fun cachedEdition(context: Context, date: String): Snapshot? {
-        require(Regex("^\\\\d{4}-\\\\d{2}-\\\\d{2}$").matches(date)) { "Invalid edition date" }
+        require(Regex("^\\d{4}-\\d{2}-\\d{2}$").matches(date)) { "Invalid edition date" }
         val prefs = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
         val data = prefs.getString(ARCHIVE_DATA_PREFIX + date, null) ?: return null
         val bn = prefs.getString(ARCHIVE_BN_PREFIX + date, null)
@@ -179,7 +179,7 @@ object EditionFeedRepository {
         val editor = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
         if (date == null) editor.remove(KEY_SELECTED_EDITION_DATE)
         else {
-            require(Regex("^\\\\d{4}-\\\\d{2}-\\\\d{2}$").matches(date)) { "Invalid edition date" }
+            require(Regex("^\\d{4}-\\d{2}-\\d{2}$").matches(date)) { "Invalid edition date" }
             editor.putString(KEY_SELECTED_EDITION_DATE, date)
         }
         editor.apply()
