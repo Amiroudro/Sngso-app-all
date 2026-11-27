@@ -275,7 +275,7 @@ private fun categoryLabel(category: String): String = when (category) {
                     Text(story.headline, fontSize = 20.sp, lineHeight = 28.sp, fontWeight = FontWeight.Bold)
                     Text(story.oneLiner.ifBlank { story.summary }, fontSize = 13.sp, lineHeight = 21.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Text("${story.sources.size}টি তথ্যসূত্র", fontSize = 11.sp, color = MaterialTheme.colorScheme.secondary)
-                    Primary("প্রতিবেদন পড়ুন") {
+                    Primary("প্রতিবেদনটি পড়ুন") {
                         EditionFeedRepository.selectStory(context, story.id)
                         nav.navigate(AppDestination.Article.route)
                     }
@@ -430,6 +430,16 @@ private fun categoryLabel(category: String): String = when (category) {
                     }
                     Text(story.headline, fontSize = 25.sp, lineHeight = 34.sp, fontWeight = FontWeight.Bold,
                         color = if (sepia) SarangshoPalette.Ink else MaterialTheme.colorScheme.onBackground)
+                    Panel {
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Icon(Icons.Default.VerifiedUser, null, tint = MaterialTheme.colorScheme.primary)
+                            Column(Modifier.weight(1f)) {
+                                Text("উৎস যাচাইয়ের অবস্থা", fontWeight = FontWeight.SemiBold)
+                                Text("প্রকাশিত দৈনিক সংস্করণ থেকে", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                            }
+                            AssistChip(onClick = {}, enabled = false, label = { Text("প্রকাশিত") })
+                        }
+                    }
                     Panel {
                         Kicker("সংক্ষিপ্ত সারাংশ")
                         Text(story.summary.ifBlank { story.oneLiner }, fontSize = readerFontSize, lineHeight = readerLineHeight)
