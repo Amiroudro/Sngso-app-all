@@ -4,6 +4,8 @@ import android.content.pm.ApplicationInfo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -16,4 +18,13 @@ class AppPrivacyManifestTest {
 
         assertEquals(0, applicationInfo.flags and ApplicationInfo.FLAG_ALLOW_BACKUP)
     }
+    @Test
+    fun launcherIconIsDeclaredAndResolvable() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val applicationInfo = context.packageManager.getApplicationInfo(context.packageName, 0)
+
+        assertNotEquals(0, applicationInfo.icon)
+        assertNotNull(context.packageManager.getApplicationIcon(applicationInfo))
+    }
+
 }
