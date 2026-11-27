@@ -21,6 +21,7 @@ import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsProperties
+import java.time.Instant
 import org.junit.Assert.assertEquals
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.After
@@ -38,6 +39,31 @@ class HomeScreenTest {
         context.getSharedPreferences("sarangsho_learning", android.content.Context.MODE_PRIVATE)
             .edit()
             .clear()
+            .commit()
+        val editionFixture = """{
+          "edition_date":"2026-11-27","edition_day":"Friday","coverage":"Test coverage window","status":"published",
+          "stories":[
+            {"id":"CA01","category":"Bangladesh","headline":"Building a climate-resilient Bangladesh","summary":"English summary","one_liner":"English one liner","why_it_matters":"Why it matters","exam_facts":"Exam facts","detail":"Detailed reading","key_facts":[],"sources":[{"publication":"Test Publisher","headline":"Original report","date":"2026-11-27","url":"https://example.org/story-1"}]},
+            {"id":"CA02","category":"Economy & Banking","headline":"বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি","summary":"Economy summary","one_liner":"Economy one liner","why_it_matters":"Economy context","exam_facts":"Economy facts","detail":"Economy detail","key_facts":[],"sources":[]},
+            {"id":"CA03","category":"World","headline":"জাতিসংঘ ও জলবায়ু আলোচনার প্রেক্ষাপট","summary":"World summary","one_liner":"World one liner","why_it_matters":"World context","exam_facts":"World facts","detail":"World detail","key_facts":[],"sources":[]},
+            {"id":"CA04","category":"Editorial & Opinion","headline":"গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন","summary":"Gambia summary","one_liner":"Gambia one liner","why_it_matters":"Gambia context","exam_facts":"Gambia facts","detail":"Gambia detail","key_facts":[],"sources":[]}
+          ]
+        }"""
+        val bengaliFixture = """{
+          "edition_date":"2026-11-27","status":"published","language":"bn",
+          "stories":{
+            "CA01":{"headline":"গাম্বিয়া বনাম মিয়ানমার: আন্তর্জাতিক বিচারিক প্রক্রিয়া বুঝে নিন","summary":"আন্তর্জাতিক বিচারিক প্রক্রিয়ার বাংলা সারাংশ।","one_liner":"এক বাক্যে মূল বিষয়।","why_it_matters":"পরীক্ষার জন্য গুরুত্বপূর্ণ প্রেক্ষাপট।","exam_facts":"আদালত ও আন্তর্জাতিক আইন সম্পর্কিত তথ্য।","detail":"বিস্তারিত বাংলা পাঠ।","key_facts":[]},
+            "CA02":{"headline":"বাংলাদেশের অর্থনীতি: নীতি, মূল্যস্ফীতি ও প্রবৃদ্ধি","summary":"অর্থনীতির সারাংশ।"},
+            "CA03":{"headline":"জাতিসংঘ ও জলবায়ু আলোচনার প্রেক্ষাপট","summary":"বিশ্বের সারাংশ।"},
+            "CA04":{"headline":"রাষ্ট্রীয় প্রতিষ্ঠান ও সংবিধান","summary":"রাষ্ট্রীয় প্রতিষ্ঠানের সারাংশ।"}
+          }
+        }"""
+        context.getSharedPreferences("sarangsho_edition_feed", android.content.Context.MODE_PRIVATE)
+            .edit()
+            .clear()
+            .putString("edition_data", editionFixture)
+            .putString("edition_bn", bengaliFixture)
+            .putString("fetched_at", Instant.now().toString())
             .commit()
         runBlocking {
             ReaderPreferencesRepository.setFontSize(context, 18f)
