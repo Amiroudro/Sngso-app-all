@@ -276,9 +276,16 @@ private fun categoryLabel(category: String): String = when (category) {
                     Text(story.headline, fontSize = 20.sp, lineHeight = 28.sp, fontWeight = FontWeight.Bold)
                     Text(story.oneLiner.ifBlank { story.summary }, fontSize = 13.sp, lineHeight = 21.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Text("${story.sources.size}টি তথ্যসূত্র", fontSize = 11.sp, color = MaterialTheme.colorScheme.secondary)
-                    Primary("প্রতিবেদনটি পড়ুন") {
-                        EditionFeedRepository.selectStory(context, story.id)
-                        nav.navigate(AppDestination.Article.route)
+                    if (index == 0) {
+                        Primary("প্রতিবেদনটি পড়ুন") {
+                            EditionFeedRepository.selectStory(context, story.id)
+                            nav.navigate(AppDestination.Article.route)
+                        }
+                    } else {
+                        TextButton(onClick = {
+                            EditionFeedRepository.selectStory(context, story.id)
+                            nav.navigate(AppDestination.Article.route)
+                        }) { Text("বিস্তারিত পড়ুন") }
                     }
                 }
             }
