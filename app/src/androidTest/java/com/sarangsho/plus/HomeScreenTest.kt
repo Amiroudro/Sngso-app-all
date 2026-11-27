@@ -91,6 +91,19 @@ class HomeScreenTest {
     }
 
     @Test
+    fun revisionDeckDisclaimsUnmeasuredProgress() {
+        completeOnboarding()
+
+        composeRule.onNodeWithText("শিখুন").performClick()
+        composeRule.onNodeWithText("রিভিশন শুরু করুন").performScrollTo().performClick()
+
+        composeRule.onNodeWithText("নমুনা কার্ড").assertIsDisplayed()
+        composeRule.onNodeWithText("এই ডেমো সেশনে ব্যক্তিগত অগ্রগতি গণনা বা সংরক্ষণ করা হচ্ছে না।")
+            .assertIsDisplayed()
+        composeRule.onNodeWithText("কার্ড ৭ / ২০ • নমুনা সেশন").assertDoesNotExist()
+    }
+
+    @Test
     fun reportStoryDraftCanBeSavedRestoredAndClearedFromTheArticleScreen() {
         completeOnboarding()
 
