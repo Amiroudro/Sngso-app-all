@@ -29,6 +29,11 @@ def canonical_payload(document: dict) -> bytes:
     ).encode("utf-8")
 
 
+def has_valid_hash(document: dict) -> bool:
+    expected = "sha256:" + hashlib.sha256(canonical_payload(document)).hexdigest()
+    return document.get("content_hash") == expected
+
+
 def validate_document(validator: Draft202012Validator, document: dict) -> list[str]:
     return [
         f"{'.'.join(str(part) for part in error.absolute_path) or '<root>'}: {error.message}"
@@ -47,7 +52,7 @@ def main() -> None:
         raise SystemExit("Fixture does not match schema:\n- " + "\n- ".join(errors))
 
     expected_hash = "sha256:" + hashlib.sha256(canonical_payload(fixture)).hexdigest()
-    if fixture.get("content_hash") != expected_hash:
+    if not has_valid_hash(fixture):
         raise SystemExit(
             "Fixture content_hash mismatch: "
             f"expected {expected_hash}, got {fixture.get('content_hash')!r}"
@@ -69,10 +74,10 @@ def main() -> None:
 
     bad_hash = copy.deepcopy(fixture)
     bad_hash["content_hash"] = "sha256:" + ("0" * 64)
-    if not validate_document(validator, bad_hash) and bad_hash["content_hash"] == expected_hash:
-        raise SystemExit("Regression check failed: bad hash fixture was not changed")
-    if bad_hash["content_hash"] == expected_hash:
-        raise SystemExit("Regression check failed: bad hash test is ineffective")
+    if validate_document(validator, bad_hash):
+        raise SystemExit("Regression check failed: bad hash test payload should remain schema-valid")
+    if has_valid_hash(bad_hash):
+        raise SystemExit("Regression check failed: accepted content-hash mismatch")
 
     print("Client-edition v1 schema: valid")
     print(f"Published-edition fixture: valid ({len(fixture['stories'])} story)")
